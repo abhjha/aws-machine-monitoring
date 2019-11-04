@@ -1,0 +1,28 @@
+.data-container.plant-view{
+    width: 80%;
+    background-color: #242e42;
+    float: right;
+    padding: 50px 90px 0 20px;
+    display: grid;
+    grid-template-rows: 13% 42% 36%;
+    height: 100vh;
+    grid-gap: 20px;
+}
+.plant-header-label{
+    display: grid;
+    grid-template-columns: 23.8% 23.8% 23.8% 23.8%;
+    grid-gap: 19px;
+}
+.line-view-container{
+    display: grid;
+    grid-template-columns: 49% 49.2%;
+    grid-gap: 19px;
+}
+.line-details{
+    background-color: #2F3B52;
+    padding: 20px 20px 50px;
+}
+.plant-view-heading {
+    color: white;
+    font-size: 18px;
+}

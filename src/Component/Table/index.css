@@ -1,0 +1,44 @@
+/* Styles go here */
+table.no-spacing {
+    border-spacing: 0 10px;
+    border-collapse: separate;
+    width: 100%;
+    background-color: #707070;
+}
+thead {
+    color:white;
+    background-color: rgb(170, 172, 173);
+    height: 44px;
+    font-size: 20px;
+    font-weight: bold;
+}
+tbody {
+    color:white;
+    background-color: rgb(79, 79, 80);
+    font-size: 18px;
+    text-align: center;
+    display:block;
+    overflow:auto;
+    height:230px;
+    width:100%;
+    border-spacing: 0 10px;
+    border-collapse: separate;
+}
+tfoot {color:red;}
+
+ 
+
+td, th{
+  padding: 5px;
+}
+
+thead tr{
+    display:block;
+  }
+  table {
+    width: 100%; /* Optional */
+}
+
+tbody td, thead th {
+    width: 9%;  /* Optional */
+}

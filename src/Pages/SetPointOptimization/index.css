@@ -1,0 +1,89 @@
+.data-container.setpoint-view{
+    display: grid;
+    grid-template-rows: 75px 15% 1fr;
+    grid-gap : 2%;
+}
+.setpoint-heading,.setpoint-temp,.setpoint-adjustments{
+    background-color: #2F3B52;
+}
+.setpoint-heading,.setpoint-adjustements-heading{
+    font-size: 22px;
+    color: white;
+    padding: 10px;
+}
+.setpoint-title,.sp-oee,.sp-heatmap{
+    background-color: #172030;
+    padding: 10px;
+}
+.setpoint-details{
+    width: 80%;
+    text-align: center;
+    margin: auto;
+    padding: 15px;
+    font-style: italic;
+    border: 1px solid;
+    margin-top: 10px;
+}
+.setpoint-data {
+    display: grid;
+    grid-template-columns: 39% 59%;
+    grid-gap: 2%;
+}
+.setpoint-sku ,.setpoint-amb-temp,.setpoint-amb-hum{
+    font-size: 22px;
+    color: white;
+    width: 60%;
+    margin: 0 auto;
+}
+.setpoint-adjustements-heading{
+    text-align: center;
+    padding:10px;
+}
+.setpoint-asset-data {
+    display: grid;
+    grid-template-columns: 49% 49%;
+    grid-gap: 2%;
+}
+.sp-asset-container {
+    background-color: #172030;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    padding: 3%;
+}
+.sp-asset-container-heading {
+    width: 90%;
+    margin: auto;
+    border: 1px solid;
+    padding: 2%;
+}
+.sp-asset-details-container {
+    display: flex;
+    margin-top: 4%;
+    align-items: center;
+}
+.sp-asset-info {
+    width: 70%;
+}
+
+.sp-asset-value {
+    width: 20%;
+    text-align: center;
+    background-color: #05C985;
+    height: 54px;
+    color: black;
+}
+.setpoint-adjustments {
+    padding: 15px 25px;
+    display: grid;
+    grid-template-rows: 9% 64% 18%;
+    grid-gap: 3%;
+}
+.setpoint-graph {
+    display: grid;
+    grid-template-columns: 59% 39%;
+    grid-gap: 2%;
+}
+.sp-heatmap-image img{
+    width: 100%;
+}

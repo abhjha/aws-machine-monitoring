@@ -1,0 +1,33 @@
+.line-asset-container {
+    display: flex;
+    background-color: #707070;
+    width: 100%;
+    padding: 10px 0 0 15px;
+    height: 87%;
+}
+.asset-heading-container {
+    color: white;
+    width: 70%;
+}
+.asset-heading {
+    height: 25%;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+.asset-container {
+    width: 30%;
+}
+.line-asset {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.line-asset div {
+    height: 32px;
+    width: 32px;
+    background-color: #05C985;
+    border-radius: 8px; 
+    margin: 0 auto;
+}

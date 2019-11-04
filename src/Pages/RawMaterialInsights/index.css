@@ -1,0 +1,100 @@
+.data-container.raw-mat {
+    grid-template-rows: 75px 16% 39% 30%;
+    grid-gap: 2%;
+}
+
+.pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
+    background-color: #2F3B52;
+}
+
+.pred-main-heading {
+    font-size: 22px;
+    color: white;
+    padding: 10px;
+}
+
+.pred-main-title {
+    background-color: #172030;
+    padding: 10px;
+}
+
+.pred-main-details {
+    width: 80%;
+    text-align: center;
+    margin: auto;
+    padding: 15px;
+    font-style: italic;
+    border: 1px solid;
+    margin-top: 10px;
+}
+
+.raw-mat .pred-main-graph {
+    display: grid;
+    grid-template-columns: 29% 69%;
+    grid-gap: 2%;
+}
+
+.raw-mat .pred-main-table {
+    display: grid;
+    grid-template-columns: 49% 49%;
+    grid-gap: 2%;
+}
+
+.pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
+    color: white;
+    width: 80%;
+    margin: 10%auto;
+}
+
+.pred-main .sp-table-container:first-child {
+    font-weight: bold;
+}
+.pred-graph-img img{
+    width: 100%;
+    height: 60%;
+}
+.raw-mat .pred-main-graph-image{
+    padding: 0%;
+
+}
+.pred-main-summary {
+    padding: 3% 5%;
+}
+.pred-summary-details {
+    display: flex;
+}
+.raw-mat-table-head .sp-table-container,
+.raw-mat-table-value .sp-table-container{
+    color: white;
+    width: 100%;
+    margin: 10% auto;
+}
+.raw-mat .sp-table-value.summary-title{
+    color: white;
+    text-align: center;
+    display: flex;
+}
+.rate-opti-title{
+    width:25%;
+}
+.raw-mat-bar{
+    
+    height: 85%;
+}
+.raw-mat-bar img{
+    width: 100%;
+    height: 90%;
+}
+.pred-main-downtime {
+    height: 100%;
+    overflow: auto;
+}
+.raw-mat-table-head , .raw-mat-table-value{
+    width: 50%;
+}
+.raw-mat-table-value .sp-table-value{
+    border-left: none;
+}
+.raw-mat-table-head .sp-table-value{
+    border-right: none;
+}

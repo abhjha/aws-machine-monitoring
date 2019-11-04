@@ -1,0 +1,19 @@
+
+  .coming-soon-container{
+    width: 80%;
+    background-color: #242e42;
+    float: right;
+    padding-right: 50px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    font-size: 48px;
+    color: white;
+  }
+
+  .coming-soon-container .page-button{
+    display: flex;
+    justify-content: space-around;
+  }   

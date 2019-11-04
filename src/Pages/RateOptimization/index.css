@@ -1,0 +1,78 @@
+.data-container.rate-opti {
+    grid-template-rows: 75px 16% 39% 30%;
+    grid-gap: 2%;
+}
+
+.pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
+    background-color: #2F3B52;
+}
+
+.pred-main-heading {
+    font-size: 22px;
+    color: white;
+    padding: 10px;
+}
+
+.pred-main-title {
+    background-color: #172030;
+    padding: 10px;
+}
+
+.pred-main-details {
+    width: 80%;
+    text-align: center;
+    margin: auto;
+    padding: 15px;
+    font-style: italic;
+    border: 1px solid;
+    margin-top: 10px;
+}
+
+.pred-main-graph {
+    display: grid;
+    grid-template-columns: 39% 59%;
+    grid-gap: 2%;
+}
+
+.pred-main-table {
+    display: grid;
+    grid-template-columns: 59% 39%;
+    grid-gap: 2%;
+}
+
+.pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
+    color: white;
+    width: 80%;
+    margin: 10%auto;
+}
+
+.pred-main .sp-table-container:first-child {
+    font-weight: bold;
+}
+.pred-graph-img img{
+    width: 100%;
+    height: 60%;
+}
+.pred-main-graph-image{
+    padding: 2%;
+
+}
+.pred-main-summary {
+    padding: 3% 5%;
+}
+.pred-summary-details {
+    display: flex;
+}
+.pred-summary-details .sp-table-container{
+    color: white;
+    width: 50%;
+    margin: 0;
+}
+.rate-opti .sp-table-value.summary-title{
+    color: white;
+    text-align: center;
+    display: flex;
+}
+.rate-opti-title{
+    width:25%;
+}

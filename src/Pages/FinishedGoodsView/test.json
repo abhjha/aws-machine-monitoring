@@ -1,0 +1,32 @@
+{
+    "data": {
+        "MixRatio": {
+            "Target Mix": {
+                "Blue": 10,
+                "Green": 40,
+                "Red": 50
+            },
+            "Hopper Mix": {
+                "Blue": 30,
+                "Green": 40,
+                "Red": 50
+            },
+            "Finished Goods Mix": {
+                "Blue": 30,
+                "Green": 40,
+                "Red": 50
+            }
+        },
+        "DefectAnalysis": {
+            "Damaged Units": 24,
+            "Damaged Cases": 11,
+            "Overheated": 7,
+            "Mix Ratio Out of Spec": 4,
+            "Impurity": 12
+        },
+        "Cases": {
+            "Total Completed Cases": 500,
+            "Defect Cases": 100
+        }
+    }
+}

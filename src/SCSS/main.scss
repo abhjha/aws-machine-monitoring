@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+@import 'config','structure';
+
+/* module css*/
+@import '../Component/AmbientReading/index.css';
+@import '../Component/AnalyticsDetails/index.css';
+@import '../Component/Back/index.css';
+@import '../Component/Breadcrumb/index.css';
+@import '../Component/Button/index.css';
+@import '../Component/Chart/index.css';
+@import '../Component/DefectAnalysis/index.css';
+@import '../Component/DowntimeDetails/index.css';
+@import '../Component/Dropdown/index.css';
+@import '../Component/FinishedMixRatio/index.css';
+@import '../Component/LabelCard/index.css';
+@import '../Component/LineAsset/index.css';
+@import '../Component/Menu/index.css';
+@import '../Component/MixRatio/index.css';
+@import '../Component/PlantViewContainer/index.css';
+@import '../Component/ScheduleAdherence/index.css';
+@import '../Component/SetpointTable/index.css';
+@import '../Component/SpAsset/index.css';
+@import '../Component/Table/index.css';
+@import '../Component/Time/index.css';
+
+@import '../Pages/Alerts/index.css';
+@import '../Pages/Analytics/index.css';
+@import '../Pages/BinView/index.css';
+@import '../Pages/BlenderView/index.css';
+@import '../Pages/ComingSoon/index.css';
+@import '../Pages/ControlTower/index.css';
+@import '../Pages/FinishedGoodsView/index.css';
+@import '../Pages/HopperView/index.css';
+@import '../Pages/LaborCorrelation/index.css';
+@import '../Pages/LineView/lineView';
+@import '../Pages/PlantView/index.css';
+@import '../Pages/PredictiveMaintenace/index.css';
+@import '../Pages/RateOptimization/index.css';
+@import '../Pages/RawMaterialInsights/index.css';
+@import '../Pages/SetPointOptimization/index.css';
+
+
+
+
+

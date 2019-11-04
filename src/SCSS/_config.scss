@@ -1,0 +1,65 @@
+/* Variable declaration */
+
+/* color-theme selection */
+$base-color: #e4e4e4;
+$card-bg-color: #ffffff;
+$selection-blue: #0089d2;
+$menu-bg-dark: #0a0a0a;
+$error-red: #df6a65;
+$warning-yellow: #ffda78;
+$success-green: #bad96b;
+$font-blue: #313b47;
+$font-grey: #6c7990;
+$font-black: #000000;
+$highlight-blue: #44b8e2;
+$highlight-purple: #db9bc8;
+$highlight-light-blue: #8ad0f9;
+$highlight-light-grey: #e2e4ec;
+$menu-color-grey: #9f9f9f;
+/* color-theme selection */
+
+/* other variable declaration */
+
+$border-radius: 10px;
+$heading-main-fontsize: 50px;
+$heading-sub-fontsize: 26px;
+$heading-micro-fontsize: 24px;
+$font-normal-fontsize: 20x;
+$menu-bar-width: 245px;
+
+/* other variable declaration */
+
+
+
+/* mixin */
+
+@mixin heading-main() {
+    font-size: $heading-main-fontsize ;
+    font-weight: bold;
+    color: $font-blue ;
+  }
+
+@mixin heading-sub() {
+    font-size: $heading-sub-fontsize ;
+    font-weight: bold ;
+    color: $font-blue;
+  }
+
+@mixin heading-micro() {
+    font-size: $heading-micro-fontsize ;
+    font-weight: normal;
+    color: $font-grey;
+  }
+
+@mixin text-normal() {
+    font-size: $font-normal-fontsize;
+    font-weight: normal ;
+    color: $font-black ;
+  }
+
+  @mixin transition() {
+    transition: all 0.3s linear;
+  }
+
+/* mixin */
+

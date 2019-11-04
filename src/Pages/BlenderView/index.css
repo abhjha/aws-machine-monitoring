@@ -1,0 +1,11 @@
+.blender-graph,.blender-reading,.blender-temp, .blender-speed{
+    background-color: #2f3b52;
+}
+.blender-graph-container{
+    display: grid;
+    grid-template-columns: 40% 22% 12% 22%;
+    grid-column-gap: 20px;
+}
+.blender-speed-value{
+    padding : 20px 0 0 20px;
+}

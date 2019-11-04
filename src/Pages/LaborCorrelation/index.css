@@ -1,0 +1,46 @@
+.data-container.labor-analytics-view{
+display: grid;
+grid-template-rows: 75px 15% 35% 35%;
+grid-gap: 2%;
+}
+.labor-correlation-heading,
+.labor-correlation-scrap,
+.labor-correlation-setpoint,
+.labor-correlation-oee,
+.labor-correlation-assessment{
+    background-color: #2F3B52;
+}
+.labor-correlation-heading{
+    font-size: 22px;
+    color: white;
+    padding: 10px;
+}
+.labor-correlation-title{
+    background-color: #172030;
+    padding: 10px;
+}
+.labor-correlation-details {
+    width: 80%;
+    text-align: center;
+    margin: auto;
+    padding: 15px;
+    font-style: italic;
+    border: 1px solid;
+    margin-top: 10px;
+}
+.labor-correlation-table,
+.labor-correlation-graph {
+    display: grid;
+    grid-template-columns: 49% 49%;
+    grid-gap: 2%;
+}
+.labor-graph-image img{
+    width: 100%;
+}
+.labor-graph-heading {
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+}

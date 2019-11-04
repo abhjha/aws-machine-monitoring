@@ -1,0 +1,40 @@
+{
+    "data": {
+        "MixRatio": {
+            "TargetMix": {
+                "v1": {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                },
+                "v2" : {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                },
+                "v3" : {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                }
+            },
+            "hopperMix": {
+                "v1": {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                },
+                "v2" : {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                },
+                "v3" : {
+                    "name": "Blue",
+                    "value": 25,
+                    "bg-color": "white"
+                }
+            }
+        }
+    }
+}

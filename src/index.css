@@ -1,0 +1,18 @@
+body, #root{
+    margin: 0;
+    height: 100vh;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+/* .data-container{
+    width: 80%;
+    background-color: #242e42;
+    float: right;
+    padding-right: 50px;
+    display: grid;
+    grid-template-rows: 75px 46% 1fr;
+    height: 100vh;
+} */
