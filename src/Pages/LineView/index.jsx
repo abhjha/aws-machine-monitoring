@@ -23,9 +23,9 @@ class LineView extends Component {
         super(props);
         this.state = {
             pages: ['Plant View', "Paint Shop"],
-            dropdownSelectedValue: 'Line',
+            dropdownSelectedValue: 'Paint Shop',
             selectedLine: 'Line_3',
-            dropdownOptions: ['Paint Shop'],
+            dropdownOptions: [],
             tableData: [],
             DefectAnalysis: {},
             DowntimeDetails: {},
@@ -171,17 +171,17 @@ class LineView extends Component {
     render() {
         return (
             <div className="data-container line-view">
-                <div className="tkey-header card-tile">
+                <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
-                    <div className="page-dropdown-heading">Line</div>
+                    <div className="page-dropdown-heading">Department</div>
                     <Dropdown
                         options={this.state.dropdownOptions}
                         setDropdownSelectedValue={this.setDropdownSelectedValue}
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="line-header">Line</div>
+                <div className="line-header">Department</div>
                 <div className="line-header-values">
                     <LabelCard heading={"Department OEE"} value={this.state.lineData.OEE} />
                     <LabelCard heading={"Availability"} value={this.state.lineData.Availability} />
@@ -196,7 +196,9 @@ class LineView extends Component {
                         </div>
                         {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                     </div>
+                    <div className="line-view-adherence" data-id="SN004" onClick={(e)=>this.navigateAsset(e)}>
                     <ScheduleAdherence data={this.state.lineData} />
+                    </div>
                     <div className="downtime-details card-tile">
                         <div className="line-view-heading">
                             Downtime Details
@@ -212,7 +214,7 @@ class LineView extends Component {
                 </div>
                 <div className="table-details-container card-tile">
 
-                    {this.state.tableData.length > 0 && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                    <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                 </div>
             </div>
         );

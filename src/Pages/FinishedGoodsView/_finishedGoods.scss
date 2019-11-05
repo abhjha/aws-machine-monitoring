@@ -1,0 +1,42 @@
+.data-container{
+    .finished-goods-container-heading{
+        color: black;
+        margin-top: 16px;
+        font-size: 22px;
+        font-weight: bold;
+        padding-bottom: 12px;
+    }
+    .finished-graph-container{
+        display: grid;
+        grid-template-columns: 29% 29% 1fr;
+        grid-column-gap: 20px;
+        
+       
+    }
+    
+    .cases-graph {
+        background-color: white;
+        padding: 0 15px 15px 15px;
+    
+    }
+    .cases-graph canvas{
+        margin-top:15px;
+    }
+    .finished-goods-rate-heading {
+        color: black;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .mix-ratio-container {
+        background-color: white;
+        padding: 0 15px;
+    }
+    &.finished-view{
+    height: 100vh;
+      display: grid;
+      grid-template-rows: 75px 45px 1fr 1fr;
+      grid-gap: 20px ;
+      padding: 20px;
+    }
+}

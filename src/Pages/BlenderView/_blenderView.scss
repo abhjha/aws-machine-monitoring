@@ -1,0 +1,30 @@
+.card-tile{
+    @include tile-card() ;
+}
+.card-heading{
+    h1{
+        @include heading-sub();
+        margin:0;
+        padding: 0;
+    }
+}
+.data-container{
+    .blender-graph,.blender-reading,.blender-temp, .blender-speed{
+        background-color: white;
+    }
+    .blender-graph-container{
+        display: grid;
+        grid-template-columns: 40% 22% 12% 22%;
+        grid-column-gap: 20px;
+    }
+    .blender-speed-value{
+        padding : 20px 0 0 20px;
+    }
+    &.blender-view{
+        height: 100vh;
+          display: grid;
+          grid-template-rows: 75px 45px 1fr 1fr;
+          grid-gap: 20px ;
+          padding: 20px;
+      }
+}

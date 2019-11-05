@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import './index.css';
 import Button from '../../Component/Button';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 var tableAlerts =0;
@@ -19,10 +18,12 @@ class AlertView extends Component {
     }
 
     filterAlarms = (e) => {
-        const filterValue = e.target.innerHTML;
-        if(filterValue==='Reset'){
+        const filterValue = e.target;
+        if(filterValue.innerHTML ==='Reset'){
             this.setState({tableFilterData: this.state.tableData});
+            
         } else {
+            filterValue.classList.add("active");
             const filterResult = this.state.tableData.filter(item=> item.STATUS === filterValue);
             this.setState({tableFilterData: filterResult});
     
@@ -111,9 +112,9 @@ class AlertView extends Component {
         
         return (
             <div className="alertView">
-                <div className="data-container">
-                    <div className="page-header">
-                        <div className="page-header-value">
+                <div className="data-container alert-view">
+                    <div className="alert-page-header card-tile">
+                        <div className="alert-page-header-value">
                             Activity Log
                         </div>
                         <div className="alog-reset">
@@ -124,12 +125,11 @@ class AlertView extends Component {
                         <Button labelName={this.state.activeButton} triggerAction={this.filterAlarms} /> 
                         <Button labelName={this.state.resolvedButton} triggerAction={this.filterAlarms} />
                     </div>
-                    <div className="table-alert-details-container">
-                        <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                        <div className="table-data">{this.state.tableFilterData.length > 0 && <Table data={this.state.tableFilterData} />} </div>
+                    <div className="table-alert-details-container card-tile">
+                    <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                     </div>
                 </div>
-            </div>
+            </div> 
         );
 
     }

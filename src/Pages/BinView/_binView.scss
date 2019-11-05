@@ -15,6 +15,7 @@
     grid-column-gap: 20px;
     background-color: white;
     padding: 10px;
+    border-radius: 10px;
   }
   .data-container{
     .page-dropdown-heading {
@@ -26,29 +27,30 @@
       margin-left: auto;
   }
     .bin-container-heading{
-      color: white;
-      margin-top: 16px;
+      color: black;
       font-size: 22px;
       font-weight: bold;
-      padding-bottom: 12px;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: white;
+      
     }
   
     .bin-graph-container{
       display: grid;
       grid-template-columns: 20% 1fr 1fr;
       grid-column-gap: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #3E4E6C;
+      
     }
   
     .bin1-graph,.bin2-graph,.refill-container{
-      background-color: #2F3B52;
+      background-color: white;
       padding: 20px ;
     }
     
     .bin-view {
-      color:white;
-      background-color : #2f3b52;
+      color:black;
+      background-color : white;
     
     }
     .bin-view-heading {
@@ -61,16 +63,16 @@
     }
     .graph-heading{
       font-size: 18px;
-      color: white;
+      color: black;
       font-weight: bold;
       text-align: left;
       margin-bottom: 30px;
     }
     .consumption-rate{
       height: 44px;
-      color: white;
+      color: black;
       font-size: 16px;
-      background-color: #242E42;
+      background-color: #e4e4e4;
       padding: 12px 18px 13px 18px;
     }
     span{
@@ -96,7 +98,7 @@
     &.bin-view-page{
       height: 100vh;
         display: grid;
-        grid-template-rows: 75px 1fr -1fr;
+        grid-template-rows: 75px 45px 1fr 1fr;
         grid-gap: 20px ;
         padding: 20px;
     }

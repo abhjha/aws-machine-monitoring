@@ -1,0 +1,73 @@
+.card-tile{
+  @include tile-card() ;
+}
+.card-heading{
+  h1{
+      @include heading-sub();
+      margin:0;
+      padding: 0;
+  }
+}
+.data-container{
+  .speedoMeter-blue-bin {
+    height: 150px;
+    width: 175px;
+    background-color: #e4e4e4;
+    border-radius: 50%;
+    border: 10px solid black;
+    padding: 12px;
+    margin: 0 auto
+  }
+  
+  .speedoMeter-blue-bin{
+    p {
+      color: black;
+      text-align: center;
+      margin: 0
+    }
+  } 
+  
+  
+  .hopper-data-container{
+    
+    display: grid;
+    grid-template-columns: 33% 20% 30% 1fr;
+    grid-column-gap: 20px;
+  }
+  
+  .hopper-data-container {
+    .graph-container,.gauge-container,.hopper-scale-container{
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      grid-row-gap: 20px;
+    }
+  }
+  
+  .hopper-step-graph,.hopper-gauge,.hopper-scale{
+    background-color: white;
+  }
+  
+  .hopper-rate-heading{
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 15px;
+  }
+  
+  .hopper-rate-heading{
+    .graph-heading{
+      padding: 15px;
+    }
+  } 
+  
+  .papa-maa{
+    width: 75%
+  }
+  &.hopper-view{
+    height: 100vh;
+      display: grid;
+      grid-template-rows: 75px 45px 1fr 1fr 1fr;
+      grid-gap: 20px ;
+      padding: 20px;
+  }
+}

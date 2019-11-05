@@ -1,0 +1,27 @@
+.data-container{
+    .plant-header-label{
+        display: grid;
+        grid-template-columns: 23.8% 23.8% 23.8% 23.8%;
+        grid-gap: 19px;
+    }
+    .line-view-container{
+        display: grid;
+        grid-template-columns: 49% 49.2%;
+        grid-gap: 19px;
+    }
+    .line-details{
+        background-color: white;
+        padding: 20px 20px 50px;
+    }
+    .plant-view-heading {
+        color: black;
+        font-size: 18px;
+    }
+    &.plant-view{
+        height: 100vh;
+          display: grid;
+          grid-template-rows: 170px 1fr 1fr;
+          grid-gap: 20px ;
+          padding: 20px;
+      }
+}

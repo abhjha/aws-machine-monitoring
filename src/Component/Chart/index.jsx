@@ -23,7 +23,7 @@ class Chart extends Component {
                 position: 'top',
                 labels: {
                   boxWidth: 29,
-                  fontColor: 'white',
+                  fontColor: 'black',
                   fontSize: 20
                 }
               },
@@ -35,30 +35,30 @@ class Chart extends Component {
                   scaleLabel: {
                     display: true,
                     fontSize: 16,
-                    fontColor: '#98A7B9',
+                    fontColor: 'black',
                   },
                   ticks: {
                     beginAtZero: true,
                     min: 0,
                     stepSize: 5,
                     lineWidth: 1,
-                    fontColor: '#98A7B9',
+                    fontColor: 'black',
                     fontSize: 16,
                   },
                   gridLines: {
-                    color: '#242E42',
-                    drawTicks: false,
+                    color: 'black',
+                    drawTicks: true,
                   }
                 }],
                 xAxes: [{
                   gridLines: {
                     borderDash: [6, 4],
                     zeroLineBorderDash: [6, 4],
-                    color: "#242E42",
-                    drawTicks: false
+                    color: "black",
+                    drawTicks: true,
                   },
                   ticks: {
-                    fontColor: '#98A7B9',
+                    fontColor: 'black',
                     fontSize: 16,
                     padding: 10.5
                   }

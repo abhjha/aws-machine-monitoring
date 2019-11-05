@@ -1,11 +1,10 @@
 import React from 'react';
 import LabelCard from '../../Component/LabelCard';
-import ScheduleAdherence from '../../Component/ScheduleAdherence'
-import Table from '../../Component/Table'
+import ScheduleAdherence from '../../Component/ScheduleAdherence';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import LineView from '../../Pages/LineView';
-import './index.css';
 import PlantAsset from '../../Component/PlantViewContainer';
 var tableAlerts=0;
 var tableWarnings =0;
@@ -131,7 +130,7 @@ class PlantView extends React.Component {
                    {this.state.plantData.OEE > 0 && <LabelCard heading={"Plant OEE"} value={this.state.plantData.OEE} />}<LabelCard heading={"Availability"} value={this.state.plantData.Availability} /><LabelCard heading={"Performance"} value={this.state.plantData.Performance} /><LabelCard heading={"Quality"} value={this.state.plantData.Quality} />
                 </div>
                 <div className="line-view-container">
-                    <div className="line-details">
+                    <div className="line-details card-tile">
                         <div className="plant-view-heading">
                             Plant View
                         </div>
@@ -141,9 +140,8 @@ class PlantView extends React.Component {
                         <ScheduleAdherence data={this.state.plantData} />
                     </div>
                 </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length > 0 && <Table data={this.state.tableData} />} </div>
+                <div className="table-details-container card-tile">
+                <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                 </div>
             </div>
         );

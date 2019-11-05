@@ -17,7 +17,7 @@ class BinView extends Component {
     super(props);
     console.log(props , "props");
     this.state = {
-      pages: ['Plant View', this.props.location.state.lineValue, 'Raw Material Bins'],
+      pages: ['Plant View', 'Paint Shop', 'Raw Material Bins'],
       dropdownSelectedValue: 'Raw Material Bins',
       blueLeftData :[{}],
       greenLeftData :[{}],
@@ -307,18 +307,19 @@ epochToDate = (dateVal) => {
             dropdownselectedValue={this.state.dropdownSelectedValue}
           />
         </div>
-        <div className="bin-container">
-          <div className="bin-container-heading">
+        <div className="bin-container-heading">
           Raw Material Bins
             </div>
+        <div className="bin-container">
+          
           <div className="bin-graph-container">
-            <div className="refill-container">
+            <div className="refill-container card-tile">
               <div className="bin-view">
                 <p className="bin-view-heading">Time Left to Refill</p>
                 {values} {greenValues}
               </div>
             </div>
-            <div className="bin1-graph">
+            <div className="bin1-graph card-tile">
               <div className="graph-heading">
               Sealant Bin Level
                 </div>
@@ -328,7 +329,7 @@ epochToDate = (dateVal) => {
                 <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate + " liters per minute"}</span>
               </div>
             </div>
-            <div className="bin2-graph">
+            <div className="bin2-graph card-tile">
               <div className="graph-heading">
               Dye Bin Level
                 </div>
@@ -340,7 +341,7 @@ epochToDate = (dateVal) => {
             </div>
           </div>
         </div>
-        <div className="table-details-container">
+        <div className="table-details-container card-tile">
        <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
         </div>
       </div>

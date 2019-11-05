@@ -3,12 +3,11 @@ import { withRouter } from "react-router-dom";
 import Dropdown from '../../Component/Dropdown';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import FinishedMixRatio from '../../Component/FinishedMixRatio';
-import './index.css';
 import DefectAnalysis from '../../Component/DefectAnalysis';
 var tableAlerts =0;
 var tableWarnings = 0;
@@ -16,7 +15,7 @@ class FinishedGoodsView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', this.props.location.state.lineValue, 'Finished Goods View'],
+            pages: ['Plant View', 'Paint Shop', 'Finished Goods View'],
             dropdownSelectedValue: 'Finished Goods View',
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
@@ -161,7 +160,7 @@ class FinishedGoodsView extends Component {
             scales: {
                 xAxes: [{
                     ticks: {
-                        fontColor: "white",
+                        fontColor: "black",
                     },
                     barThickness: 150,
                     gridLines: {
@@ -172,7 +171,7 @@ class FinishedGoodsView extends Component {
                     display: true,
                     ticks: {
                         beginAtZero: true,
-                        fontColor: "white",
+                        fontColor: "black",
                     },
 
                 }]
@@ -180,7 +179,7 @@ class FinishedGoodsView extends Component {
         }
         return (
 
-            <div className="data-container">
+            <div className="data-container finished-view">
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
@@ -191,10 +190,11 @@ class FinishedGoodsView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
+                <div className="bin-container-heading">Finished Goods View</div>
                 <div className="finished-goods-container">
-                    <div className="finished-goods-container-heading">Finished Goods View</div>
+                    
                     <div className="finished-graph-container">
-                        <div className="mix-ratio-container">
+                        <div className="mix-ratio-container card-tile">
                             <div className="finished-goods-rate-heading">
                                 Mix Ratio
                             </div>
@@ -203,13 +203,13 @@ class FinishedGoodsView extends Component {
                             )
                             }
                         </div>
-                        <div className="goods-data-container">
+                        <div className="goods-data-container card-tile">
                             <div className="finished-goods-rate-heading">
                                 Defect Analysis
                             </div>
                             {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
                         </div>
-                        <div className="cases-graph">
+                        <div className="cases-graph card-tile">
                             <div className="finished-goods-rate-heading">
                                 Cases
                             </div>
@@ -217,9 +217,8 @@ class FinishedGoodsView extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length > 0 && <Table data={this.state.tableData} />} </div>
+                <div className="table-details-container card-tile">
+                <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                 </div>
             </div>
         );

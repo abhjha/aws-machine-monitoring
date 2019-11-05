@@ -1,13 +1,14 @@
 .ambient-box {
     width: 100%;
     padding: 0px 10px 0 10px;
-    background-color: #2F3B52;
+    background-color: white;
     height: 330px;
+    color: black;
 }
 .ambient-heading {
     height: 21px;
     width: 90%;	
-    color: #FFFFFF;	
+    color: black;	
     font-family: Roboto;	
     font-size: 18px;	
     font-weight: bold;	
@@ -16,21 +17,22 @@
 .description-value {
     height: 44px;
     width: 98%;
-    background-color: #3E4E6C;
+    background-color: #e4e4e4;
     display: flex;
     margin-top: 15px;
     padding: 2px 2px 0 10px;
+    color: black;
 
 }
 .description-heading {
-    color:white;
+   
     padding-top: 5px;
     font-size: 16px;
     border:0;
     width: 85.7%;
 }
  .value-heading {
-    color:white;
+  
     text-align: right;
     padding-top: 5px; 
     float:right;
@@ -39,14 +41,15 @@
 .temperature-humidity-pressure {
     height: 121px;	
     width: 98%;	
-    background-color: #242E42;
+    background-color: #e4e4e4;
     padding-left: 10px;
     padding-right: 10px;
     margin-top: 15px;
+    color: black;
 }
 .temperature, .humidity, .pressure  {
     display: flex;
-    color:white;
+    
     font-size: 16px;
     padding-top: 16px;
     

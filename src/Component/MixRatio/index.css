@@ -1,15 +1,15 @@
 .mix-ratio-box {
-    background-color: #2F3B52;
+    background-color: white;
     height: 100%;
 }
 .mix-ratio-heading {
-    color:white;
+    color:black;
     padding: 15px;
     font-weight: bold;
     font-size: 18px;
 }
 .comparison {
-    color: white;
+    color: black;
     font-weight: bold;
     font-size: 18px;
     padding: 0 15px;
@@ -28,11 +28,11 @@
     background-color: #1F8EFA;
 }
 .target-setpoint-label {
-    color: #98A7B9;
+    color: black;
     margin-left: 60px;
     
 }
 .actual-measurement {
-    color: white;
+    color: black;
     margin: 17px 16px 24px 18px;
 }

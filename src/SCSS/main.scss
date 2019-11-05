@@ -24,17 +24,17 @@
 @import '../Component/Table/index.css';
 @import '../Component/Time/index.css';
 
-@import '../Pages/Alerts/index.css';
+@import '../Pages/Alerts/alerts';
 @import '../Pages/Analytics/index.css';
 @import '../Pages/BinView/binView';
-@import '../Pages/BlenderView/index.css';
+@import '../Pages/BlenderView/blenderView';
 @import '../Pages/ComingSoon/index.css';
 @import '../Pages/ControlTower/index.css';
-@import '../Pages/FinishedGoodsView/index.css';
-@import '../Pages/HopperView/index.css';
+@import '../Pages/FinishedGoodsView/finishedGoods';
+@import '../Pages/HopperView/hopperView';
 @import '../Pages/LaborCorrelation/index.css';
 @import '../Pages/LineView/lineView';
-@import '../Pages/PlantView/index.css';
+@import '../Pages/PlantView/plantView';
 @import '../Pages/PredictiveMaintenace/index.css';
 @import '../Pages/RateOptimization/index.css';
 @import '../Pages/RawMaterialInsights/index.css';

@@ -22,13 +22,13 @@ class LineAsset extends Component {
                 
             <div className="asset-heading-container">
                 <div className="asset-heading">
-                    Bin
+                    Raw Material Bins
                 </div>
                 <div className="asset-heading">
-                    Hopper
+                    Mixing Unit
                 </div>
                 <div className="asset-heading">
-                    Blender
+                    Paint Machine
                 </div>
                 {/* <div className="asset-heading">
                     Finished Goods

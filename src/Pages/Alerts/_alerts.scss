@@ -1,0 +1,29 @@
+.data-container{
+    .alertView{
+        .data-container {
+            grid-template-rows: 75px 45px 1fr;
+            padding-right: 0;
+            grid-row-gap: 20px;
+        } 
+    } 
+    .alert-page-header{
+        display: flex;
+        padding: 25px 0;
+    }
+    .alert-page-header-value{
+        color: black;
+        font-size: 20px;
+        font-weight: bold;
+        width: 15%;
+        text-align: left;
+        padding-left: 20px;
+    }
+    &.alert-view{
+        height: 100vh;
+      display: grid;
+      grid-template-rows: 75px 45px 1fr;
+      grid-gap: 20px ;
+      padding: 20px;
+    }
+}
+
