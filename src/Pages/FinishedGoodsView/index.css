@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 .finished-goods-container-heading{
-    color: white;
+    color: black;
     margin-top: 16px;
     font-size: 22px;
     font-weight: bold;
@@ -15,10 +15,7 @@
     padding-top: 20px;
     border-top: 1px solid #3E4E6C;
 }
-.goods-data-container {
-    background-color: #707070;
-    padding-left: 15px;
-}
+
 .cases-graph {
     background-color: #2F3B52;
     padding: 0 15px 15px 15px;
@@ -28,7 +25,7 @@
     margin-top:15px;
 }
 .finished-goods-rate-heading {
-    color: white;
+    color: black;
     font-size: 18px;
     font-weight: bold;
     margin-top: 15px;

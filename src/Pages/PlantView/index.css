@@ -1,7 +1,7 @@
 .data-container.plant-view{
-    width: 80%;
+    
     background-color: #242e42;
-    float: right;
+   
     padding: 50px 90px 0 20px;
     display: grid;
     grid-template-rows: 13% 42% 36%;

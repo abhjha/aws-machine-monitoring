@@ -1,8 +1,8 @@
 
 .tkey-dropdown{
-    background-color: #707070;
+    background-color: #e4e4e4;
     font-size: 18px;
-    color: white;
+    color: black;
     padding-left: 8px;
     text-align: left;
     padding-top: 15px;
@@ -13,7 +13,7 @@
 }
 .tkey-dropdown .show{
     display: block;
-    background-color: #707070;
+    background-color: #e4e4e4;
     position: absolute;
     left: 0;
     top:50px;

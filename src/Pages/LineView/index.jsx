@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Dropdown from '../../Component/Dropdown';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import LabelCard from '../../Component/LabelCard'
 import warning from '../../Images/warning.png';
@@ -120,10 +120,10 @@ class LineView extends Component {
                     data.alarms[i].Line = data.alarms[i].ASSET;
                     data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
                     if (data.alarms[i].SEVERITY == "Alert") {
-                        data.alarms[i][""] = <img src={alert} />;
+                        data.alarms[i]["statusBox"] = <img src={alert} />;
                         tableAlerts++;
                     } else {
-                        data.alarms[i][""] = <img src={warning} />;
+                        data.alarms[i]["statusBox"] = <img src={warning} />;
                         tableWarnings++;
                     }
                     alarmsData.push(data.alarms[i]);
@@ -138,10 +138,10 @@ class LineView extends Component {
                         data.children[i].alarms[j].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].alarms[j].START_TIME));
                         data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
                         if (data.children[i].alarms[j].SEVERITY == "Alert") {
-                            data.children[i].alarms[j][""] = <img src={alert} />;
+                            data.children[i].alarms[j]["statusBox"] = <img src={alert} />;
                             tableAlerts++;
                         } else {
-                            data.children[i].alarms[j][""] = <img src={warning} />;
+                            data.children[i].alarms[j]["statusBox"] = <img src={warning} />;
                             tableWarnings++;
                         }
                         alarmsData.push(data.children[i].alarms[j]);
@@ -165,13 +165,13 @@ class LineView extends Component {
         // };
         this.triggerAlertTableData();
         this.lineViewData();
-        
+
     }
 
     render() {
         return (
             <div className="data-container line-view">
-                <div className="tkey-header">
+                <div className="tkey-header card-tile">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
                     <div className="page-dropdown-heading">Line</div>
@@ -190,30 +190,29 @@ class LineView extends Component {
                 </div>
                 <div className="line-view-components">
 
-                    <div className="line-assets">
-                    <div className="line-view-heading">
-                           Assets
+                    <div className="line-assets card-tile">
+                        <div className="line-view-heading">
+                            Assets
                         </div>
                         {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                     </div>
                     <ScheduleAdherence data={this.state.lineData} />
-                    <div className="downtime-details">
+                    <div className="downtime-details card-tile">
                         <div className="line-view-heading">
                             Downtime Details
                         </div>
                         <DowntimeDetails data={this.state.DowntimeDetails} />
                     </div>
-                    <div className="goods-data-container">
+                    <div className="goods-data-container card-tile">
                         <div className="finished-goods-rate-heading">
                             Defect Analysis
                             </div>
                         {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
                     </div>
-                    {/* {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />} */}
                 </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length > 0 && <Table data={this.state.tableData} />} </div>
+                <div className="table-details-container card-tile">
+
+                    {this.state.tableData.length > 0 && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                 </div>
             </div>
         );

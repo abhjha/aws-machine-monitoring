@@ -24,7 +24,8 @@ $border-radius: 10px;
 $heading-main-fontsize: 50px;
 $heading-sub-fontsize: 26px;
 $heading-micro-fontsize: 24px;
-$font-normal-fontsize: 20x;
+$font-normal-fontsize: 20px;
+$font-normal-fontsize-table: 15px;
 $menu-bar-width: 245px;
 
 /* other variable declaration */
@@ -55,6 +56,11 @@ $menu-bar-width: 245px;
     font-size: $font-normal-fontsize;
     font-weight: normal ;
     color: $font-black ;
+  }
+
+  @mixin text-normal-table(){
+    font-size: $font-normal-fontsize-table;
+    font-weight: bold;
   }
 
   @mixin transition() {

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import './index.css';
+import React from 'react';
 
 function ScheduleAdherence(props) {
     return (
-        <div className="adherence-container">
+        <div className="adherence-container card-tile">
             <div className="adherence-heading">
                 <div className="adherence-label-main">Schedule Adherence</div> <div className="adherence-value-main">{Math.round(props.data.ScheduleAdherence)}</div>
             </div>

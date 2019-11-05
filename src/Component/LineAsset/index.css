@@ -1,12 +1,12 @@
 .line-asset-container {
     display: flex;
-    background-color: #707070;
+    background-color: white;
     width: 100%;
     padding: 10px 0 0 15px;
     height: 87%;
 }
 .asset-heading-container {
-    color: white;
+    color: black;
     width: 70%;
 }
 .asset-heading {

@@ -8,16 +8,17 @@
 @import '../Component/Breadcrumb/index.css';
 @import '../Component/Button/index.css';
 @import '../Component/Chart/index.css';
+@import '../Component/DataTableComponent/DataTableComponent';
 @import '../Component/DefectAnalysis/index.css';
 @import '../Component/DowntimeDetails/index.css';
 @import '../Component/Dropdown/index.css';
 @import '../Component/FinishedMixRatio/index.css';
-@import '../Component/LabelCard/index.css';
+@import '../Component/LabelCard/labelCard';
 @import '../Component/LineAsset/index.css';
-@import '../Component/Menu/index.css';
+@import '../Component/Menu/menu';
 @import '../Component/MixRatio/index.css';
 @import '../Component/PlantViewContainer/index.css';
-@import '../Component/ScheduleAdherence/index.css';
+@import '../Component/ScheduleAdherence/scheduleAdherence';
 @import '../Component/SetpointTable/index.css';
 @import '../Component/SpAsset/index.css';
 @import '../Component/Table/index.css';
@@ -25,7 +26,7 @@
 
 @import '../Pages/Alerts/index.css';
 @import '../Pages/Analytics/index.css';
-@import '../Pages/BinView/index.css';
+@import '../Pages/BinView/binView';
 @import '../Pages/BlenderView/index.css';
 @import '../Pages/ComingSoon/index.css';
 @import '../Pages/ControlTower/index.css';

@@ -6,13 +6,13 @@
 }
 .downtime-container{
     width: 100%;
-    color: white;
-    background-color: #707070;
+    color: black;
+    background-color: white;
     padding: 0 20px;
     height: 87%;
 }
 .downtime-row.heading{
-    background-color: rgb(170, 172, 173);
+    background-color: #e4e4e4;
 }
 .value-label {
     width: 80%;

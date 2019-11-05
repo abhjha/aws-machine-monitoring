@@ -1,6 +1,8 @@
-body, #root{
+#root{
     margin: 0;
-    height: 100vh;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 245px 1fr;
 }
 
 *{

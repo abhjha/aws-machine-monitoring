@@ -5,12 +5,10 @@ import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb'
 import { Bar } from 'react-chartjs-2';
 import Time from '../../Component/Time';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import 'chartjs-plugin-annotation';
-
-import './index.css';
 var tableWarnings = 0;
 var tableAlerts = 0;
 var tableData = [];
@@ -172,6 +170,7 @@ epochToDate = (dateVal) => {
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
       });
+      console.log(tableData , "bin table data");
   }
   triggerBlueBinTableData = () => {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
@@ -195,8 +194,9 @@ epochToDate = (dateVal) => {
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue bin table data')
       });
+      console.log(tableData , "bin table data");
   }
-
+  
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -296,7 +296,7 @@ epochToDate = (dateVal) => {
       </div>
     )
     return (
-      <div className="data-container">
+      <div className="data-container bin-view-page">
         <div className="tkey-header">
           <BackButton />
           <Breadcrumb pages={this.state.pages} />
@@ -341,8 +341,7 @@ epochToDate = (dateVal) => {
           </div>
         </div>
         <div className="table-details-container">
-          <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-          <div className="table-date">{tableData.length >0 && <Table data={tableData} /> }</div>
+       <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
         </div>
       </div>
     );
