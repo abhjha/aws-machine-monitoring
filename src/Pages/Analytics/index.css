@@ -4,30 +4,30 @@
     grid-gap: 5%;
 }
 .analytics-container {
-    background-color: #2F3B52;
+    background-color: white;
    padding: 20px;
-   color: white;
+   color: black;
    font-size: 22px;
 }
 .analytics-heading {
     height: 7%;
     display: flex;
     align-items: center;
-    background-color: #172030;
+    background-color: #e4e4e4;
     padding: 20px;
 }
 .analytics-header-contaier {
     display: grid;
     grid-template-columns: 20% 60% 20%;
     padding: 20px 45px;
-    border-bottom : 2px solid white;
+    border-bottom : 2px solid black;
 }
 
 .analysis-row-contaienr {
     display: grid;
     grid-template-columns: 20% 60% 20%;
     padding: 30px 45px;
-    border-bottom : 2px solid white;
+    border-bottom : 2px solid black;
 }
 .analysis-row-contaienr:last-child {
     border-bottom : none;

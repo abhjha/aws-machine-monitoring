@@ -51,7 +51,7 @@ export class DataTableComponent extends React.Component {
               onClick={(e) => this.options.showSearchTool(e)}></i>
           </div>
           <input type="hidden" value={this.state.activeTabKey} />
-          <BootstrapTable
+          {<BootstrapTable
             ref='alertsTable' containerClass="alertsTable" data={this.state.filteredData} striped hover bordered={false} search={isSearchEnabled} multiColumnSearch options={this.options}>
             <TableHeaderColumn width='30' dataField='statusBox' border='0'></TableHeaderColumn>
             <TableHeaderColumn width='90' headerAlign='center' dataAlign='center' isKey dataField='LINE' dataFormat={this.alertDetails}>LINE</TableHeaderColumn>
@@ -61,7 +61,7 @@ export class DataTableComponent extends React.Component {
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='STATUS'>Status</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='START_TIME'>Start Time</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='SEVERITY'>Severity</TableHeaderColumn>
-          </BootstrapTable>
+          </BootstrapTable>}
         </div>
       </div>
     );

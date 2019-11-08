@@ -59,11 +59,11 @@ class Menu extends React.Component {
                             </div>
                         )
                     })}
-                    <div className="menu-logout">
+                    {/* <div className="menu-logout">
                         <p style={this.UserStyle}>abcnx7868</p>
                         <p style={this.LineStyle}>Line Operator</p>
                         <button className="logout-button">LOGOUT</button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

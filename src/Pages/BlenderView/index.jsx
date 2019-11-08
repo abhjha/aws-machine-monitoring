@@ -19,7 +19,7 @@ class BlenderView extends Component {
             pages: ['Plant View', 'Paint Shop', 'Paint Machine'],
             dropdownSelectedValue: 'Paint Machine',
             selectedLine: 'Line_3',
-            tableData: [{}],
+            tableData: [],
             dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
             blenderGraphData: {
                 labels: [],
@@ -318,7 +318,7 @@ class BlenderView extends Component {
                     </div>
                 </div>
                 <div className="table-details-container card-tile">
-                    <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                    {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                 </div>
             </div>
         );

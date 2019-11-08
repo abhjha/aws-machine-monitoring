@@ -13,9 +13,12 @@ class PlantView extends React.Component {
         super(props);
         this.state = {
             plantData: {},
-            tableData: [{}],
+            tableData: [],
             plantAssetData :{},
-            lineDropDown : []
+            lineDropDown : [],
+            autoRefreshState : "",
+            flag : true,
+            filteredData : [],
         }
     }
     
@@ -23,7 +26,6 @@ class PlantView extends React.Component {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN099&lengthOfHistory=5')
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 this.setState({
                     plantData: data.currentValues,
                 })
@@ -58,9 +60,12 @@ class PlantView extends React.Component {
     }
 
     triggerPlantAlertData = () => {
+        console.log("hi");
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
             .then((data) => {
+                tableAlerts =0;
+                tableWarnings = 0;
                 var alarmsData = [];
                 var lineDropdownValue =[];
                 for (let i = 0; i < data.alarms.length; i++) {
@@ -110,22 +115,56 @@ class PlantView extends React.Component {
                     plantAssetData :data,
                     lineDropDown : lineDropdownValue
                  });
-                console.log(this.state.tableData);
+                
             })
             .catch(function (err) {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-
+    setAutoRefresh = () => {
+        if(document.getElementsByClassName("plant-view")[0].classList.contains("auto-refresh")){
+            setInterval(this.triggerPlantAlertData,10000);
+            this.setState({
+                autoRefreshState : "",
+            })
+        }else{
+            setInterval(this.triggerPlantAlertData,1000);
+            this.setState({
+                autoRefreshState : "auto-refresh",
+            })
+        }
+        
+    }
+    // componentDidUpdate(){
+    //     if(this.state.flag){
+    //     let alertsData=this.state.tableData;
+    
+    //     this.setState({
+    //       tableData: alertsData,
+    //       filteredData : alertsData,
+          
+    //       flag: false
+    //   });
+    // }
+    // console.log(this.state.filteredData, "component update");
+    //   }
+    
+      
+    
 
     componentDidMount() {
         this.triggerPlantViewData();
-        this.triggerPlantAlertData();
+        this.triggerPlantAlertData(); 
     }
 
+
     render() {
+        console.log(this.state.tableData , "plant alerts");
+        console.log(tableAlerts , "plant alerts");
+        console.log(tableWarnings, "plant warnings"); 
+        
         return (
-            <div className="data-container plant-view">
+            <div className={"data-container plant-view  " + this.state.autoRefreshState}>
                 <div className="plant-header-label">
                    {this.state.plantData.OEE > 0 && <LabelCard heading={"Plant OEE"} value={this.state.plantData.OEE} />}<LabelCard heading={"Availability"} value={this.state.plantData.Availability} /><LabelCard heading={"Performance"} value={this.state.plantData.Performance} /><LabelCard heading={"Quality"} value={this.state.plantData.Quality} />
                 </div>
@@ -141,7 +180,8 @@ class PlantView extends React.Component {
                     </div>
                 </div>
                 <div className="table-details-container card-tile">
-                <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                {/* <div className="auto-refresh" onClick={this.setAutoRefresh}>AutoRefresh</div> */}
                 </div>
             </div>
         );

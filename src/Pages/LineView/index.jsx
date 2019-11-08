@@ -113,6 +113,8 @@ class LineView extends Component {
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
+                tableAlerts = 0;
+                tableWarnings = 0;
                 lineAssetData = data;
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
@@ -214,7 +216,7 @@ class LineView extends Component {
                 </div>
                 <div className="table-details-container card-tile">
 
-                    <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                    {(tableWarnings > 0 || tableAlerts > 0) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                 </div>
             </div>
         );

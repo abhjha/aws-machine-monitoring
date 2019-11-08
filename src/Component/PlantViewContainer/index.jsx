@@ -4,7 +4,6 @@ import './index.css';
 
 class PlantAsset extends Component {
     getBackgroundColor = (data) => {
-        console.log(data, "background-color");
         var alertCount =0;
         var warningCount = 0;
         for(let i=0;i<data.alarms.length;i++){

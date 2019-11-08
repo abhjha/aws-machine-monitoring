@@ -96,7 +96,7 @@ epochToDate = (dateVal) => {
           bgColor = '#EE423D';
         }
         this.setState({ 
-          blueLeftData: [{ value: ((binData.currentValues.binLevel - binData.currentValues.minimumTarget) / (binData.currentValues.consumptionRate * 2)).toFixed(2), binName: 'Dye Bin' }],
+          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Dye Bin' }],
           BlueBinGraphData: {
             datasets: [{
               label: "",
@@ -212,6 +212,7 @@ epochToDate = (dateVal) => {
   }
 
   render() {
+    console.log(tableData , "bin data");
     const graphOptions = {
       legend: {
         display: false
@@ -223,7 +224,7 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.minimumTarget,
-          borderColor: '#ffffff',
+          borderColor: 'black',
           borderWidth: 2,
           borderDash: [3, 3],
           label: {
@@ -232,7 +233,7 @@ epochToDate = (dateVal) => {
             position: "bottom",
             xAdjust: 217,
             yAdjust: 20,
-            backgroundColor: 'transparent'
+            backgroundColor: 'black'
           }
         },
         {
@@ -240,7 +241,7 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.refillPoint,
-          borderColor: '#ffffff',
+          borderColor: 'black',
           borderWidth: 2,
           borderDash: [3, 3],
           label: {
@@ -249,7 +250,8 @@ epochToDate = (dateVal) => {
             position: "bottom",
             xAdjust: 217,
             yAdjust: 20,
-            backgroundColor: 'transparent'
+            backgroundColor: 'black',
+
           }
         }
         ],
@@ -342,7 +344,7 @@ epochToDate = (dateVal) => {
           </div>
         </div>
         <div className="table-details-container card-tile">
-       <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+       {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
         </div>
       </div>
     );

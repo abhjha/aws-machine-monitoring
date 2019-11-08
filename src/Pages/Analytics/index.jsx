@@ -50,7 +50,7 @@ class AnalyticsView extends React.Component {
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="analytics-container">
+                <div className="analytics-container card-tile">
                     <div className="analytics-heading">
                         Operational Insights
                 </div>

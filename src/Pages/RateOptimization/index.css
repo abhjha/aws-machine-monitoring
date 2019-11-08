@@ -1,21 +1,9 @@
 .data-container.rate-opti {
-    grid-template-rows: 75px 16% 39% 30%;
+    grid-template-rows: 75px 14% 45% 1fr;
     grid-gap: 2%;
-}
-
-.pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
-    background-color: #2F3B52;
-}
-
-.pred-main-heading {
-    font-size: 22px;
-    color: white;
-    padding: 10px;
-}
-
-.pred-main-title {
-    background-color: #172030;
-    padding: 10px;
+    display: grid;
+    height: 100vh;
+    padding: 20px;
 }
 
 .pred-main-details {
@@ -40,11 +28,6 @@
     grid-gap: 2%;
 }
 
-.pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
-    color: white;
-    width: 80%;
-    margin: 10%auto;
-}
 
 .pred-main .sp-table-container:first-child {
     font-weight: bold;
@@ -64,12 +47,12 @@
     display: flex;
 }
 .pred-summary-details .sp-table-container{
-    color: white;
+    color: black;
     width: 50%;
     margin: 0;
 }
 .rate-opti .sp-table-value.summary-title{
-    color: white;
+    color: black;
     text-align: center;
     display: flex;
 }

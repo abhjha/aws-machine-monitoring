@@ -169,6 +169,7 @@ class HopperView extends Component {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
+        console.log(data,"greeen hopper table data");
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
           data.alarms[i].Line = data.alarms[i].ASSET;
@@ -179,6 +180,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
+            console.log(tableWarnings , "green hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -202,6 +204,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
+            console.log(tableWarnings , "blue hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -225,6 +228,7 @@ class HopperView extends Component {
   }
 
   render() {
+   
     const { greenHopperGraphData,
       blueHopperGraphData,
       blueHopperFillValue,
@@ -347,10 +351,10 @@ class HopperView extends Component {
                         </PointersDirective>
                       </AxisDirective>
                       <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'black' }} minorTicks={{ interval: 0.1, color: 'black' }} labelStyle={{ font: { color: 'black' } }} opposedPosition={true}>
-                        <PointersDirective>
-                          <PointerDirective width={0}>
-                          </PointerDirective>
-                        </PointersDirective>
+                      <PointersDirective>
+                                    <PointerDirective type='Bar' value={4} color='#4d94ff' offset={-10}>
+                                    </PointerDirective>
+                                </PointersDirective>
                       </AxisDirective>
                     </AxesDirective>
                     <AnnotationsDirective>
@@ -397,7 +401,7 @@ class HopperView extends Component {
           </div>
 
           <div className="table-details-container card-tile">
-          <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+          {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
           </div>
         </div>
       </div>

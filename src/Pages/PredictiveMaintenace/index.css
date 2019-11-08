@@ -1,20 +1,23 @@
 .data-container.pred-main {
-    grid-template-rows: 75px 16% 39% 30%;
+    grid-template-rows: 75px 16% 41% 1fr;
+    display: grid;
     grid-gap: 2%;
+    padding: 20px;
+    height: 100vh;
 }
 
 .pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
-    background-color: #2F3B52;
+    background-color: white;
 }
 
 .pred-main-heading {
     font-size: 22px;
-    color: white;
+    color: black;
     padding: 10px;
 }
 
 .pred-main-title {
-    background-color: #172030;
+    background-color: white;
     padding: 10px;
 }
 
@@ -41,9 +44,12 @@
 }
 
 .pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
-    color: white;
+    color: black;
     width: 80%;
     margin: 10%auto;
+}
+.pred-graph-details{
+    border-radius: 10px;
 }
 
 .pred-main .sp-table-container:first-child {
@@ -53,22 +59,29 @@
     width: 100%;
     height: 60%;
 }
+.pred-graph-img{
+    border-radius: 10px;
+}
 .pred-main-graph-image{
     padding: 2%;
 
 }
 .pred-main-summary {
     padding: 3% 5%;
+    border-radius: 10px;
 }
 .pred-summary-details {
     display: flex;
 }
 .pred-summary-details .sp-table-container{
-    color: white;
+    color: black;
     width: 50%;
     margin: 0;
 }
 .sp-table-value.summary-title{
-    color: white;
+    color: black;
     text-align: center;
+}
+.pred-main-downtime{
+    border-radius: 10px;
 }

@@ -3,20 +3,6 @@
     grid-gap: 2%;
 }
 
-.pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
-    background-color: #2F3B52;
-}
-
-.pred-main-heading {
-    font-size: 22px;
-    color: white;
-    padding: 10px;
-}
-
-.pred-main-title {
-    background-color: #172030;
-    padding: 10px;
-}
 
 .pred-main-details {
     width: 80%;
@@ -38,12 +24,6 @@
     display: grid;
     grid-template-columns: 49% 49%;
     grid-gap: 2%;
-}
-
-.pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
-    color: white;
-    width: 80%;
-    margin: 10%auto;
 }
 
 .pred-main .sp-table-container:first-child {

@@ -126,7 +126,7 @@ class AlertView extends Component {
                         <Button labelName={this.state.resolvedButton} triggerAction={this.filterAlarms} />
                     </div>
                     <div className="table-alert-details-container card-tile">
-                    <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                    {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                     </div>
                 </div>
             </div> 

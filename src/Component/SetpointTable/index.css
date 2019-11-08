@@ -1,11 +1,13 @@
 .sp-table-container {
     text-align: center;
     margin-top: 15%;
+    color: black;
 }
 .sp-table-value {
     padding: 15px;
-    background-color: #172030;
+    background-color: #e4e4e4;
     border: 1px solid;
+    color: black;
 }
 .sp-table-value img{
     width: 100%;
