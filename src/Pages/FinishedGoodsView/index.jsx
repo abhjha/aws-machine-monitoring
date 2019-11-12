@@ -9,7 +9,7 @@ import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import FinishedMixRatio from '../../Component/FinishedMixRatio';
 import DefectAnalysis from '../../Component/DefectAnalysis';
-var tableAlerts =0;
+var tableAlerts = 0;
 var tableWarnings = 0;
 class FinishedGoodsView extends Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class FinishedGoodsView extends Component {
             dropdownSelectedValue: 'Finished Goods View',
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
-            
+
             tableData: [{}],
             graphData: {
                 labels: [],
@@ -42,23 +42,23 @@ class FinishedGoodsView extends Component {
         const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
         //this.setState({ dropdownSelectedValue });
         if (dropdownSelectedValue === 'Hopper') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/hopperView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Bin') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/binView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Blender') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/blenderView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         }
     }
-    
+
     finishedGoodsViewData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN004&lengthOfHistory=5')
             .then((response) => response.json())
@@ -66,10 +66,10 @@ class FinishedGoodsView extends Component {
                 console.log(goodsData);
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
-                    MixRatio:{"TargetMix":(({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues),"HopperMix":(({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues),"FinishedGoodsMix":(({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues)}
+                    MixRatio: { "TargetMix": (({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues), "HopperMix": (({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues), "FinishedGoodsMix": (({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues) }
                     ,
                     graphData: {
-                        labels: ['TotalCases',' Defect Cases'],
+                        labels: ['TotalCases', ' Defect Cases'],
                         datasets: [{
                             label: "",
                             backgroundColor: ['#1F8EFA', '#C31FFA'],
@@ -115,31 +115,31 @@ class FinishedGoodsView extends Component {
     }
     triggerFinishedGoodsTableData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN004')
-          .then((response) => response.json())
-          .then((data) => {
-              var alarmsData =[];
-            for (let i = 0; i < data.alarms.length; i++) {
-              data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-              data.alarms[i].Line = data.alarms[i].ASSET;
-              data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
-              if (data.alarms[i].SEVERITY == "Alert") {
-                data.alarms[i][""] = <img src={alert} />;
-                tableAlerts++;
-              } else {
-                data.alarms[i][""] = <img src={warning} />;
-                tableWarnings++;
-              }
-              alarmsData.push(data.alarms[i]);
-            }
-            this.setState({
-                tableData : alarmsData,
+            .then((response) => response.json())
+            .then((data) => {
+                var alarmsData = [];
+                for (let i = 0; i < data.alarms.length; i++) {
+                    data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+                    if (data.alarms[i].SEVERITY == "Alert") {
+                        data.alarms[i][""] = <img src={alert} />;
+                        tableAlerts++;
+                    } else {
+                        data.alarms[i][""] = <img src={warning} />;
+                        tableWarnings++;
+                    }
+                    alarmsData.push(data.alarms[i]);
+                }
+                this.setState({
+                    tableData: alarmsData,
+                })
+                console.log(this.state.tableData, "blenderalarms");
             })
-            console.log(this.state.tableData, "blenderalarms");
-          })
-          .catch(function (err) {
-            console.log(err, 'Something went wrong, finished goods table data')
-          });
-      }
+            .catch(function (err) {
+                console.log(err, 'Something went wrong, finished goods table data')
+            });
+    }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -160,18 +160,19 @@ class FinishedGoodsView extends Component {
             scales: {
                 xAxes: [{
                     ticks: {
-                        fontColor: "black",
+                        fontColor: "white",
                     },
                     barThickness: 150,
                     gridLines: {
-                        offsetGridLines: true
+                        offsetGridLines: true,
+                        
                     }
                 }],
                 yAxes: [{
                     display: true,
                     ticks: {
                         beginAtZero: true,
-                        fontColor: "black",
+                        fontColor: "white",
                     },
 
                 }]
@@ -179,7 +180,7 @@ class FinishedGoodsView extends Component {
         }
         return (
 
-            <div className="data-container finished-view">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
@@ -190,9 +191,7 @@ class FinishedGoodsView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="bin-container-heading">Finished Goods View</div>
-                <div className="finished-goods-container">
-                    
+                <div className="data-container finished-view">
                     <div className="finished-graph-container">
                         <div className="mix-ratio-container card-tile">
                             <div className="finished-goods-rate-heading">
@@ -216,9 +215,10 @@ class FinishedGoodsView extends Component {
                             <Bar data={this.state.graphData} options={graphOptions} />
                         </div>
                     </div>
-                </div>
-                <div className="table-details-container card-tile">
-                <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+
+                    <div className="table-details-container card-tile">
+                        <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                    </div>
                 </div>
             </div>
         );

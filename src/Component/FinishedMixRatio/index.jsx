@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './index.css';
 
 function FinishedMixRatio (props){
     var totalValue = Object.values(props.data).reduce((a,b) => a+b ,0);

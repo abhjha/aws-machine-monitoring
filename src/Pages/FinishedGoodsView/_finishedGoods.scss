@@ -1,6 +1,17 @@
+.tkey-header{
+    @include page-heading();
+    .page-dropdown-heading {
+        color: black;
+        font-size: 22px;
+        /* float: right; */
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+  }
 .data-container{
     .finished-goods-container-heading{
-        color: black;
+        color: $font-color;
         margin-top: 16px;
         font-size: 22px;
         font-weight: bold;
@@ -15,7 +26,7 @@
     }
     
     .cases-graph {
-        background-color: white;
+        background-color: $card-bg-color;
         padding: 0 15px 15px 15px;
     
     }
@@ -23,19 +34,19 @@
         margin-top:15px;
     }
     .finished-goods-rate-heading {
-        color: black;
+        color: $font-color;
         font-size: 18px;
         font-weight: bold;
         margin-top: 15px;
     }
     .mix-ratio-container {
-        background-color: white;
+        background-color: $card-bg-color;
         padding: 0 15px;
     }
     &.finished-view{
-    height: 100vh;
+    height: calc(100vh - 75px);
       display: grid;
-      grid-template-rows: 75px 45px 1fr 1fr;
+      grid-template-rows:1fr 1fr;
       grid-gap: 20px ;
       padding: 20px;
     }

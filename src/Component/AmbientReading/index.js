@@ -1,5 +1,4 @@
 import React from 'react';
-import './index.css';
 
 class AmbientReadings extends React.Component {
     constructor(props){

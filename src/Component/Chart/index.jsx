@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
-import './index.css';
 
 class Chart extends Component {
   constructor(props) {

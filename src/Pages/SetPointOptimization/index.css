@@ -6,15 +6,15 @@
     height: 100vh;
 }
 .setpoint-heading,.setpoint-temp,.setpoint-adjustments{
-    background-color: white;
+    background-color: #2F3B52;
 }
 .setpoint-heading,.setpoint-adjustements-heading{
     font-size: 22px;
-    color: black;
+    color: white;
     padding: 10px;
 }
 .setpoint-title,.sp-oee,.sp-heatmap{
-    background-color: #e4e4e4;
+    background-color:#2F3B52;
     padding: 10px;
 }
 .setpoint-details{
@@ -47,8 +47,8 @@
     grid-gap: 2%;
 }
 .sp-asset-container {
-    background-color: #e4e4e4;
-    color: black;
+    background-color: #242e42;
+    color: white;
     font-size: 18px;
     text-align: center;
     padding: 3%;

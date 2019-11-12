@@ -37,6 +37,7 @@ export class DataTableComponent extends React.Component {
   render() {
     const { isSearchEnabled } = this.state;
     return (
+      
       <div id="tableGridPanel">
         <div className="alert-zone">
           

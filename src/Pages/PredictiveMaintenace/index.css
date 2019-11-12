@@ -7,17 +7,17 @@
 }
 
 .pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {
-    background-color: white;
+    background-color: #2F3B52;;
 }
 
 .pred-main-heading {
     font-size: 22px;
-    color: black;
+    color: white;
     padding: 10px;
 }
 
 .pred-main-title {
-    background-color: white;
+    background-color: #242e42;
     padding: 10px;
 }
 
@@ -79,7 +79,7 @@
     margin: 0;
 }
 .sp-table-value.summary-title{
-    color: black;
+    color: white;
     text-align: center;
 }
 .pred-main-downtime{

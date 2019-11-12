@@ -1,0 +1,27 @@
+.downtime-row {
+    display: flex;
+    height: 16%;
+    align-items: center;
+    padding: 0 20px;
+}
+.downtime-container{
+    width: 100%;
+    color: $font-color;
+    background-color: $card-bg-color;;
+    height: 87%;
+    padding-top: 20px;
+}
+.downtime-row.heading{
+    background-color: $base-color;
+    border-radius: 10px;
+}
+.value-label {
+    width: 80%;
+}
+.value-value{
+    width: 20%;
+    text-align: right;
+}
+.downtime-row.value:first-child{
+    margin-top: 20px;
+} 

@@ -1,0 +1,11 @@
+.defect-container-details {
+    display: grid;
+    grid-template-columns: 42% 50% 1fr;
+    height: 27px;
+    margin-top: 30px;
+    color: $font-color;
+}
+.defect-width-value {
+    background-color: #44b8e2;
+    height: 27px;
+}

@@ -1,6 +1,17 @@
 .card-tile{
     @include tile-card() ;
 }
+.tkey-header{
+    @include page-heading();
+    .page-dropdown-heading {
+        color: $font-color;
+        font-size: 22px;
+        /* float: right; */
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+}
 .card-heading{
     h1{
         @include heading-sub();
@@ -20,7 +31,7 @@
     }
     .line-header-values {
         display: grid;
-        grid-template-columns: 27% 27% 27% 1fr;
+        grid-template-columns: 24.25% 24.25% 24.25% 24.25%;
         grid-gap: 1%;
     }
     .line-view-components {
@@ -29,17 +40,17 @@
         grid-gap: 20px;
     }
     .line-view-heading{
-    color: black;
+    color: $font-color;
       font-size: 18px;
       font-weight: bold;
-      padding: 20px 0 10px 20px;
+      
       
     }
     .downtime-details{
-        background-color: white;
+        background-color: $card-bg-color;
     }
     .line-assets{
-        background-color: white;
+        background-color: $card-bg-color;
     }
     .line-view {
         &.label-container {
@@ -50,9 +61,9 @@
         }
     }
     &.line-view {
-        height: 100vh;
+        height: calc(100vh - 75px);
         display: grid;
-        grid-template-rows: 75px 45px 165px 40% 1fr;
+        grid-template-rows:165px 1fr 1fr;
         grid-gap: 20px ;
         padding: 20px;
     }

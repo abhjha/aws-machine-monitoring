@@ -183,7 +183,7 @@ class BlenderView extends Component {
                     mode: 'horizontal',
                     scaleID: 'y-axis-0',
                     value: this.state.blenderVibrationAlert,
-                    borderColor: 'black',
+                    borderColor: 'white',
                     borderWidth: 2,
                     borderDash: [3, 3],
                     label: {
@@ -192,7 +192,7 @@ class BlenderView extends Component {
                         position: "bottom",
                         xAdjust: 217,
                         yAdjust: 20,
-                        backgroundColor: 'black'
+                        backgroundColor: 'transparent'
                     }
                 },
                 {
@@ -200,7 +200,7 @@ class BlenderView extends Component {
                     mode: 'horizontal',
                     scaleID: 'y-axis-0',
                     value: this.state.blenderVibrtionWarning,
-                    borderColor: 'black',
+                    borderColor: 'white',
                     borderWidth: 2,
                     borderDash: [3, 3],
                     label: {
@@ -209,7 +209,7 @@ class BlenderView extends Component {
                         position: "bottom",
                         xAdjust: 217,
                         yAdjust: 20,
-                        backgroundColor: 'black'
+                        backgroundColor: 'transparent'
                     }
                 }
                 ],
@@ -218,7 +218,7 @@ class BlenderView extends Component {
             scales: {
                 xAxes: [{
                     ticks: {
-                        fontColor: "black",
+                        fontColor: "white",
                     },
                     barThickness: 150,
                     gridLines: {
@@ -229,7 +229,7 @@ class BlenderView extends Component {
 
                     display: true,
                     ticks: {
-                        fontColor: "black",
+                        fontColor: "white",
                         beginAtZero: true,
                     },
 
@@ -238,8 +238,8 @@ class BlenderView extends Component {
         };
         console.log(this.state.minBlenderSpeed, this.state.maxBlenderSpeed, this.state.BlenderSpeed);
         return (
-            <div className="data-container blender-view">
-                <div className="tkey-header">
+            <div>
+            <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
                     <div className="page-dropdown-heading">Asset</div>
@@ -249,11 +249,7 @@ class BlenderView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="bin-container-heading">
-                    Paint Machine
-                    </div>
-                <div className="bin-container">
-
+            <div className="data-container blender-view">
                     <div className="blender-graph-container ">
                         <div className="blender-graph card-tile">
                             <div className="hopper-rate-heading">
@@ -272,10 +268,10 @@ class BlenderView extends Component {
                             <div className="hopper-rate-heading">
                                 Blender Temp.
                             </div>
-                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#e4e4e4', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
+                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
                                 <Inject services={[Annotations]} />
                                 <AxesDirective>
-                                    <AxisDirective minimum={0} maximum={500} majorTicks={{ interval: 50, color: 'black' }} minorTicks={{ interval: 10, color: 'black' }} labelStyle={{ font: { color: 'black' } }} >
+                                    <AxisDirective minimum={0} maximum={500} majorTicks={{ interval: 50, color: 'white' }} minorTicks={{ interval: 10, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                                         <PointersDirective>
                                             <PointerDirective value={this.state.blenderTemperature} height={40} type='Bar' color={this.state.temperatureBackground}>
                                             </PointerDirective>
@@ -283,9 +279,9 @@ class BlenderView extends Component {
                                     </AxisDirective>
                                 </AxesDirective>
                                 <AnnotationsDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:black"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempLowerBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempLowerBound) * 0.6}>
                                     </AnnotationDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:black"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempUpperBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempUpperBound) * 0.6}>
                                     </AnnotationDirective>
                                 </AnnotationsDirective>
                             </LinearGaugeComponent>}
@@ -298,28 +294,27 @@ class BlenderView extends Component {
                                 {this.state.minBlenderSpeed > 0 && <ReactSpeedometer needleHeightRatio={0.7}
                                     minValue={0}
                                     height={280}
-                                    maxValue={100}
+                                    maxValue={50}
                                     value={this.state.blenderSpeed}
-                                    customSegmentStops={[0, this.state.minBlenderSpeed, this.state.maxBlenderSpeed, 100]}
+                                    customSegmentStops={[0, this.state.minBlenderSpeed, this.state.maxBlenderSpeed, 50]}
                                     // startColor={"red"}
                                     // endColor={"green"}
                                     segmentColors={['#EE423D', '#05C985', '#EE423D']}
                                     ringWidth={40}
                                     width={280}
-                                    currentValueText="Blender Speed"
+                                    currentValueText={"Blender Speed : " + this.state.blenderSpeed}
                                     currentValuePlaceholderStyle="#{value}"
-                                    needleColor={'black'}
-                                    textColor={'black'}
+                                    needleColor={'white'}
+                                    textColor={'white'}
                                 />}
                             </div>
 
                         </div>
-
                     </div>
-                </div>
                 <div className="table-details-container card-tile">
                     {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                 </div>
+            </div>
             </div>
         );
 

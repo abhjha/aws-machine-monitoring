@@ -79,7 +79,7 @@ class HopperView extends Component {
             datasets: [
               {
                 steppedLine: true,
-                label: "Current",
+                label: "Actual",
                 fill: false,
                 data: currentData,
                 borderColor: '#BB5BE3',
@@ -126,7 +126,7 @@ class HopperView extends Component {
             datasets: [
               {
                 steppedLine: true,
-                label: "Current",
+                label: "Actual",
                 fill: false,
                 data: currentData,
                 borderColor: '#BB5BE3',
@@ -169,7 +169,7 @@ class HopperView extends Component {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data,"greeen hopper table data");
+        console.log(data, "greeen hopper table data");
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
           data.alarms[i].Line = data.alarms[i].ASSET;
@@ -180,7 +180,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
-            console.log(tableWarnings , "green hopper");
+            console.log(tableWarnings, "green hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -204,7 +204,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
-            console.log(tableWarnings , "blue hopper");
+            console.log(tableWarnings, "blue hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -228,7 +228,7 @@ class HopperView extends Component {
   }
 
   render() {
-   
+
     const { greenHopperGraphData,
       blueHopperGraphData,
       blueHopperFillValue,
@@ -259,149 +259,141 @@ class HopperView extends Component {
 
     return (
       <div className="hopperView">
+        <div className="tkey-header">
+          <Back />
+          <Navigation pages={this.state.pages} />
+          <div className="page-dropdown-heading">Asset</div>
+          <Dropdown
+            options={this.state.dropdownOptions}
+            setDropdownSelectedValue={this.setDropdownSelectedValue}
+            dropdownselectedValue={this.state.dropdownSelectedValue}
+          />
+        </div>
         <div className="data-container hopper-view">
-          <div className="tkey-header">
-            <Back />
-            <Navigation pages={this.state.pages} />
-            <div className="page-dropdown-heading">Asset</div>
-            <Dropdown
-              options={this.state.dropdownOptions}
-              setDropdownSelectedValue={this.setDropdownSelectedValue}
-              dropdownselectedValue={this.state.dropdownSelectedValue}
-            />
-          </div>
-          <div className="bin-container-heading">
-              Mixing Unit
-            </div>
-          <div className="bin-container">
-           
-            <div className="hopper-data-container ">
-              <div className="graph-container">
-                <div className="hopper-step-graph card-tile">
-                  {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} options={graphoptions} />}
-                </div>
-                <div className="hopper-step-graph card-tile">
-                  {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} options={graphoptions} />}
-                </div>
-              </div>
 
-              <div className="gauge-container">
-                <div className="hopper-gauge card-tile">
-                  <div className="hopper-rate-heading">
-                    Dye Hopper Fill Rate
+          <div className="hopper-data-container ">
+            <div className="graph-container">
+              <div className="hopper-step-graph card-tile">
+                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} options={graphoptions} />}
+              </div>
+              <div className="hopper-step-graph card-tile">
+                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} options={graphoptions} />}
+              </div>
+            </div>
+
+            <div className="gauge-container">
+              <div className="hopper-gauge card-tile">
+                <div className="hopper-rate-heading">
+                  Dye Hopper Fill Rate
                     </div>
-                  <div className="hopper-rate-meter">
-                    <div className="speedoMeter-blue-bin">
-                      {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
-                        minValue={0}
-                        height={130}
-                        maxValue={100}
-                        value={blueHopperGaugeRate}
-                        customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax, 100]}
-                        segmentColors={['#EE423D', '#05C985', '#EE423D']}
-                        ringWidth={10}
-                        width={130}
-                        currentValueText="Litres per Minute"
-                        currentValuePlaceholderStyle="#{value}"
-                        needleColor={'black'}
-                        textColor={'black'}
-                      />}
-                      <p>Litres per minute</p>
-                    </div>
+                <div className="hopper-rate-meter">
+                  <div className="speedoMeter-blue-bin">
+                    {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
+                      minValue={0}
+                      height={170}
+                      maxValue={this.state.gaugeMax}
+                      value={blueHopperGaugeRate}
+                      customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
+                      segmentColors={['#EE423D', '#05C985']}
+                      ringWidth={20}
+                      width={160}
+                      currentValueText="Litres per Minute"
+                      currentValuePlaceholderStyle="#{value}"
+                      needleColor={'white'}
+                      textColor={'white'}
+                    />}
                   </div>
                 </div>
-                <div className="hopper-gauge card-tile">
-                  <div className="hopper-rate-heading">
+              </div>
+              <div className="hopper-gauge card-tile">
+                <div className="hopper-rate-heading">
                   Sealant Fill Rate
                     </div>
-                  <div className="hopper-rate-meter">
-                    <div className="speedoMeter-blue-bin">
-                      {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
-                        minValue={0}
-                        maxValue={100}
-                        height={130}
-                        value={greenHopperGaugeRate}
-                        customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax, 100]}
-                        segmentColors={['#EE423D', '#05C985', '#EE423D']}
-                        ringWidth={10}
-                        width={130}
-                        currentValueText="Litres per Minute"
-                        currentValuePlaceholderStyle="#{value}"
-                        needleColor={'black'}
-                        textColor={'black'}
-                      />}
-                      <p>Litres per minute</p>
-                    </div>
+                <div className="hopper-rate-meter">
+                  <div className="speedoMeter-blue-bin">
+                    {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
+                      minValue={0}
+                      maxValue={this.state.gaugeMax}
+                      height={170}
+                      value={greenHopperGaugeRate}
+                      customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
+                      segmentColors={['#EE423D', '#05C985']}
+                      ringWidth={20}
+                      width={160}
+                      currentValueText="Litres per Minute"
+                      currentValuePlaceholderStyle="#{value}"
+                      needleColor={'white'}
+                      textColor={'white'}
+                    />}
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="hopper-scale-container">
-                <div className="hopper-scale card-tile">
-                  <div className="hopper-rate-heading">
-                    Dye Hopper Level
+            <div className="hopper-scale-container">
+              <div className="hopper-scale card-tile">
+                <div className="hopper-rate-heading">
+                  Dye Hopper Level
                     </div>
-                  <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#e4e4e4' }} orientation={"horizontal"} background={'transparent'} >
-                    <Inject services={[Annotations]} />
-                    <AxesDirective>
-                      <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'black' }} minorTicks={{ interval: 0.1, color: 'black' }} labelStyle={{ font: { color: 'black' } }} >
-                        <PointersDirective>
-                          <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                      <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'black' }} minorTicks={{ interval: 0.1, color: 'black' }} labelStyle={{ font: { color: 'black' } }} opposedPosition={true}>
+                <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030' }} orientation={"horizontal"} background={'transparent'} >
+                  <Inject services={[Annotations]} />
+                  <AxesDirective>
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                       <PointersDirective>
-                                    <PointerDirective type='Bar' value={4} color='#4d94ff' offset={-10}>
-                                    </PointerDirective>
-                                </PointersDirective>
-                      </AxisDirective>
-                    </AxesDirective>
-                    <AnnotationsDirective>
-                      <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:black"> </div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} zIndex={1}>
-                      </AnnotationDirective>
-                      <AnnotationDirective content='<div style="text-align:left;color:black">Target</div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
-                      </AnnotationDirective>
-                    </AnnotationsDirective>
-                  </LinearGaugeComponent>
-                </div>
-                <div className="hopper-scale card-tile">
-                  <div className="hopper-rate-heading">
-                    Sealant Hopper Level
-                    </div>
-                  <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#e4e4e4 ' }} orientation={"horizontal"} background={'transparent'} >
-                    <Inject services={[Annotations]} />
-                    <AxesDirective>
-                      <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'black' }} minorTicks={{ interval: 0.1, color: 'black' }} labelStyle={{ font: { color: 'black' } }} >
-                        <PointersDirective>
-                          <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                      <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'black' }} minorTicks={{ interval: 0.1, color: 'black' }} labelStyle={{ font: { color: 'black' } }} opposedPosition={true}>
-                        <PointersDirective>
-                          <PointerDirective width={0}>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                    </AxesDirective>
-                    <AnnotationsDirective>
-                      <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:black"> </div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} zIndex={1}>
-                      </AnnotationDirective>
-                      <AnnotationDirective content='<div style="text-align:left;color:black">Target</div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
-                      </AnnotationDirective>
-                    </AnnotationsDirective>
-                  </LinearGaugeComponent>
-                </div>
+                        <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                      <PointersDirective>
+                        <PointerDirective type='Bar' value={4} color='#4d94ff' offset={-10}>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                  </AxesDirective>
+                  <AnnotationsDirective>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} zIndex={1}>
+                    </AnnotationDirective>
+                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
+                    </AnnotationDirective>
+                  </AnnotationsDirective>
+                </LinearGaugeComponent>
               </div>
-              <div className="mix-hopper card-tile">
-                <MixRatio hopperMixBlue={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
+              <div className="hopper-scale card-tile">
+                <div className="hopper-rate-heading">
+                  Sealant Hopper Level
+                    </div>
+                <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030 ' }} orientation={"horizontal"} background={'transparent'} >
+                  <Inject services={[Annotations]} />
+                  <AxesDirective>
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
+                      <PointersDirective>
+                        <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                      <PointersDirective>
+                        <PointerDirective width={0}>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                  </AxesDirective>
+                  <AnnotationsDirective>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} zIndex={1}>
+                    </AnnotationDirective>
+                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
+                    </AnnotationDirective>
+                  </AnnotationsDirective>
+                </LinearGaugeComponent>
               </div>
             </div>
+            <div className="mix-hopper card-tile">
+              <MixRatio hopperMixBlue={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
+            </div>
           </div>
-
           <div className="table-details-container card-tile">
-          {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {((tableWarnings > 0 || tableAlerts > 0)) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
           </div>
         </div>
       </div>

@@ -9,16 +9,9 @@
         padding: 0;
     }
 }
-  .tkey-header{
-    display: grid;
-    grid-template-columns: 5% 65% 10% 1fr;
-    grid-column-gap: 20px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  .data-container{
-    .page-dropdown-heading {
+.tkey-header{
+  @include page-heading();
+  .page-dropdown-heading {
       color: black;
       font-size: 22px;
       /* float: right; */
@@ -26,8 +19,12 @@
       align-items: center;
       margin-left: auto;
   }
+}
+
+  .data-container{
+    
     .bin-container-heading{
-      color: black;
+      color: $font-color;
       font-size: 22px;
       font-weight: bold;
       border-radius: 10px;
@@ -44,13 +41,13 @@
     }
   
     .bin1-graph,.bin2-graph,.refill-container{
-      background-color: white;
+      background-color: $card-bg-color;
       padding: 20px ;
     }
     
     .bin-view {
-      color:black;
-      background-color : white;
+      color:$font-color;
+      background-color : $card-bg-color;
     
     }
     .bin-view-heading {
@@ -63,16 +60,16 @@
     }
     .graph-heading{
       font-size: 18px;
-      color: black;
+      color: $font-color;
       font-weight: bold;
       text-align: left;
       margin-bottom: 30px;
     }
     .consumption-rate{
       height: 44px;
-      color: black;
+      color:$font-color;
       font-size: 16px;
-      background-color: #e4e4e4;
+      background-color: #172030;
       padding: 12px 18px 13px 18px;
     }
     span{
@@ -96,9 +93,9 @@
       }
     }
     &.bin-view-page{
-      height: 100vh;
+      height: calc(100vh - 75px);
         display: grid;
-        grid-template-rows: 75px 45px 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
         grid-gap: 20px ;
         padding: 20px;
     }

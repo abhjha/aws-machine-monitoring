@@ -224,7 +224,7 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.minimumTarget,
-          borderColor: 'black',
+          borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
           label: {
@@ -233,7 +233,7 @@ epochToDate = (dateVal) => {
             position: "bottom",
             xAdjust: 217,
             yAdjust: 20,
-            backgroundColor: 'black'
+            backgroundColor: 'transparent'
           }
         },
         {
@@ -241,7 +241,7 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.refillPoint,
-          borderColor: 'black',
+          borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
           label: {
@@ -250,7 +250,7 @@ epochToDate = (dateVal) => {
             position: "bottom",
             xAdjust: 217,
             yAdjust: 20,
-            backgroundColor: 'black',
+            backgroundColor: 'transparent',
 
           }
         }
@@ -298,7 +298,7 @@ epochToDate = (dateVal) => {
       </div>
     )
     return (
-      <div className="data-container bin-view-page">
+      <div>
         <div className="tkey-header">
           <BackButton />
           <Breadcrumb pages={this.state.pages} />
@@ -309,15 +309,12 @@ epochToDate = (dateVal) => {
             dropdownselectedValue={this.state.dropdownSelectedValue}
           />
         </div>
-        <div className="bin-container-heading">
-          Raw Material Bins
-            </div>
-        <div className="bin-container">
-          
+      
+      <div className="data-container bin-view-page">
           <div className="bin-graph-container">
             <div className="refill-container card-tile">
               <div className="bin-view">
-                <p className="bin-view-heading">Time Left to Refill</p>
+                <p className="bin-view-heading"><h4>Time Left to Refill</h4></p>
                 {values} {greenValues}
               </div>
             </div>
@@ -342,10 +339,10 @@ epochToDate = (dateVal) => {
               </div>
             </div>
           </div>
-        </div>
         <div className="table-details-container card-tile">
        {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
         </div>
+      </div>
       </div>
     );
 

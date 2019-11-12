@@ -1,10 +1,10 @@
 .menu-container{
-    background-color: $menu-bg-dark;
+    background-color: $base-color;
     width: $menu-bar-width;
 }
 
 .menu-heading {
-    color: $card-bg-color;
+    color: $font-color;
     padding: 40px 0;
     font-weight: 400;
     font-size: 20px;
@@ -15,17 +15,17 @@
 .menu-heading-container{
     &.active{
         background-color: $selection-blue;
-        color: $card-bg-color;
+        color: $font-color;
         &:hover{
             opacity: 1;
         }
     }
     &:hover{
         background-color:$selection-blue;
-        color: $card-bg-color;
+        color: $font-color;
         opacity: 0.6;
     }
-    color: $menu-color-grey;
+    color: $font-color;
     font-size: $font-normal-fontsize;
     padding: 10px 0 10px 22px;
     width: 100%;

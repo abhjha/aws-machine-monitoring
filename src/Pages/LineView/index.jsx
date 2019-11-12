@@ -48,31 +48,31 @@ class LineView extends Component {
     }
     navigateAsset = (e) => {
         const assetID = e.currentTarget.getAttribute('data-id');
-        if (assetID == "SN005" || assetID == "SN006") {
+        if (assetID == "Bin") {
             this.props.history.push({
                 pathname: '/binView',
                 Component: { BinView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN002" || assetID == "SN001") {
+        } else if (assetID == "Hopper") {
             this.props.history.push({
                 pathname: '/hopperView',
                 Component: { HopperView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN003") {
+        } else if (assetID == "Blender") {
             this.props.history.push({
                 pathname: '/blenderView',
                 Component: { BlenderView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN004") {
+        } else if (assetID == "finished-goods") {
             this.props.history.push({
                 pathname: '/finishedGoodsView',
                 Component: { FinishedGoodsView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        }
+        } 
     }
     lineViewData = () => {
         const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=${this.props.location.state.lineID}`;
@@ -119,7 +119,7 @@ class LineView extends Component {
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].Line = data.alarms[i].ASSET_NAME;
                     data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
                     if (data.alarms[i].SEVERITY == "Alert") {
                         data.alarms[i]["statusBox"] = <img src={alert} />;
@@ -133,7 +133,7 @@ class LineView extends Component {
                 for (let i = 0; i < data.children.length; i++) {
                     for (let j = 0; j < data.children[i].alarms.length; j++) {
                         if (data.alarms.length > 0) {
-                            data.children[i].alarms[j].Line = data.alarms[0].ASSET;
+                            data.children[i].alarms[j].Line = data.alarms[0].ASSET_NAME;
                         } else {
                             data.children[i].alarms[j].Line = "";
                         }
@@ -153,6 +153,7 @@ class LineView extends Component {
 
                     tableData: alarmsData,
                 });
+                // this.state.tableData = alarmsData;
 
             })
             .catch(function (err) {
@@ -172,7 +173,7 @@ class LineView extends Component {
 
     render() {
         return (
-            <div className="data-container line-view">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
@@ -183,40 +184,43 @@ class LineView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="line-header">Department</div>
-                <div className="line-header-values">
-                    <LabelCard heading={"Department OEE"} value={this.state.lineData.OEE} />
-                    <LabelCard heading={"Availability"} value={this.state.lineData.Availability} />
-                    <LabelCard heading={"Performance"} value={this.state.lineData.Performance} />
-                    <LabelCard heading={"Quality"} value={this.state.lineData.Quality} />
-                </div>
-                <div className="line-view-components">
 
-                    <div className="line-assets card-tile">
-                        <div className="line-view-heading">
-                            Assets
+                <div className="data-container line-view">
+
+                    <div className="line-header-values">
+                        <LabelCard heading={"Department OEE"} value={this.state.lineData.OEE} />
+                        <LabelCard heading={"Availability"} value={this.state.lineData.Availability} />
+                        <LabelCard heading={"Performance"} value={this.state.lineData.Performance} />
+                        <LabelCard heading={"Quality"} value={this.state.lineData.Quality} />
+                    </div>
+                    <div className="line-view-components">
+
+                        <div className="line-assets card-tile">
+                            <div className="line-view-heading">
+                                <h3>Assets</h3>
                         </div>
-                        {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
-                    </div>
-                    <div className="line-view-adherence" data-id="SN004" onClick={(e)=>this.navigateAsset(e)}>
-                    <ScheduleAdherence data={this.state.lineData} />
-                    </div>
-                    <div className="downtime-details card-tile">
-                        <div className="line-view-heading">
-                            Downtime Details
+                            {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                         </div>
-                        <DowntimeDetails data={this.state.DowntimeDetails} />
-                    </div>
-                    <div className="goods-data-container card-tile">
-                        <div className="finished-goods-rate-heading">
-                            Defect Analysis
+                        <div className="line-view-adherence" data-id="finished-goods" onClick={(e) => this.navigateAsset(e)}>
+                            <ScheduleAdherence data={this.state.lineData} />
+                        </div>
+                        <div className="downtime-details card-tile">
+                            <div className="line-view-heading">
+                                <h3>Downtime Details</h3>
+                        </div>
+                            <DowntimeDetails data={this.state.DowntimeDetails} />
+                        </div>
+                        <div className="goods-data-container card-tile">
+                            <div className="line-view-heading">
+                                <h3>Defect Analysis</h3>
                             </div>
-                        {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
+                            {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
+                        </div>
                     </div>
-                </div>
-                <div className="table-details-container card-tile">
+                    <div className="table-details-container card-tile">
 
-                    {(tableWarnings > 0 || tableAlerts > 0) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        { <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                    </div>
                 </div>
             </div>
         );

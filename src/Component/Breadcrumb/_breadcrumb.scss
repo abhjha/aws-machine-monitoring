@@ -1,0 +1,17 @@
+.tkey-navigator-container{
+    width:fit-content;
+    display: flex;
+    padding: 14.5px 24px;
+    border-radius: 2px;
+}
+.tkey-page-details{
+    color: $font-color;
+    font-size: 18px;
+}
+.tkey-page-details::before{
+    content: '>';
+    margin:0 12px;
+}
+.tkey-page-details:nth-child(1)::before{
+    display: none;
+}

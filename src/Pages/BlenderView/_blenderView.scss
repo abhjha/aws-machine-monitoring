@@ -8,9 +8,20 @@
         padding: 0;
     }
 }
+.tkey-header{
+    @include page-heading();
+    .page-dropdown-heading {
+        color: $warning-yellow;
+        font-size: 22px;
+        /* float: right; */
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+  }
 .data-container{
     .blender-graph,.blender-reading,.blender-temp, .blender-speed{
-        background-color: white;
+        background-color: $card-bg-color;
     }
     .blender-graph-container{
         display: grid;
@@ -21,9 +32,9 @@
         padding : 20px 0 0 20px;
     }
     &.blender-view{
-        height: 100vh;
+        height: calc(100vh - 75px);
           display: grid;
-          grid-template-rows: 75px 45px 1fr 1fr;
+          grid-template-rows:1fr 1fr;
           grid-gap: 20px ;
           padding: 20px;
       }

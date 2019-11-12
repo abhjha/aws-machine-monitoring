@@ -19,6 +19,7 @@ class PlantView extends React.Component {
             autoRefreshState : "",
             flag : true,
             filteredData : [],
+            refershCount : 0
         }
     }
     
@@ -113,7 +114,8 @@ class PlantView extends React.Component {
                 this.setState({ 
                     tableData: alarmsData,
                     plantAssetData :data,
-                    lineDropDown : lineDropdownValue
+                    lineDropDown : lineDropdownValue,
+                    
                  });
                 
             })
@@ -121,17 +123,24 @@ class PlantView extends React.Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-    setAutoRefresh = () => {
-        if(document.getElementsByClassName("plant-view")[0].classList.contains("auto-refresh")){
-            setInterval(this.triggerPlantAlertData,10000);
+    setAutoRefresh = (e) => {
+        console.log(e,"hi");
+        if(document.getElementsByClassName("plant-view")[0].classList.contains("refresh-data")){
+            document.getElementsByClassName("plant-view")[0].classList.remove("refresh-data")
             this.setState({
                 autoRefreshState : "",
+                
             })
+            clearInterval(this.triggerPlantAlertData, this.state.refershCount);
+            
         }else{
-            setInterval(this.triggerPlantAlertData,1000);
+            document.getElementsByClassName("plant-view")[0].classList.add("refresh-data")
             this.setState({
-                autoRefreshState : "auto-refresh",
+                autoRefreshState : "refresh-data",
+                refershCount : 1000,
             })
+            setInterval(this.triggerPlantAlertData,this.state.refershCount);
+            
         }
         
     }
@@ -180,8 +189,9 @@ class PlantView extends React.Component {
                     </div>
                 </div>
                 <div className="table-details-container card-tile">
-                {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                {/* <div className="auto-refresh" onClick={this.setAutoRefresh}>AutoRefresh</div> */}
+                
+                {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                {/* <div className="auto-refresh" onClick={(e)=> this.setAutoRefresh(e)}>AutoRefresh</div> */}
                 </div>
             </div>
         );

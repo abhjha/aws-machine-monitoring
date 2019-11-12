@@ -1,0 +1,38 @@
+.mix-ratio-box {
+    background-color: $card-bg-color;
+    height: 100%;
+}
+.mix-ratio-heading {
+    color:$font-color;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+.comparison {
+    color: $font-color;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 0 15px;
+}
+.target-setpoint {
+    height: 70%;
+    width: 36px;
+    margin-left: 16px;
+}
+.green-box {
+    margin-top: 20px;
+    height: 100%;
+    background-color: #05C985;
+}
+.blue-box {
+    background-color: #1F8EFA;
+}
+.target-setpoint-label {
+    color: $font-color;
+    margin-left: 60px;
+    
+}
+.actual-measurement {
+    color: $font-color;
+    margin: 17px 16px 24px 18px;
+}

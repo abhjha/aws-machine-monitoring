@@ -8,24 +8,26 @@
       padding: 0;
   }
 }
+.tkey-header{
+  @include page-heading();
+  .page-dropdown-heading {
+      color: black;
+      font-size: 22px;
+      /* float: right; */
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+  }
+}
 .data-container{
   .speedoMeter-blue-bin {
     height: 150px;
     width: 175px;
-    background-color: #e4e4e4;
     border-radius: 50%;
-    border: 10px solid black;
     padding: 12px;
     margin: 0 auto
   }
   
-  .speedoMeter-blue-bin{
-    p {
-      color: black;
-      text-align: center;
-      margin: 0
-    }
-  } 
   
   
   .hopper-data-container{
@@ -44,11 +46,11 @@
   }
   
   .hopper-step-graph,.hopper-gauge,.hopper-scale{
-    background-color: white;
+    background-color: $card-bg-color;
   }
   
   .hopper-rate-heading{
-    color: black;
+    color: $font-color;
     font-size: 18px;
     font-weight: bold;
     margin: 15px;
@@ -66,7 +68,7 @@
   &.hopper-view{
     height: 100vh;
       display: grid;
-      grid-template-rows: 75px 45px 1fr 1fr 1fr;
+      grid-template-rows:1fr 1fr;
       grid-gap: 20px ;
       padding: 20px;
   }

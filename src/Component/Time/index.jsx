@@ -1,5 +1,4 @@
 import React from 'react';
-import './index.css';
 
 var millisToMinutesAndSeconds = (millis) => {
     var minutes = Math.floor(millis / 60000);
