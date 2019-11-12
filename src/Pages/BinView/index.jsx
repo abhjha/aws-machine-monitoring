@@ -262,12 +262,19 @@ epochToDate = (dateVal) => {
           barThickness: 150,
           gridLines: {
             offsetGridLines: true
+          },
+          ticks:{
+            beginAtZero:true,
+            
           }
         }],
         yAxes: [{
           display: true,
           ticks: {
             beginAtZero: true,
+            min : 0,
+            max: 360,
+            stepSize : 30
           },
 
         }]
@@ -325,7 +332,7 @@ epochToDate = (dateVal) => {
               <Bar data={this.state.GreenBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate + " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " liters per minute"}</span>
               </div>
             </div>
             <div className="bin2-graph card-tile">
@@ -335,7 +342,7 @@ epochToDate = (dateVal) => {
               <Bar data={this.state.BlueBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate+ " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2)+ " liters per minute"}</span>
               </div>
             </div>
           </div>

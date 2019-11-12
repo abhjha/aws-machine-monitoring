@@ -65,7 +65,7 @@ class HopperView extends Component {
         let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        timeStampData.push('Time(s)');
+        // timeStampData.push('Time(s)');
         this.setState({
           blueHopperFillValue: data.currentValues.hopperLevel,
           blueHopperFillTarget: data.currentValues.HopperLevelTarget,
@@ -80,16 +80,18 @@ class HopperView extends Component {
               {
                 steppedLine: true,
                 label: "Actual",
-                fill: false,
+                fill: true,
                 data: currentData,
+                backgroundColor : '#bb5be3',
                 borderColor: '#BB5BE3',
-                borderWidth: 1
+                borderWidth: 2
               },
               {
                 steppedLine: true,
-                fill: false,
+                fill: true,
                 label: "Expected",
                 borderColor: '#1F8EFA',
+                backgroundColor : '#1F8EFA',
                 data: expectedData,
                 borderWidth: 1
               }
@@ -114,7 +116,7 @@ class HopperView extends Component {
         let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        timeStampData.push('Time(s)');
+        // timeStampData.push('Time(s)');
         this.setState({
           greenHopperFillValue: data.currentValues.hopperLevel,
           greenHopperFillTarget: data.currentValues.HopperLevelTarget,
@@ -130,13 +132,15 @@ class HopperView extends Component {
                 fill: false,
                 data: currentData,
                 borderColor: '#BB5BE3',
+                backgroundColor : '#bb5be3',
                 borderWidth: 1
               },
               {
                 steppedLine: true,
-                fill: false,
+                fill: true,
                 label: "Expected",
                 borderColor: '#1F8EFA',
+                backgroundColor : '#1F8EFA',
                 data: expectedData,
                 borderWidth: 1
               }
@@ -240,21 +244,7 @@ class HopperView extends Component {
       hopperMixBlue,
       hoppermixLabel,
     } = this.state;
-    const graphoptions = {
-      scales: {
-        yAxes: [{
-          ticks: {
-            ticks: {
-              min: 0,
-              max: 100,
-
-              // forces step size to be 5 units
-              stepSize: 20 // <----- This prop sets the stepSize
-            }
-          }
-        }]
-      }
-    }
+    
 
 
     return (
@@ -274,10 +264,10 @@ class HopperView extends Component {
           <div className="hopper-data-container ">
             <div className="graph-container">
               <div className="hopper-step-graph card-tile">
-                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} options={graphoptions} />}
+                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData}  />}
               </div>
               <div className="hopper-step-graph card-tile">
-                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} options={graphoptions} />}
+                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData}/>}
               </div>
             </div>
 
@@ -338,23 +328,23 @@ class HopperView extends Component {
                 <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
                   <AxesDirective>
-                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} >
                       <PointersDirective>
                         <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
                         </PointerDirective>
                       </PointersDirective>
                     </AxisDirective>
-                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
                       <PointersDirective>
-                        <PointerDirective type='Bar' value={4} color='#4d94ff' offset={-10}>
+                        <PointerDirective  width={0}>
                         </PointerDirective>
                       </PointersDirective>
                     </AxisDirective>
                   </AxesDirective>
                   <AnnotationsDirective>
-                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} zIndex={1}>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20}axisValue={blueHopperFillTarget} zIndex={1}>
                     </AnnotationDirective>
-                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
+                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} axisIndex={0} axisValue={blueHopperFillTarget} y={-60} zIndex='1' >
                     </AnnotationDirective>
                   </AnnotationsDirective>
                 </LinearGaugeComponent>
@@ -366,13 +356,13 @@ class HopperView extends Component {
                 <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030 ' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
                   <AxesDirective>
-                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} >
                       <PointersDirective>
                         <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
                         </PointerDirective>
                       </PointersDirective>
                     </AxisDirective>
-                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} minorTicks={{ interval: 0.1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
                       <PointersDirective>
                         <PointerDirective width={0}>
                         </PointerDirective>
@@ -380,9 +370,9 @@ class HopperView extends Component {
                     </AxisDirective>
                   </AxesDirective>
                   <AnnotationsDirective>
-                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} zIndex={1}>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20}axisValue={greenHopperFillTarget} zIndex={1}>
                     </AnnotationDirective>
-                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
+                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} axisIndex={0} axisValue={greenHopperFillTarget} y={-60} zIndex='1' >
                     </AnnotationDirective>
                   </AnnotationsDirective>
                 </LinearGaugeComponent>

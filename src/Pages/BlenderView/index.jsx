@@ -231,6 +231,9 @@ class BlenderView extends Component {
                     ticks: {
                         fontColor: "white",
                         beginAtZero: true,
+                        min : 0,
+                        max : 1,
+                        stepSize: 0.1
                     },
 
                 }]

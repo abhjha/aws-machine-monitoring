@@ -10,20 +10,26 @@ class Chart extends Component {
     }
   }
 
-  render() {
+  render()
+   {
+    console.log(this.state.chartData);
+
     return (
       <div className="chart">
         <div className="hopper-rate-heading">{this.props.chartHeader}</div>
         <div className="line-charts">
           <Line
             data={this.state.chartData}
+            
             options={{
               legend: {
                 position: 'top',
                 labels: {
                   boxWidth: 29,
                   fontColor: 'black',
-                  fontSize: 20
+                  fontSize: 20,
+                  fill:true,
+                  backgroundColor : 'black'
                 }
               },
               responsive: true,
