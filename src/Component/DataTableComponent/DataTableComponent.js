@@ -22,6 +22,12 @@ export class DataTableComponent extends React.Component {
     console.log(this.state.filteredData, "new Table Data");
   }
 
+  static getDerivedStateFromProps(props, state){
+    return {
+      filteredData: props.filteredData,
+    }
+  }
+
   setStatusStyle(cell, row) {
     let styleClassName = '';
     if (row.status.toLowerCase() === 'critical') {

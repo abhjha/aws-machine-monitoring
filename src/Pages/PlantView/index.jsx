@@ -8,6 +8,7 @@ import LineView from '../../Pages/LineView';
 import PlantAsset from '../../Component/PlantViewContainer';
 var tableAlerts=0;
 var tableWarnings =0;
+
 class PlantView extends React.Component {
     constructor(props) {
         super(props);
@@ -16,10 +17,11 @@ class PlantView extends React.Component {
             tableData: [],
             plantAssetData :{},
             lineDropDown : [],
-            autoRefreshState : "",
+            autoRefreshState : false,
             flag : true,
             filteredData : [],
-            refershCount : 0
+            refershCount : 0,
+            buttonLabel: 'START REFRESH'
         }
     }
     
@@ -35,6 +37,7 @@ class PlantView extends React.Component {
                 console.log(err, 'Something went wrong, Plant View data')
             });
     }
+    
     navigateAsset = (e)=>{
         const lineID = e.currentTarget.getAttribute('data-id');
         this.props.history.push({ 
@@ -43,11 +46,13 @@ class PlantView extends React.Component {
             state : {lineID ,lineDropDown: this.state.lineDropDown}
         });
     }
+
     millisToMinutesAndSeconds = (millis) => {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
+
     epochToDate = (dateVal) => {
         var date = new Date(parseFloat(dateVal.substr(6)));
         return(
@@ -123,75 +128,59 @@ class PlantView extends React.Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-    setAutoRefresh = (e) => {
-        console.log(e,"hi");
-        if(document.getElementsByClassName("plant-view")[0].classList.contains("refresh-data")){
-            document.getElementsByClassName("plant-view")[0].classList.remove("refresh-data")
-            this.setState({
-                autoRefreshState : "",
-                
-            })
-            clearInterval(this.triggerPlantAlertData, this.state.refershCount);
-            
-        }else{
-            document.getElementsByClassName("plant-view")[0].classList.add("refresh-data")
-            this.setState({
-                autoRefreshState : "refresh-data",
-                refershCount : 1000,
-            })
-            setInterval(this.triggerPlantAlertData,this.state.refershCount);
-            
-        }
+    setAutoRefresh = () => {
+        this.setState((prevState)=> {
+            const {autoRefreshState} = prevState;
+            return {
+                autoRefreshState: !autoRefreshState,
+                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH"
+            }
+        }, () => {
+            if(this.state.autoRefreshState){
+                this.apiTimerReference = setInterval(() => {
+                    this.triggerPlantViewData();
+                    this.triggerPlantAlertData(); 
+                }, 2000);
+            } else {
+                clearInterval(this.apiTimerReference);
+            }
+        });
         
     }
-    // componentDidUpdate(){
-    //     if(this.state.flag){
-    //     let alertsData=this.state.tableData;
-    
-    //     this.setState({
-    //       tableData: alertsData,
-    //       filteredData : alertsData,
-          
-    //       flag: false
-    //   });
-    // }
-    // console.log(this.state.filteredData, "component update");
-    //   }
-    
-      
-    
 
     componentDidMount() {
         this.triggerPlantViewData();
         this.triggerPlantAlertData(); 
     }
 
+    componentWillUnmount(){
+        tableAlerts=0;
+        tableWarnings =0;
+    }
 
     render() {
-        console.log(this.state.tableData , "plant alerts");
-        console.log(tableAlerts , "plant alerts");
-        console.log(tableWarnings, "plant warnings"); 
+        const {autoRefreshState, buttonLabel, plantData, plantAssetData, tableData} =  this.state;
         
         return (
-            <div className={"data-container plant-view  " + this.state.autoRefreshState}>
+            <div className={"data-container plant-view  " + autoRefreshState}>
                 <div className="plant-header-label">
-                   {this.state.plantData.OEE > 0 && <LabelCard heading={"Plant OEE"} value={this.state.plantData.OEE} />}<LabelCard heading={"Availability"} value={this.state.plantData.Availability} /><LabelCard heading={"Performance"} value={this.state.plantData.Performance} /><LabelCard heading={"Quality"} value={this.state.plantData.Quality} />
+                   {plantData.OEE > 0 && <LabelCard heading={"Plant OEE"} value={plantData.OEE} />}<LabelCard heading={"Availability"} value={plantData.Availability} /><LabelCard heading={"Performance"} value={plantData.Performance} /><LabelCard heading={"Quality"} value={plantData.Quality} />
                 </div>
                 <div className="line-view-container">
                     <div className="line-details card-tile">
                         <div className="plant-view-heading">
                             Plant View
                         </div>
-                        {Object.keys(this.state.plantAssetData).length>0 && <PlantAsset navigateAsset={this.navigateAsset} data={this.state.plantAssetData}/>}
+                        {Object.keys(plantAssetData).length>0 && <PlantAsset navigateAsset={this.navigateAsset} data={plantAssetData}/>}
                     </div>
                     <div className="schedule-adherence">
-                        <ScheduleAdherence data={this.state.plantData} />
+                        <ScheduleAdherence data={plantData} />
                     </div>
                 </div>
                 <div className="table-details-container card-tile">
                 
-                {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                {/* <div className="auto-refresh" onClick={(e)=> this.setAutoRefresh(e)}>AutoRefresh</div> */}
+                {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                 <button className="auto-refresh" onClick={this.setAutoRefresh}>{buttonLabel}</button> 
                 </div>
             </div>
         );

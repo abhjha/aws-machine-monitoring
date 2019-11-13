@@ -17,7 +17,8 @@ import BinView from '../../Pages/BinView/index';
 import HopperView from '../../Pages/HopperView/index';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var lineAssetData = {};
+//var lineAssetData = {};
+
 class LineView extends Component {
     constructor(props) {
         super(props);
@@ -115,7 +116,7 @@ class LineView extends Component {
             .then((data) => {
                 tableAlerts = 0;
                 tableWarnings = 0;
-                lineAssetData = data;
+                //lineAssetData = data;
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
@@ -150,7 +151,7 @@ class LineView extends Component {
                     }
                 }
                 this.setState({
-
+                    lineAssetData : data,
                     tableData: alarmsData,
                 });
                 // this.state.tableData = alarmsData;
@@ -172,6 +173,7 @@ class LineView extends Component {
     }
 
     render() {
+        const {lineAssetData} = this.state;
         return (
             <div>
                 <div className="tkey-header">
