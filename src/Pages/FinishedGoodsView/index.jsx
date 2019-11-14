@@ -36,7 +36,8 @@ class FinishedGoodsView extends Component {
             HopperMix: {},
             FinishedGoodsMix: {},
             buttonLabel: 'START REFRESH',
-            autoRefreshStatus : ''
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
         }
     }
 
@@ -143,24 +144,27 @@ class FinishedGoodsView extends Component {
             });
     }
     setAutoRefresh = () => {
-        this.setState((prevState)=> {
-            const {autoRefreshState} = prevState;
+        clearInterval(this.apiTimerReferenceonload);
+        this.setState((prevState) => {
+            const { autoRefreshState } = prevState;
+            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
             return {
                 autoRefreshState: !autoRefreshState,
-                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
             }
         }, () => {
-            if(this.state.autoRefreshState){
+            if (this.state.autoRefreshState) {
                 this.apiTimerReference = setInterval(() => {
                     this.triggerFinishedGoodsTableData();
-                    this.finishedGoodsViewData(); 
+                    this.finishedGoodsViewData();
                 }, 2000);
             } else {
                 clearInterval(this.apiTimerReference);
             }
         });
-        
+
     }
     componentDidMount() {
         // const responseHeader = {
@@ -171,10 +175,25 @@ class FinishedGoodsView extends Component {
         this.triggerFinishedGoodsTableData();
         // this.tableSummaryData();
         this.finishedGoodsViewData();
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+            this.triggerFinishedGoodsTableData();
+            this.finishedGoodsViewData(); 
+        }, 2000);
+        this.setState(()=> {
+            return {
+                autoRefreshState: true,
+                buttonLabel : 'STOP REFRESH',
+                autoRefreshStatus : 'auto-refresh' ,
+            }
+        });
     }
-    componentWillUnmount(){
-        tableAlerts=0;
-        tableWarnings =0;
+    }
+    componentWillUnmount() {
+        tableAlerts = 0;
+        tableWarnings = 0;
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
     }
 
     render() {
@@ -191,7 +210,7 @@ class FinishedGoodsView extends Component {
                     barThickness: 150,
                     gridLines: {
                         offsetGridLines: true,
-                        
+
                     }
                 }],
                 yAxes: [{
@@ -244,7 +263,7 @@ class FinishedGoodsView extends Component {
 
                     <div className="table-details-container card-tile">
                         <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
-                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> 
+                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
                     </div>
                 </div>
             </div>

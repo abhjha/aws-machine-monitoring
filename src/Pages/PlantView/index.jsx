@@ -11,13 +11,14 @@ var tableWarnings =0;
 
 class PlantView extends React.Component {
     constructor(props) {
+        //sessionStorage.autoRefreshState = "false";
         super(props);
         this.state = {
             plantData: {},
             tableData: [],
             plantAssetData :{},
             lineDropDown : [],
-            autoRefreshState : false,
+            autoRefreshState : sessionStorage.autoRefreshState === "true" ? true: false,
             flag : true,
             filteredData : [],
             refershCount : 0,
@@ -67,7 +68,6 @@ class PlantView extends React.Component {
     }
 
     triggerPlantAlertData = () => {
-        console.log("hi");
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
             .then((data) => {
@@ -130,8 +130,11 @@ class PlantView extends React.Component {
             });
     }
     setAutoRefresh = () => {
+        clearInterval(this.apiTimerReferenceonload);
         this.setState((prevState)=> {
             const {autoRefreshState} = prevState;
+            sessionStorage.autoRefreshState = autoRefreshState ? "false":"true";
+           
             return {
                 autoRefreshState: !autoRefreshState,
                 buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
@@ -153,11 +156,27 @@ class PlantView extends React.Component {
     componentDidMount() {
         this.triggerPlantViewData();
         this.triggerPlantAlertData(); 
+        if( sessionStorage.autoRefreshState === "true"){
+                this.apiTimerReferenceonload = setInterval(() => {
+                this.triggerPlantViewData();
+                this.triggerPlantAlertData(); 
+            }, 2000);
+            this.setState(()=> {
+                return {
+                    autoRefreshState: true,
+                    buttonLabel : 'STOP REFRESH',
+                    autoRefreshStatus : 'auto-refresh' ,
+                }
+            });
+        }
     }
 
     componentWillUnmount(){
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
         tableAlerts=0;
         tableWarnings =0;
+        //sessionStorage.autoRefreshState = false;
     }
 
     render() {

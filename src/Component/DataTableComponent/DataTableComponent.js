@@ -47,7 +47,7 @@ export class DataTableComponent extends React.Component {
       <div id="tableGridPanel">
         <div className="alert-zone">
           
-          <div className="card-heading"><h1><span >Active</span><span ><img src={alert} /> Alerts {this.props.tableAlerts}</span> and <span><img src={warning} /> Warnings {this.props.tableWarnings}</span></h1></div>
+          <div className="card-heading"><h1><span >Active &emsp; </span><span ><img src={alert} /> Alerts: {this.props.tableAlerts}</span>  &emsp; <span><img src={warning} /> Warnings: {this.props.tableWarnings}</span></h1></div>
         </div>
 
         <div className="tableAndFilterContainer withoutTabs">

@@ -22,6 +22,7 @@ var tableWarnings = 0;
 class LineView extends Component {
     constructor(props) {
         super(props);
+        //sessionStorage.autoRefreshState = "false";
         this.state = {
             pages: ['Plant View', "Paint Shop"],
             dropdownSelectedValue: 'Paint Shop',
@@ -33,8 +34,8 @@ class LineView extends Component {
             lineData: {},
             lineAssetData: {},
             buttonLabel: 'START REFRESH',
-            autoRefreshStatus : ''
-
+            autoRefreshStatus : '',
+            autoRefreshState : sessionStorage.autoRefreshState === "false" ? false : true,
         }
     }
 
@@ -164,8 +165,11 @@ class LineView extends Component {
             });
     }
     setAutoRefresh = () => {
+        clearInterval(this.apiTimerReferenceonload);
         this.setState((prevState)=> {
             const {autoRefreshState} = prevState;
+            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
             return {
                 autoRefreshState: !autoRefreshState,
                 buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
@@ -191,11 +195,27 @@ class LineView extends Component {
         // };
         this.triggerAlertTableData();
         this.lineViewData();
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+                this.triggerAlertTableData();
+                this.lineViewData(); 
+            }, 2000);
+            this.setState(()=> {
+                return {
+                    autoRefreshState: true,
+                    buttonLabel : 'STOP REFRESH',
+                    autoRefreshStatus : 'auto-refresh' ,
+                }
+            });
+        }
 
     }
     componentWillUnmount(){
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
         tableAlerts=0;
         tableWarnings =0;
+        //sessionStorage.autoRefreshState= false;
     }
     render() {
         const {lineAssetData,dropdownOptions,pages,dropdownSelectedValue,lineData,autoRefreshStatus,buttonLabel,tableData} = this.state;

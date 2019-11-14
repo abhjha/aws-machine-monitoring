@@ -45,7 +45,8 @@ class BinView extends Component {
       },
       dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
       buttonLabel: 'START REFRESH',
-      autoRefreshStatus: ''
+      autoRefreshStatus: '',
+      autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
     }
   }
   millisToMinutesAndSeconds = (millis) => {
@@ -134,7 +135,7 @@ class BinView extends Component {
           greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Sealant Bin' }],
           GreenBinGraphData: {
             datasets: [{
-              label: "",
+              label: "Volume(litres)",
               backgroundColor: bgColor,
               borderColor: 'rgb(255, 99, 132)',
               data: [binData.currentValues.binLevel]
@@ -152,6 +153,8 @@ class BinView extends Component {
   //Alert table data
   triggerGreenBinTableData = () => {
     tableData = [];
+    tableAlerts =0;
+    tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN006')
       .then((response) => response.json())
       .then((data) => {
@@ -202,8 +205,11 @@ class BinView extends Component {
     console.log(tableData, "bin table data");
   }
   setAutoRefresh = () => {
+    clearInterval(this.apiTimerReferenceonload);
     this.setState((prevState) => {
       const { autoRefreshState } = prevState;
+      sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
       return {
         autoRefreshState: !autoRefreshState,
         buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
@@ -234,13 +240,30 @@ class BinView extends Component {
     this.triggerGreenBinTableData();
     this.triggerBlueBinViewData();
     this.triggerGreenBinViewData();
+    if (sessionStorage.autoRefreshState === "true") {
+      this.apiTimerReferenceonload = setInterval(() => {
+        this.triggerBlueBinTableData();
+        this.triggerGreenBinTableData();
+        this.triggerBlueBinViewData();
+        this.triggerGreenBinViewData();
+      }, 2000);
+      this.setState(() => {
+        return {
+          autoRefreshState: true,
+          buttonLabel: 'STOP REFRESH',
+          autoRefreshStatus: 'auto-refresh',
+        }
+      });
+    }
 
   }
-  componentWillUnmount(){
-    tableAlerts=0;
-    tableWarnings =0;
+  componentWillUnmount() {
+    clearInterval(this.apiTimerReference);
+    clearInterval(this.apiTimerReferenceonload);
+    tableAlerts = 0;
+    tableWarnings = 0;
     tableData = [];
-}
+  }
 
   render() {
     console.log(tableData, "bin data");
@@ -353,7 +376,7 @@ class BinView extends Component {
             <div className="refill-container card-tile">
               <div className="bin-view">
                 <p className="bin-view-heading"><h4>Time Left to Refill</h4></p>
-                {values} {greenValues}
+                {greenValues} {values}
               </div>
             </div>
             <div className="bin1-graph card-tile">

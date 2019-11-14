@@ -34,7 +34,8 @@ class HopperView extends Component {
       gaugeMin: 0,
       gaugeMax: 0,
       buttonLabel: 'START REFRESH',
-      autoRefreshStatus: ''
+      autoRefreshStatus: '',
+      autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
     }
   }
 
@@ -59,7 +60,7 @@ class HopperView extends Component {
     }
   }
   triggerBlueHopperViewData = () => {
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=5')
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
         console.log(data, "blue");
@@ -82,7 +83,7 @@ class HopperView extends Component {
               {
                 steppedLine: true,
                 label: "Actual",
-                fill: true,
+                fill: false,
                 data: currentData,
                 backgroundColor: '#bb5be3',
                 borderColor: '#BB5BE3',
@@ -90,7 +91,7 @@ class HopperView extends Component {
               },
               {
                 steppedLine: true,
-                fill: true,
+                fill: false,
                 label: "Expected",
                 borderColor: '#1F8EFA',
                 backgroundColor: '#1F8EFA',
@@ -110,7 +111,7 @@ class HopperView extends Component {
       });
   }
   triggerGreenHopperViewData = () => {
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN002&lengthOfHistory=5')
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN002&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
         console.log(data, "green");
@@ -172,7 +173,7 @@ class HopperView extends Component {
     );
   }
   triggerGreenHopperViewTableData = () => {
-    tableData =[];
+    tableData = [];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
@@ -223,8 +224,11 @@ class HopperView extends Component {
       });
   }
   setAutoRefresh = () => {
+    clearInterval(this.apiTimerReferenceonload);
     this.setState((prevState) => {
       const { autoRefreshState } = prevState;
+      sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
       return {
         autoRefreshState: !autoRefreshState,
         buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
@@ -255,12 +259,31 @@ class HopperView extends Component {
     this.triggerGreenHopperViewData();
     this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
+    if (sessionStorage.autoRefreshState === "true") {
+      this.apiTimerReferenceonload = setInterval(() => {
+        this.triggerBlueHopperViewData();
+        this.triggerGreenHopperViewData();
+        this.triggerBlueHopperViewTableData();
+        this.triggerGreenHopperViewTableData();
+      }, 2000);
+      this.setState(() => {
+        return {
+          autoRefreshState: true,
+          buttonLabel: 'STOP REFRESH',
+          autoRefreshStatus: 'auto-refresh',
+        }
+      });
+    }
   }
-  componentWillUnmount(){
-    tableAlerts=0;
-    tableWarnings =0;
+  componentWillUnmount() {
+    tableAlerts = 0;
+    tableWarnings = 0;
     tableData = [];
-}
+    clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
+        tableAlerts=0;
+        tableWarnings =0;
+  }
   render() {
 
     const { greenHopperGraphData,
@@ -320,7 +343,7 @@ class HopperView extends Component {
                       segmentColors={['#EE423D', '#05C985']}
                       ringWidth={20}
                       width={160}
-                      currentValueText="Litres per Minute"
+                      currentValueText={"Litres per Minute: " + blueHopperGaugeRate.toFixed(0)}
                       currentValuePlaceholderStyle="#{value}"
                       needleColor={'white'}
                       textColor={'white'}
@@ -343,7 +366,7 @@ class HopperView extends Component {
                       segmentColors={['#EE423D', '#05C985']}
                       ringWidth={20}
                       width={160}
-                      currentValueText="Litres per Minute"
+                      currentValueText={"Litres per Minute: " + greenHopperGaugeRate.toFixed(0)}
                       currentValuePlaceholderStyle="#{value}"
                       needleColor={'white'}
                       textColor={'white'}
@@ -377,7 +400,7 @@ class HopperView extends Component {
                   <AnnotationsDirective>
                     <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20} axisValue={blueHopperFillTarget} zIndex={1}>
                     </AnnotationDirective>
-                    <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} axisIndex={0} axisValue={blueHopperFillTarget} y={-60} zIndex='1' >
+                    <AnnotationDirective content='<div style="text-align:left;color:white">Target : </div>' verticalAlignment={"Center"} axisIndex={0} axisValue={blueHopperFillTarget} y={-60} zIndex='1' >
                     </AnnotationDirective>
                   </AnnotationsDirective>
                 </LinearGaugeComponent>

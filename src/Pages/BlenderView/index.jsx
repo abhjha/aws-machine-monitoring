@@ -43,7 +43,8 @@ class BlenderView extends Component {
             maxBlenderSpeed: 0,
             temperatureBackground: "",
             buttonLabel: 'START REFRESH',
-            autoRefreshStatus : ''
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
         }
     }
     setDropdownSelectedValue = (e) => {
@@ -88,7 +89,7 @@ class BlenderView extends Component {
             .then((blenderData) => {
                 console.log(blenderData);
                 var blnderTempBG = "";
-                if (blenderData.currentValues.TemperatureSetpoint > blenderData.currentValues.TemperatureUpperLimit || blenderData.currentValues.TemperatureSetpoint < blenderData.currentValues.TemperatureLowerLimit) {
+                if (blenderData.currentValues.ThermometerTemperature > blenderData.currentValues.TemperatureUpperLimit || blenderData.currentValues.ThermometerTemperature < blenderData.currentValues.TemperatureLowerLimit) {
                     blnderTempBG = "#EE423D";
                 } else {
                     blnderTempBG = "#05c985";
@@ -97,7 +98,7 @@ class BlenderView extends Component {
                     ambientPressure: blenderData.currentValues.AmbientPressure,
                     ambientTemperature: blenderData.currentValues.AmbientTemperature,
                     ambientHumidity: blenderData.currentValues.AmbientHumidity,
-                    blenderTemperature: blenderData.currentValues.TemperatureSetpoint,
+                    blenderTemperature: blenderData.currentValues.ThermometerTemperature,
                     tempLowerBound: blenderData.currentValues.TemperatureLowerLimit,
                     tempUpperBound: blenderData.currentValues.TemperatureUpperLimit,
                     temperatureBackground: blnderTempBG,
@@ -164,24 +165,27 @@ class BlenderView extends Component {
             });
     }
     setAutoRefresh = () => {
-        this.setState((prevState)=> {
-            const {autoRefreshState} = prevState;
+        clearInterval(this.apiTimerReferenceonload);
+        this.setState((prevState) => {
+            const { autoRefreshState } = prevState;
+            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
             return {
                 autoRefreshState: !autoRefreshState,
-                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
             }
         }, () => {
-            if(this.state.autoRefreshState){
+            if (this.state.autoRefreshState) {
                 this.apiTimerReference = setInterval(() => {
                     this.triggerBlenderTableData();
-                    this.blednerViewData(); 
+                    this.blednerViewData();
                 }, 2000);
             } else {
                 clearInterval(this.apiTimerReference);
             }
         });
-        
+
     }
     componentDidMount() {
         // const responseHeader = {
@@ -191,8 +195,23 @@ class BlenderView extends Component {
         // };
         this.triggerBlenderTableData();
         this.blednerViewData();
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+            this.triggerBlenderTableData();
+            this.blednerViewData(); 
+        }, 2000);
+        this.setState(()=> {
+            return {
+                autoRefreshState: true,
+                buttonLabel : 'STOP REFRESH',
+                autoRefreshStatus : 'auto-refresh' ,
+            }
+        });
     }
-    componentWillUnmount(){
+    }
+    componentWillUnmount() {
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
         tableAlerts=0;
         tableWarnings =0;
     }
@@ -256,8 +275,8 @@ class BlenderView extends Component {
                     ticks: {
                         fontColor: "white",
                         beginAtZero: true,
-                        min : 0,
-                        max : 1,
+                        min: 0,
+                        max: 1,
                         stepSize: 0.1
                     },
 
@@ -267,7 +286,7 @@ class BlenderView extends Component {
         console.log(this.state.minBlenderSpeed, this.state.maxBlenderSpeed, this.state.BlenderSpeed);
         return (
             <div>
-            <div className="tkey-header">
+                <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
                     <div className="page-dropdown-heading">Asset</div>
@@ -277,7 +296,7 @@ class BlenderView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-            <div className="data-container blender-view">
+                <div className="data-container blender-view">
                     <div className="blender-graph-container ">
                         <div className="blender-graph card-tile">
                             <div className="hopper-rate-heading">
@@ -339,11 +358,11 @@ class BlenderView extends Component {
 
                         </div>
                     </div>
-                <div className="table-details-container card-tile">
-                    { <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                    <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> 
+                    <div className="table-details-container card-tile">
+                        {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
+                    </div>
                 </div>
-            </div>
             </div>
         );
 
