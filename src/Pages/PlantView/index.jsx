@@ -21,7 +21,8 @@ class PlantView extends React.Component {
             flag : true,
             filteredData : [],
             refershCount : 0,
-            buttonLabel: 'START REFRESH'
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus : ''
         }
     }
     
@@ -84,10 +85,10 @@ class PlantView extends React.Component {
                         data.children[i].alarms[j].Line = data.children[i].alarms[0].ASSET;
                         data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
                         if(data.children[i].alarms[j].SEVERITY == "Alert"){
-                            data.children[i].alarms[j][""] = <img src={alert} />;
+                            data.children[i].alarms[j]["statusBox"] = "";
                             tableAlerts++;
                         }else{
-                            data.children[i].alarms[j][""] = <img src={warning} />;
+                            data.children[i].alarms[j]["statusBox"] = "";
                             tableWarnings++;
                         }
                         alarmsData.push(data.children[i].alarms[j]);
@@ -102,10 +103,10 @@ class PlantView extends React.Component {
                             data.children[i].children[k].alarms[z].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].children[k].alarms[z].START_TIME));
                             data.children[i].children[k].alarms[z].START_TIME = this.epochToDate(data.children[i].children[k].alarms[z].START_TIME);
                             if(data.children[i].children[k].alarms[z].SEVERITY == "Alert"){
-                                data.children[i].children[k].alarms[z][""] = <img src={alert} />;
+                                data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableAlerts++;
                             }else{
-                                data.children[i].children[k].alarms[z][""] = <img src={warning} />;
+                                data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableWarnings++;
                             }
                             
@@ -133,7 +134,8 @@ class PlantView extends React.Component {
             const {autoRefreshState} = prevState;
             return {
                 autoRefreshState: !autoRefreshState,
-                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH"
+                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
             }
         }, () => {
             if(this.state.autoRefreshState){
@@ -159,8 +161,8 @@ class PlantView extends React.Component {
     }
 
     render() {
-        const {autoRefreshState, buttonLabel, plantData, plantAssetData, tableData} =  this.state;
-        
+        const {autoRefreshState, buttonLabel, plantData, plantAssetData, tableData,autoRefreshStatus} =  this.state;
+        console.log(tableAlerts , tableWarnings);
         return (
             <div className={"data-container plant-view  " + autoRefreshState}>
                 <div className="plant-header-label">
@@ -180,7 +182,7 @@ class PlantView extends React.Component {
                 <div className="table-details-container card-tile">
                 
                 {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                 <button className="auto-refresh" onClick={this.setAutoRefresh}>{buttonLabel}</button> 
+                 <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> 
                 </div>
             </div>
         );

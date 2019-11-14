@@ -13,12 +13,17 @@ card-heading{
     margin-left: 12px;
     width: 95%;
     height: 11%;
+    h1{
+        @include heading-sub();
+    }
+    display: flex;
     
 }
 .alerts-icon {
     width: 4%;
     margin-bottom: 2px;
 }
+
 #overLay{
     position: absolute;
     z-index: 1000;
@@ -67,6 +72,10 @@ a.alertId{
 #tableGridPanel .react-bs-table table td, .react-bs-table table th {
 //     padding: 10px 20px !important;
 }
+#tableGridPanel .react-bs-table{
+    background-color: #172030;
+    padding: 10px;
+}
 #tableGridPanel .react-bs-table table td:focus {
     outline: none;
 }
@@ -74,6 +83,9 @@ a.alertId{
     font-size: 14px;
     background-color: $base-color;
     font-family: 'Roboto';
+}
+#tableGridPanel .table>tbody>tr{
+    border: 2px solid #172030;
 }
 #tableGridPanel .react-bs-table table tr > td:first-child{
     /* color: #000; */
@@ -91,10 +103,12 @@ a.alertId{
     z-index: 1000;
 }
 #tableGridPanel .react-bs-table-container .react-bs-table-search-form > input.form-control{
-    background-color: #ffffff;
+    background-color: #172030;
+    color: $font-color;
     box-shadow: none;
     position: absolute;
     bottom: 20%;
+    border :none;
 }
 #tableGridPanel .page-item.active .page-link{
     background-color: #cc0000;
@@ -323,7 +337,7 @@ a.alertId{
 
 #tableGridPanel .tableAndFilterContainer{
     position: relative;
-    background-color: white;
+    background-color: $card-bg-color;
 }
 #tableGridPanel .tableAndFilterContainer.withoutTabs{
     position: relative;

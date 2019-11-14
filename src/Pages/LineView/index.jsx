@@ -32,6 +32,8 @@ class LineView extends Component {
             DowntimeDetails: {},
             lineData: {},
             lineAssetData: {},
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus : ''
 
         }
     }
@@ -161,6 +163,26 @@ class LineView extends Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
+    setAutoRefresh = () => {
+        this.setState((prevState)=> {
+            const {autoRefreshState} = prevState;
+            return {
+                autoRefreshState: !autoRefreshState,
+                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+            }
+        }, () => {
+            if(this.state.autoRefreshState){
+                this.apiTimerReference = setInterval(() => {
+                    this.triggerAlertTableData();
+                    this.lineViewData(); 
+                }, 2000);
+            } else {
+                clearInterval(this.apiTimerReference);
+            }
+        });
+        
+    }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -171,29 +193,32 @@ class LineView extends Component {
         this.lineViewData();
 
     }
-
+    componentWillUnmount(){
+        tableAlerts=0;
+        tableWarnings =0;
+    }
     render() {
-        const {lineAssetData} = this.state;
+        const {lineAssetData,dropdownOptions,pages,dropdownSelectedValue,lineData,autoRefreshStatus,buttonLabel,tableData} = this.state;
         return (
             <div>
                 <div className="tkey-header">
                     <BackButton />
-                    <Breadcrumb pages={this.state.pages} />
+                    <Breadcrumb pages={pages} />
                     <div className="page-dropdown-heading">Department</div>
                     <Dropdown
-                        options={this.state.dropdownOptions}
+                        options={dropdownOptions}
                         setDropdownSelectedValue={this.setDropdownSelectedValue}
-                        dropdownselectedValue={this.state.dropdownSelectedValue}
+                        dropdownselectedValue={dropdownSelectedValue}
                     />
                 </div>
 
                 <div className="data-container line-view">
 
                     <div className="line-header-values">
-                        <LabelCard heading={"Department OEE"} value={this.state.lineData.OEE} />
-                        <LabelCard heading={"Availability"} value={this.state.lineData.Availability} />
-                        <LabelCard heading={"Performance"} value={this.state.lineData.Performance} />
-                        <LabelCard heading={"Quality"} value={this.state.lineData.Quality} />
+                        <LabelCard heading={"Department OEE"} value={lineData.OEE} />
+                        <LabelCard heading={"Availability"} value={lineData.Availability} />
+                        <LabelCard heading={"Performance"} value={lineData.Performance} />
+                        <LabelCard heading={"Quality"} value={lineData.Quality} />
                     </div>
                     <div className="line-view-components">
 
@@ -204,7 +229,7 @@ class LineView extends Component {
                             {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                         </div>
                         <div className="line-view-adherence" data-id="finished-goods" onClick={(e) => this.navigateAsset(e)}>
-                            <ScheduleAdherence data={this.state.lineData} />
+                            <ScheduleAdherence data={lineData} />
                         </div>
                         <div className="downtime-details card-tile">
                             <div className="line-view-heading">
@@ -221,7 +246,8 @@ class LineView extends Component {
                     </div>
                     <div className="table-details-container card-tile">
 
-                        { <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        { <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> 
                     </div>
                 </div>
             </div>

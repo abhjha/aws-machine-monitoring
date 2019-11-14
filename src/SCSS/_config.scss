@@ -6,7 +6,7 @@ $card-bg-color: #2F3B52;
 $selection-blue: #0089d2;
 $menu-bg-dark: #0a0a0a;
 $error-red: #df6a65;
-$warning-yellow: #ffda78;
+$warning-yellow: orange;
 $success-green: #bad96b;
 $font-blue: #313b47;
 $font-grey: #6c7990;
@@ -44,7 +44,7 @@ $menu-bar-width: 245px;
 @mixin heading-sub() {
     font-size: $heading-sub-fontsize ;
     font-weight: bold ;
-    color: $font-blue;
+    color: $font-color;
   }
 
 @mixin heading-micro() {

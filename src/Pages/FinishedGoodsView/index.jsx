@@ -34,7 +34,9 @@ class FinishedGoodsView extends Component {
             MixRatio: {},
             TargetMix: {},
             HopperMix: {},
-            FinishedGoodsMix: {}
+            FinishedGoodsMix: {},
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus : ''
         }
     }
 
@@ -140,6 +142,26 @@ class FinishedGoodsView extends Component {
                 console.log(err, 'Something went wrong, finished goods table data')
             });
     }
+    setAutoRefresh = () => {
+        this.setState((prevState)=> {
+            const {autoRefreshState} = prevState;
+            return {
+                autoRefreshState: !autoRefreshState,
+                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+            }
+        }, () => {
+            if(this.state.autoRefreshState){
+                this.apiTimerReference = setInterval(() => {
+                    this.triggerFinishedGoodsTableData();
+                    this.finishedGoodsViewData(); 
+                }, 2000);
+            } else {
+                clearInterval(this.apiTimerReference);
+            }
+        });
+        
+    }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -149,6 +171,10 @@ class FinishedGoodsView extends Component {
         this.triggerFinishedGoodsTableData();
         // this.tableSummaryData();
         this.finishedGoodsViewData();
+    }
+    componentWillUnmount(){
+        tableAlerts=0;
+        tableWarnings =0;
     }
 
     render() {
@@ -218,6 +244,7 @@ class FinishedGoodsView extends Component {
 
                     <div className="table-details-container card-tile">
                         <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> 
                     </div>
                 </div>
             </div>

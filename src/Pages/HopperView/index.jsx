@@ -32,7 +32,9 @@ class HopperView extends Component {
       hopperMixBlue: 0,
       hoppermixLabel: 0,
       gaugeMin: 0,
-      gaugeMax: 0
+      gaugeMax: 0,
+      buttonLabel: 'START REFRESH',
+      autoRefreshStatus: ''
     }
   }
 
@@ -82,7 +84,7 @@ class HopperView extends Component {
                 label: "Actual",
                 fill: true,
                 data: currentData,
-                backgroundColor : '#bb5be3',
+                backgroundColor: '#bb5be3',
                 borderColor: '#BB5BE3',
                 borderWidth: 2
               },
@@ -91,7 +93,7 @@ class HopperView extends Component {
                 fill: true,
                 label: "Expected",
                 borderColor: '#1F8EFA',
-                backgroundColor : '#1F8EFA',
+                backgroundColor: '#1F8EFA',
                 data: expectedData,
                 borderWidth: 1
               }
@@ -132,7 +134,7 @@ class HopperView extends Component {
                 fill: false,
                 data: currentData,
                 borderColor: '#BB5BE3',
-                backgroundColor : '#bb5be3',
+                backgroundColor: '#bb5be3',
                 borderWidth: 1
               },
               {
@@ -140,7 +142,7 @@ class HopperView extends Component {
                 fill: true,
                 label: "Expected",
                 borderColor: '#1F8EFA',
-                backgroundColor : '#1F8EFA',
+                backgroundColor: '#1F8EFA',
                 data: expectedData,
                 borderWidth: 1
               }
@@ -170,6 +172,7 @@ class HopperView extends Component {
     );
   }
   triggerGreenHopperViewTableData = () => {
+    tableData =[];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
@@ -195,6 +198,7 @@ class HopperView extends Component {
       });
   }
   triggerBlueHopperViewTableData = () => {
+    tableData = [];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
       .then((response) => response.json())
       .then((data) => {
@@ -218,7 +222,29 @@ class HopperView extends Component {
         console.log(err, 'Something went wrong, blue hopper table data')
       });
   }
+  setAutoRefresh = () => {
+    this.setState((prevState) => {
+      const { autoRefreshState } = prevState;
+      return {
+        autoRefreshState: !autoRefreshState,
+        buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+        autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+      }
+    }, () => {
+      if (this.state.autoRefreshState) {
+        this.apiTimerReference = setInterval(() => {
+          this.triggerBlueHopperViewData();
+          this.triggerGreenHopperViewData();
+          this.triggerBlueHopperViewTableData();
+          this.triggerGreenHopperViewTableData();
 
+        }, 2000);
+      } else {
+        clearInterval(this.apiTimerReference);
+      }
+    });
+
+  }
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -230,7 +256,11 @@ class HopperView extends Component {
     this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
   }
-
+  componentWillUnmount(){
+    tableAlerts=0;
+    tableWarnings =0;
+    tableData = [];
+}
   render() {
 
     const { greenHopperGraphData,
@@ -243,8 +273,11 @@ class HopperView extends Component {
       greenHopperGaugeRate,
       hopperMixBlue,
       hoppermixLabel,
+      autoRefreshStatus,
+      buttonLabel
+
     } = this.state;
-    
+
 
 
     return (
@@ -264,10 +297,10 @@ class HopperView extends Component {
           <div className="hopper-data-container ">
             <div className="graph-container">
               <div className="hopper-step-graph card-tile">
-                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData}  />}
+                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} />}
               </div>
               <div className="hopper-step-graph card-tile">
-                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData}/>}
+                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} />}
               </div>
             </div>
 
@@ -328,7 +361,7 @@ class HopperView extends Component {
                 <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
                   <AxesDirective>
-                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} >
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                       <PointersDirective>
                         <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
                         </PointerDirective>
@@ -336,13 +369,13 @@ class HopperView extends Component {
                     </AxisDirective>
                     <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
                       <PointersDirective>
-                        <PointerDirective  width={0}>
+                        <PointerDirective width={0}>
                         </PointerDirective>
                       </PointersDirective>
                     </AxisDirective>
                   </AxesDirective>
                   <AnnotationsDirective>
-                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20}axisValue={blueHopperFillTarget} zIndex={1}>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20} axisValue={blueHopperFillTarget} zIndex={1}>
                     </AnnotationDirective>
                     <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} axisIndex={0} axisValue={blueHopperFillTarget} y={-60} zIndex='1' >
                     </AnnotationDirective>
@@ -356,13 +389,13 @@ class HopperView extends Component {
                 <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030 ' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
                   <AxesDirective>
-                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} >
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                       <PointersDirective>
                         <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
                         </PointerDirective>
                       </PointersDirective>
                     </AxisDirective>
-                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }}  labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
                       <PointersDirective>
                         <PointerDirective width={0}>
                         </PointerDirective>
@@ -370,7 +403,7 @@ class HopperView extends Component {
                     </AxisDirective>
                   </AxesDirective>
                   <AnnotationsDirective>
-                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20}axisValue={greenHopperFillTarget} zIndex={1}>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20} axisValue={greenHopperFillTarget} zIndex={1}>
                     </AnnotationDirective>
                     <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} axisIndex={0} axisValue={greenHopperFillTarget} y={-60} zIndex='1' >
                     </AnnotationDirective>
@@ -383,7 +416,8 @@ class HopperView extends Component {
             </div>
           </div>
           <div className="table-details-container card-tile">
-            {((tableWarnings > 0 || tableAlerts > 0)) && <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>
           </div>
         </div>
       </div>

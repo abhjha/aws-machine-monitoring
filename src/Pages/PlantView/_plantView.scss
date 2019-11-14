@@ -25,4 +25,17 @@
           grid-gap: 20px ;
           padding: 20px;
       }
+      button.refresh-button {
+        background-color: #05C985;
+        border: none;
+        border-radius: 10px;
+        float: right;
+        margin-top: 20px;
+    }
+    button.refresh-button {
+        &.auto-refresh{
+            background-color: #EE423D;
+        }
+    }
+
 }

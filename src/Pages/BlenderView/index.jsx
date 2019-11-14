@@ -41,7 +41,9 @@ class BlenderView extends Component {
             blenderVibrtionWarning: 0,
             minBlenderSpeed: 0,
             maxBlenderSpeed: 0,
-            temperatureBackground: ""
+            temperatureBackground: "",
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus : ''
         }
     }
     setDropdownSelectedValue = (e) => {
@@ -161,7 +163,26 @@ class BlenderView extends Component {
                 console.log(err, 'Something went wrong, blender table data')
             });
     }
-
+    setAutoRefresh = () => {
+        this.setState((prevState)=> {
+            const {autoRefreshState} = prevState;
+            return {
+                autoRefreshState: !autoRefreshState,
+                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+            }
+        }, () => {
+            if(this.state.autoRefreshState){
+                this.apiTimerReference = setInterval(() => {
+                    this.triggerBlenderTableData();
+                    this.blednerViewData(); 
+                }, 2000);
+            } else {
+                clearInterval(this.apiTimerReference);
+            }
+        });
+        
+    }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -170,6 +191,10 @@ class BlenderView extends Component {
         // };
         this.triggerBlenderTableData();
         this.blednerViewData();
+    }
+    componentWillUnmount(){
+        tableAlerts=0;
+        tableWarnings =0;
     }
     render() {
         const graphOptions = {
@@ -315,7 +340,8 @@ class BlenderView extends Component {
                         </div>
                     </div>
                 <div className="table-details-container card-tile">
-                    {((tableWarnings > 0 || tableAlerts > 0) ) && <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                    { <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                    <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> 
                 </div>
             </div>
             </div>

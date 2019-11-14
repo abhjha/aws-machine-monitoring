@@ -30,11 +30,11 @@ export class DataTableComponent extends React.Component {
 
   setStatusStyle(cell, row) {
     let styleClassName = '';
-    if (row.status.toLowerCase() === 'critical') {
+    if (row.SEVERITY.toLowerCase() === 'critical') {
       styleClassName = 'text-danger';
-    } else if (row.status.toLowerCase() === 'non-critical') {
+    } else if (row.SEVERITY.toLowerCase() === 'non-critical') {
       styleClassName = 'text-primary';
-    } else if (row.status.toLowerCase() === 'warning') {
+    } else if (row.SEVERITY.toLowerCase() === 'warning') {
       styleClassName = 'text-warning';
     }
     return `<i class='fas fa-circle statusMarker ${styleClassName}'></i> ${cell}`;
@@ -47,21 +47,21 @@ export class DataTableComponent extends React.Component {
       <div id="tableGridPanel">
         <div className="alert-zone">
           
-          <div className="card-heading"><h1><span >Active</span><span ><img src={alert} /> Alerts {this.state.tableAlerts}</span> and <span><img src={warning} /> Warnings {this.state.tableWarnings}</span></h1></div>
+          <div className="card-heading"><h1><span >Active</span><span ><img src={alert} /> Alerts {this.props.tableAlerts}</span> and <span><img src={warning} /> Warnings {this.props.tableWarnings}</span></h1></div>
         </div>
 
         <div className="tableAndFilterContainer withoutTabs">
-          <div className="filterIcons">
+          {/* <div className="filterIcons">
             <i className="fas fa-calendar pull-right tableTools" onClick={this.showHideCalendarTool}></i>
             <i className="fas fa-filter pull-right tableTools" onClick={this.showHideFilterTool}></i>
             <i className="fab fa-sistrix pull-right tableTools"
               onClick={(e) => this.options.showSearchTool(e)}></i>
-          </div>
+          </div> */}
           <input type="hidden" value={this.state.activeTabKey} />
           {<BootstrapTable
             ref='alertsTable' containerClass="alertsTable" data={this.state.filteredData} striped hover bordered={false} search={isSearchEnabled} multiColumnSearch options={this.options}>
-            <TableHeaderColumn width='30' dataField='statusBox' border='0'></TableHeaderColumn>
-            <TableHeaderColumn width='90' headerAlign='center' dataAlign='center' isKey dataField='LINE' dataFormat={this.alertDetails}>LINE</TableHeaderColumn>
+            <TableHeaderColumn width='30' dataField='statusBox' dataFormat={this.setStatusStyle} border='0'></TableHeaderColumn>
+            <TableHeaderColumn width='90' headerAlign='center' dataAlign='center' isKey dataField='LINE' >LINE</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataSort dataField='ASSET' >Asset</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='ASSET_TYPE' >Asset Type</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='DESCRIPTION'>Description</TableHeaderColumn>
