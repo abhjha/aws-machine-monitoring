@@ -6,6 +6,7 @@
     "@syncfusion/ej2-react-lineargauge": "^17.3.26",
     "chart.js": "^2.8.0",
     "chartjs-plugin-annotation": "^0.5.7",
+    "moment": "^2.24.0",
     "node-sass": "^4.13.0",
     "react": "^16.9.0",
     "react-bootstrap-table": "^4.3.1",

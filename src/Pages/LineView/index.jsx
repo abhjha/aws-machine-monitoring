@@ -83,6 +83,9 @@ class LineView extends Component {
         fetch(url)
             .then((response) => response.json())
             .then((goodsData) => {
+                goodsData.currentValues.DamagedUnitCount = 3;
+                goodsData.currentValues.DamagedCasesCount = 2;
+                goodsData.currentValues.OverheatedCount = 1;
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
                     lineData: goodsData.currentValues,
@@ -100,15 +103,28 @@ class LineView extends Component {
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
     epochToDate = (dateVal) => {
-        var date = new Date(parseFloat(dateVal.substr(6)));
-        return (
-            (date.getMonth() + 1) + "/" +
-            date.getDate() + "/" +
-            date.getFullYear() + " " +
-            date.getHours() + ":" +
-            date.getMinutes() + ":" +
-            date.getSeconds()
-        );
+        dateVal = parseInt(dateVal);
+        var month = [];
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(dateVal).getDate();
+        var monthName = month[new Date(dateVal).getMonth()];
+        var year = new Date(dateVal).getFullYear();
+        var hours = new Date(dateVal).getHours();
+        var mins = new Date(dateVal).getMinutes();
+        var seconds = new Date(dateVal).getSeconds();
+
+        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
 
     //Alert Table Data
@@ -248,7 +264,7 @@ class LineView extends Component {
                         </div>
                             {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                         </div>
-                        <div className="line-view-adherence" data-id="finished-goods" onClick={(e) => this.navigateAsset(e)}>
+                        <div className="line-view-adherence" data-id="finished-goods">
                             <ScheduleAdherence data={lineData} />
                         </div>
                         <div className="downtime-details card-tile">

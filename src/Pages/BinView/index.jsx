@@ -55,16 +55,29 @@ class BinView extends Component {
     return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
   }
   epochToDate = (dateVal) => {
-    var date = new Date(parseFloat(dateVal.substr(6)));
-    return (
-      (date.getMonth() + 1) + "/" +
-      date.getDate() + "/" +
-      date.getFullYear() + " " +
-      date.getHours() + ":" +
-      date.getMinutes() + ":" +
-      date.getSeconds()
-    );
-  }
+    dateVal = parseInt(dateVal);
+    var month = [];
+    month[0] = "Jan";
+    month[1] = "Feb";
+    month[2] = "Mar";
+    month[3] = "Apr";
+    month[4] = "May";
+    month[5] = "Jun";
+    month[6] = "Jul";
+    month[7] = "Aug";
+    month[8] = "Sep";
+    month[9] = "Oct";
+    month[10] = "Nov";
+    month[11] = "Dec";
+    var date = new Date(dateVal).getDate();
+    var monthName = month[new Date(dateVal).getMonth()];
+    var year = new Date(dateVal).getFullYear();
+    var hours = new Date(dateVal).getHours();
+    var mins = new Date(dateVal).getMinutes();
+    var seconds = new Date(dateVal).getSeconds();
+
+    return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+}
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
     //this.setState({ dropdownSelectedValue });
@@ -319,8 +332,13 @@ class BinView extends Component {
           },
           ticks: {
             beginAtZero: true,
-
-          }
+          },
+          scaleLabel:{
+            display: true,
+  labelString:"Volume(lts.)",
+            fontSize: 16,
+            fontColor: 'white',
+          },
         }],
         yAxes: [{
           display: true,
@@ -328,6 +346,7 @@ class BinView extends Component {
             beginAtZero: true,
             min: 0,
             max: 360,
+            fontColor: 'white',
             stepSize: 30
           },
 

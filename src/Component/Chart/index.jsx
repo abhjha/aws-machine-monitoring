@@ -26,32 +26,33 @@ class Chart extends Component {
                 position: 'top',
                 labels: {
                   boxWidth: 29,
-                  fontColor: 'black',
+                  fontColor: 'white',
                   fontSize: 20,
                   fill:true,
-                  backgroundColor : 'black'
-                }
+                  backgroundColor : 'white'
+                },
+                fill : true
               },
               responsive: true,
               maintainAspectRatio: false,
               scales: {
                 yAxes: [{
-                  label: "Current(amps)",
                   scaleLabel: {
                     display: true,
+          labelString:"Current(amps)",
                     fontSize: 16,
-                    fontColor: 'black',
+                    fontColor: 'white',
                   },
                   ticks: {
                     beginAtZero: true,
                     min: 0,
                     stepSize: 5,
                     lineWidth: 1,
-                    fontColor: 'black',
+                    fontColor: 'white',
                     fontSize: 16,
                   },
                   gridLines: {
-                    color: 'black',
+                    color: 'white',
                     drawTicks: true,
                   }
                 }],
@@ -59,11 +60,17 @@ class Chart extends Component {
                   gridLines: {
                     borderDash: [6, 4],
                     zeroLineBorderDash: [6, 4],
-                    color: "black",
+                    color: "white",
                     drawTicks: true,
                   },
+                  scaleLabel:{
+                    display: true,
+          labelString:"Time(s)",
+                    fontSize: 16,
+                    fontColor: 'white',
+                  },
                   ticks: {
-                    fontColor: 'black',
+                    fontColor: 'white',
                     fontSize: 16,
                     padding: 10.5
                   }

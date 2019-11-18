@@ -1,0 +1,16 @@
+.asset-container {
+    width: 30%;
+}
+.line-asset {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.line-asset div {
+    height: 32px;
+    width: 32px;
+    background-color: #05C985;
+    border-radius: 8px; 
+    margin: 0 auto;
+}

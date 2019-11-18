@@ -19,7 +19,6 @@ export class DataTableComponent extends React.Component {
       tableAlerts : props.tableAlerts,
       tableWarnings : props.tableWarnings
     };
-    console.log(this.state.filteredData, "new Table Data");
   }
 
   static getDerivedStateFromProps(props, state){
@@ -30,7 +29,7 @@ export class DataTableComponent extends React.Component {
 
   setStatusStyle(cell, row) {
     let styleClassName = '';
-    if (row.SEVERITY.toLowerCase() === 'critical') {
+    if (row.SEVERITY.toLowerCase() === 'alert') {
       styleClassName = 'text-danger';
     } else if (row.SEVERITY.toLowerCase() === 'non-critical') {
       styleClassName = 'text-primary';
@@ -61,12 +60,13 @@ export class DataTableComponent extends React.Component {
           {<BootstrapTable
             ref='alertsTable' containerClass="alertsTable" data={this.state.filteredData} striped hover bordered={false} search={isSearchEnabled} multiColumnSearch options={this.options}>
             <TableHeaderColumn width='30' dataField='statusBox' dataFormat={this.setStatusStyle} border='0'></TableHeaderColumn>
-            <TableHeaderColumn width='90' headerAlign='center' dataAlign='center' isKey dataField='LINE' >LINE</TableHeaderColumn>
+            <TableHeaderColumn width='90' headerAlign='center' dataAlign='center' isKey dataField='Line' >LINE</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataSort dataField='ASSET' >Asset</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='ASSET_TYPE' >Asset Type</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='DESCRIPTION'>Description</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='STATUS'>Status</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='START_TIME'>Start Time</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='Duration'>Duration</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign='center' dataField='SEVERITY'>Severity</TableHeaderColumn>
           </BootstrapTable>}
         </div>

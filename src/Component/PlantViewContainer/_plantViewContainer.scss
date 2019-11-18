@@ -8,7 +8,7 @@
     display: flex;
     background-color: $card-bg-color;
     width: 100%;
-    padding: 10px 0 0 15px;
+    padding: 0 0 0 15px;
     height: 100%;
 }
 .plant-asset-heading {
@@ -38,9 +38,18 @@
 }
 .line-asset-status.line-heading{
     text-align: center;
-    background-color: #05C985 !important ;
+    
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    &.red{
+        background-color: #EE423D;
+    }
+    &.green{
+        background-color: #05C985;
+    }
+    &.orange{
+        background-color: orange;
+    }
 }
 .line-asset-div {
     height: 32px;
@@ -48,4 +57,13 @@
     background-color: #05C985;
     margin: 0 auto;
     border-radius: 8px;
+}
+.line-asset-data-container{
+    height: 80%;
+}
+.plant-asset-container {
+    .asset-container {
+        height: 100%;
+        width: auto;
+    }
 }
