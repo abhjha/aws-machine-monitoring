@@ -60,7 +60,6 @@ class LineAsset extends Component {
 
     
     render() {
-        console.log(this.state.lineData);
         return (
 
             <div className="line-asset-container">

@@ -109,7 +109,7 @@ class PlantView extends React.Component {
                         }
                         alarmsData.push(data.children[i].alarms[j]);
                     }
-                    for (let k = 0; k < data.children[i].children.length; k++) {
+                    for (let k = 0; data.children[i].children != undefined && k < data.children[i].children.length; k++) {
                         for (let z = 0; z < data.children[i].children[k].alarms.length; z++) {
                             if (data.children[i].alarms.length > 0) {
                                 data.children[i].children[k].alarms[z].Line = data.children[i].ASSET_NAME;
@@ -134,7 +134,7 @@ class PlantView extends React.Component {
                     }else if(tableAlerts>0){
                         data.children[i]["backGroundColor"] = "red";
                     }else if(tableAlerts ==0 && tableWarnings>0){
-                        data.children[i]["backGroundColor"] = "yellow";
+                        data.children[i]["backGroundColor"] = "orange";
                     }
                 }
 

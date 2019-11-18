@@ -70,10 +70,12 @@ a.alertId{
     background-color: $base-color;
     border-radius: 5px;
     font-family: 'Roboto';
+    
 
 }
 #tableGridPanel .react-bs-table table td, .react-bs-table table th {
 //     padding: 10px 20px !important;
+text-align: left;
 }
 
 #tableGridPanel .react-bs-table table td:focus {
