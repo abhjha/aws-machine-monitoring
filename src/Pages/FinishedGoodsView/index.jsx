@@ -20,7 +20,7 @@ class FinishedGoodsView extends Component {
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
 
-            tableData: [{}],
+            tableData: [],
             graphData: {
                 labels: [],
                 datasets: [{

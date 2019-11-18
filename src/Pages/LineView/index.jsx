@@ -70,7 +70,7 @@ class LineView extends Component {
                 Component: { BlenderView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "finished-goods") {
+        } else if (assetID == "Finished Goods") {
             this.props.history.push({
                 pathname: '/finishedGoodsView',
                 Component: { FinishedGoodsView },

@@ -1,13 +1,13 @@
 .data-container{
     .plant-header-label{
         display: grid;
-        grid-template-columns: 23.8% 23.8% 23.8% 23.8%;
-        grid-gap: 19px;
+        grid-template-columns: 24% 24% 25% 1fr;
+        grid-gap: 1%;
     }
     .line-view-container{
         display: grid;
-        grid-template-columns: 49% 49.2%;
-        grid-gap: 19px;
+        grid-template-columns: 49% 1fr;
+        grid-gap: 1%;
     }
     .line-details{
         background-color: $card-bg-color;

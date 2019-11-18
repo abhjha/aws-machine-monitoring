@@ -66,7 +66,7 @@
     width: 75%
   }
   &.hopper-view{
-    height: 100vh;
+      height: calc(100vh - 100px);
       display: grid;
       grid-template-rows:1fr 1fr;
       grid-gap: 20px ;
