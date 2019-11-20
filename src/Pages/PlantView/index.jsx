@@ -4,6 +4,8 @@ import ScheduleAdherence from '../../Component/ScheduleAdherence';
 import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import LineView from '../../Pages/LineView';
 import PlantAsset from '../../Component/PlantViewContainer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
 
@@ -52,6 +54,17 @@ class PlantView extends React.Component {
         var seconds = ((millis % 60000) / 1000).toFixed(0);
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
+
+    notify = () => {
+        toast.error("New alert !", {
+            position: toast.POSITION.TOP_RIGHT
+          });
+     
+          toast.warn("New warning !", {
+            position: toast.POSITION.TOP_RIGHT
+          });
+   
+      };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -103,9 +116,11 @@ class PlantView extends React.Component {
                         if (data.children[i].alarms[j].SEVERITY == "Alert") {
                             data.children[i].alarms[j]["statusBox"] = "";
                             tableAlerts++;
+                            this.notify();
                         } else {
                             data.children[i].alarms[j]["statusBox"] = "";
                             tableWarnings++;
+                            this.notify();
                         }
                         alarmsData.push(data.children[i].alarms[j]);
                     }
@@ -121,9 +136,11 @@ class PlantView extends React.Component {
                             if (data.children[i].children[k].alarms[z].SEVERITY == "Alert") {
                                 data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableAlerts++;
+                                this.notify();
                             } else {
                                 data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableWarnings++;
+                                this.notify();
                             }
 
                             alarmsData.push(data.children[i].children[k].alarms[z]);
@@ -226,6 +243,8 @@ class PlantView extends React.Component {
                     {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                     {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
                 </div>
+
+                <ToastContainer />
             </div>
         );
     }
