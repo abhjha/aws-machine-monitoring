@@ -42,7 +42,7 @@ class SetPointOptimzation extends Component {
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="setpoint-heading">
+                <div className="setpoint-heading card-tile">
                     <div className="setpoint-title">
                         Setpoint Optimization
                   </div>
@@ -51,7 +51,7 @@ class SetPointOptimzation extends Component {
                   </div>
                 </div>
                 <div className="setpoint-data">
-                    <div className="setpoint-temp">
+                    <div className="setpoint-temp card-tile">
                         <div className="setpoint-sku">
                             <SetpointTable data={this.state.setpointSKU} />
                         </div>
@@ -62,7 +62,7 @@ class SetPointOptimzation extends Component {
                             <SetpointTable data={this.state.setpointAmbTemp} /><div className="sp-table-value sp-image"><img src={ambHum} /></div>
                         </div>
                     </div>
-                    <div className="setpoint-adjustments">
+                    <div className="setpoint-adjustments card-tile">
                         <div className="setpoint-adjustements-heading">
                             Recommended Setpoint Adjustments
                         </div>

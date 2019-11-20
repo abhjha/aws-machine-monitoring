@@ -1,5 +1,4 @@
 import React from 'react';
-import './index.css';
 
 class AmbientReadings extends React.Component {
     constructor(props){
@@ -23,15 +22,15 @@ class AmbientReadings extends React.Component {
                 <div className="temperature-humidity-pressure">
                     <div className="temperature">
                     <div className="temp-heading">Ambient Temp.</div>
-                    <div className="temp-value"><span>{this.props.temp}</span></div>
+                    <div className="temp-value"><span>{this.props.temp.toFixed(2) + " F"}</span></div>
                     </div>
                     <div className="humidity">
                     <div className="humid-heading">Humidity</div>
-                    <div className="humid-value">{this.props.humidity}</div>
+                    <div className="humid-value">{this.props.humidity.toFixed(2)+ " %"}</div>
                     </div>
                     <div className="pressure">
                     <div className="pressure-heading">Ambient Pres.</div>
-                    <div className="pressure-value">{this.props.pressure}</div>
+                    <div className="pressure-value">{this.props.pressure.toFixed(2) + " inHg"}</div>
                     </div>
 
 

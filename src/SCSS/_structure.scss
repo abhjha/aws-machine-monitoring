@@ -4,6 +4,14 @@
     padding: 40px ;
     border-radius: $border-radius;
     background-color: $card-bg-color;
+    color: $font-color;
+}
+@mixin page-heading() {
+    display: grid;
+    grid-template-columns: 5% 65% 10% 1fr;
+    grid-column-gap: 20px;
+    background-color: $card-bg-color;
+    padding: 10px;
 }
 
 @mixin ring-icon($color) {

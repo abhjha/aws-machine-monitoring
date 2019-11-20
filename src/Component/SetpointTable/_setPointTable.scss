@@ -1,0 +1,17 @@
+.sp-table-container {
+    text-align: center;
+    margin-top: 15%;
+    color: black;
+}
+.sp-table-value {
+    padding: 15px;
+    background-color: $base-color;
+    border: 1px solid white;
+    color: white;
+}
+.sp-table-value img{
+    width: 100%;
+}
+.sp-table-value.sp-image{
+    padding: 0px;
+}

@@ -1,0 +1,35 @@
+.data-container{
+    .plant-header-label{
+        display: grid;
+        grid-template-columns: 24% 24% 25% 1fr;
+        grid-gap: 1%;
+    }
+    .line-view-container{
+        display: grid;
+        grid-template-columns: 49% 1fr;
+        grid-gap: 1%;
+    }
+    .line-details{
+        background-color: $card-bg-color;
+        padding: 20px 20px 50px;
+        
+    }
+    .plant-view-heading {
+        color: $font-color;
+        font-size: 18px;
+    }
+    &.plant-view{
+        height: 100vh;
+          display: grid;
+          grid-template-rows: 170px 1fr 1fr;
+          grid-gap: 20px ;
+          padding: 20px;
+      }
+      
+    button.refresh-button {
+        &.auto-refresh{
+            background-color: #EE423D;
+        }
+    }
+
+}

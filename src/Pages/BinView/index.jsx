@@ -5,30 +5,28 @@ import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb'
 import { Bar } from 'react-chartjs-2';
 import Time from '../../Component/Time';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import 'chartjs-plugin-annotation';
-
-import './index.css';
 var tableWarnings = 0;
 var tableAlerts = 0;
 var tableData = [];
 class BinView extends Component {
   constructor(props) {
     super(props);
-    console.log(props , "props");
+    console.log(props, "props");
     this.state = {
-      pages: ['Plant View', this.props.location.state.lineValue, 'Raw Material Bins'],
-      dropdownSelectedValue: 'Raw Material Bins',
-      blueLeftData :[{}],
-      greenLeftData :[{}],
+      pages: ['Plant View', 'Line 3', 'Bin'],
+      dropdownSelectedValue: 'Bin',
+      blueLeftData: [{}],
+      greenLeftData: [{}],
       BBConsumptioRate: 0,
       GBConsumptioRate: 0,
       selectedLine: 'Line_3',
-      minimumTarget : 0,
-      refillPoint : 0,
-      
+      minimumTarget: 0,
+      refillPoint: 0,
+
       BlueBinGraphData: {
         datasets: [{
           label: "",
@@ -45,60 +43,76 @@ class BinView extends Component {
           data: [0],
         }]
       },
-      dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+      dropdownOptions: ['Bin', 'Hopper', 'Blender'],
+      buttonLabel: 'START REFRESH',
+      autoRefreshStatus: '',
+      autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
     }
   }
   millisToMinutesAndSeconds = (millis) => {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
-}
-epochToDate = (dateVal) => {
-    var date = new Date(parseFloat(dateVal.substr(6)));
-    return(
-        (date.getMonth() + 1) + "/" +
-        date.getDate() + "/" +
-        date.getFullYear() + " " +
-        date.getHours() + ":" +
-        date.getMinutes() + ":" +
-        date.getSeconds()
-    );
+  }
+  epochToDate = (dateVal) => {
+    dateVal = parseInt(dateVal);
+    var month = [];
+    month[0] = "Jan";
+    month[1] = "Feb";
+    month[2] = "Mar";
+    month[3] = "Apr";
+    month[4] = "May";
+    month[5] = "Jun";
+    month[6] = "Jul";
+    month[7] = "Aug";
+    month[8] = "Sep";
+    month[9] = "Oct";
+    month[10] = "Nov";
+    month[11] = "Dec";
+    var date = new Date(dateVal).getDate();
+    var monthName = month[new Date(dateVal).getMonth()];
+    var year = new Date(dateVal).getFullYear();
+    var hours = new Date(dateVal).getHours();
+    var mins = new Date(dateVal).getMinutes();
+    var seconds = new Date(dateVal).getSeconds();
+
+    return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
 }
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
     //this.setState({ dropdownSelectedValue });
     if (dropdownSelectedValue === 'Hopper') {
-      this.props.history.push({ 
+      this.props.history.push({
         pathname: '/hopperView',
         state: { lineValue: this.props.location.state.lineValue },
-       });
+      });
     } else if (dropdownSelectedValue === 'Blender') {
-      this.props.history.push({ 
+      this.props.history.push({
         pathname: '/blenderView',
         state: { lineValue: this.props.location.state.lineValue },
-       });
+      });
     } else if (dropdownSelectedValue === 'Finished Goods View') {
-      this.props.history.push({ 
+      this.props.history.push({
         pathname: '/finishedGoodsView',
         state: { lineValue: this.props.location.state.lineValue },
-       });
+      });
     }
   }
   triggerBlueBinViewData = () => {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN005&lengthOfHistory=5')
       .then((response) => response.json())
       .then((binData) => {
-        console.log(binData , "blue");
+        console.log(binData, "blue");
         var bgColor = "";
-        if(binData.currentValues.binLevel > binData.currentValues.refillPoint){
+        if (binData.currentValues.binLevel > binData.currentValues.refillPoint) {
           bgColor = "#05C985";
-        } else if(binData.currentValues.binLevel < binData.currentValues.refillPoint && binData.currentValues.binLevel > binData.currentValues.minimumTarget){
+        } else if (binData.currentValues.binLevel < binData.currentValues.refillPoint && binData.currentValues.binLevel > binData.currentValues.minimumTarget) {
           bgColor = 'orange';
-        } else{
+        } else {
           bgColor = '#EE423D';
         }
-        this.setState({ 
-          blueLeftData: [{ value: ((binData.currentValues.binLevel - binData.currentValues.minimumTarget) / (binData.currentValues.consumptionRate * 2)).toFixed(2), binName: 'Dye Bin' }],
+        this.setState({
+          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Dye Bin' }],
           BlueBinGraphData: {
             datasets: [{
               label: "",
@@ -107,9 +121,9 @@ epochToDate = (dateVal) => {
               data: [binData.currentValues.binLevel]
             }]
           },
-          BBConsumptioRate : binData.currentValues.consumptionRate,
-          minimumTarget :binData.currentValues.minimumTarget ,
-          refillPoint : binData.currentValues.refillPoint
+          BBConsumptioRate: binData.currentValues.consumptionRate,
+          minimumTarget: binData.currentValues.minimumTarget,
+          refillPoint: binData.currentValues.refillPoint
         })
       })
       .catch(function (err) {
@@ -118,31 +132,31 @@ epochToDate = (dateVal) => {
   }
   triggerGreenBinViewData = () => {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN006&lengthOfHistory=5')
-    .then((response) => response.json())
+      .then((response) => response.json())
       .then((binData) => {
         console.log(binData, "green");
         var bgColor = "";
-        if(binData.currentValues.binLevel > binData.currentValues.refillPoint){
+        if (binData.currentValues.binLevel > binData.currentValues.refillPoint) {
           bgColor = "#05C985";
-        } else if(binData.currentValues.binLevel < binData.currentValues.refillPoint && binData.currentValues.binLevel > binData.currentValues.minimumTarget){
+        } else if (binData.currentValues.binLevel < binData.currentValues.refillPoint && binData.currentValues.binLevel > binData.currentValues.minimumTarget) {
           bgColor = 'yellow';
-        } else{
-          
+        } else {
+
           bgColor = '#EE423D';
         }
-        this.setState({ 
+        this.setState({
           greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Sealant Bin' }],
           GreenBinGraphData: {
             datasets: [{
-              label: "",
+              label: "Volume(litres)",
               backgroundColor: bgColor,
               borderColor: 'rgb(255, 99, 132)',
               data: [binData.currentValues.binLevel]
             }]
           },
-          GBConsumptioRate : binData.currentValues.consumptionRate,
-          minimumTarget :binData.currentValues.minimumTarget ,
-          refillPoint : binData.currentValues.refillPoint
+          GBConsumptioRate: binData.currentValues.consumptionRate,
+          minimumTarget: binData.currentValues.minimumTarget,
+          refillPoint: binData.currentValues.refillPoint
         })
       })
       .catch(function (err) {
@@ -151,6 +165,9 @@ epochToDate = (dateVal) => {
   }
   //Alert table data
   triggerGreenBinTableData = () => {
+    tableData = [];
+    tableAlerts =0;
+    tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN006')
       .then((response) => response.json())
       .then((data) => {
@@ -165,6 +182,7 @@ epochToDate = (dateVal) => {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
           }
+
           tableData.push(data.alarms[i]);
         }
 
@@ -172,8 +190,10 @@ epochToDate = (dateVal) => {
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
       });
+    console.log(tableData, "bin table data");
   }
   triggerBlueBinTableData = () => {
+    tableData = [];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
       .then((response) => response.json())
       .then((data) => {
@@ -195,8 +215,33 @@ epochToDate = (dateVal) => {
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue bin table data')
       });
+    console.log(tableData, "bin table data");
   }
+  // setAutoRefresh = () => {
+  //   clearInterval(this.apiTimerReferenceonload);
+  //   this.setState((prevState) => {
+  //     const { autoRefreshState } = prevState;
+  //     sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
+  //     return {
+  //       autoRefreshState: !autoRefreshState,
+  //       buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+  //       autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+  //     }
+  //   }, () => {
+  //     if (this.state.autoRefreshState) {
+  //       this.apiTimerReference = setInterval(() => {
+  //         this.triggerBlueBinTableData();
+  //         this.triggerGreenBinTableData();
+  //         this.triggerBlueBinViewData();
+  //         this.triggerGreenBinViewData();
+  //       }, 2000);
+  //     } else {
+  //       clearInterval(this.apiTimerReference);
+  //     }
+  //   });
+
+  // }
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -208,10 +253,33 @@ epochToDate = (dateVal) => {
     this.triggerGreenBinTableData();
     this.triggerBlueBinViewData();
     this.triggerGreenBinViewData();
+    if (sessionStorage.autoRefreshState === "true") {
+      this.apiTimerReferenceonload = setInterval(() => {
+        this.triggerBlueBinTableData();
+        this.triggerGreenBinTableData();
+        this.triggerBlueBinViewData();
+        this.triggerGreenBinViewData();
+      }, 2000);
+      this.setState(() => {
+        return {
+          autoRefreshState: true,
+          buttonLabel: 'STOP REFRESH',
+          autoRefreshStatus: 'auto-refresh',
+        }
+      });
+    }
 
+  }
+  componentWillUnmount() {
+    clearInterval(this.apiTimerReference);
+    clearInterval(this.apiTimerReferenceonload);
+    tableAlerts = 0;
+    tableWarnings = 0;
+    tableData = [];
   }
 
   render() {
+    console.log(tableData, "bin data");
     const graphOptions = {
       legend: {
         display: false
@@ -223,16 +291,19 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.minimumTarget,
-          borderColor: '#ffffff',
+          borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
+          
+          
           label: {
             content: "Minimum Target",
             enabled: true,
-            position: "bottom",
-            xAdjust: 217,
+            position: "top",
+            xAdjust: 290,
             yAdjust: 20,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            endValue: 60,
           }
         },
         {
@@ -240,7 +311,7 @@ epochToDate = (dateVal) => {
           mode: 'horizontal',
           scaleID: 'y-axis-0',
           value: this.state.refillPoint,
-          borderColor: '#ffffff',
+          borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
           label: {
@@ -249,7 +320,8 @@ epochToDate = (dateVal) => {
             position: "bottom",
             xAdjust: 217,
             yAdjust: 20,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+
           }
         }
         ],
@@ -260,12 +332,25 @@ epochToDate = (dateVal) => {
           barThickness: 150,
           gridLines: {
             offsetGridLines: true
-          }
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+          scaleLabel:{
+            display: true,
+  labelString:"Weight (kg)",
+            fontSize: 16,
+            fontColor: 'white',
+          },
         }],
         yAxes: [{
           display: true,
           ticks: {
             beginAtZero: true,
+            min: 0,
+            max: 300,
+            fontColor: 'white',
+            stepSize: 30
           },
 
         }]
@@ -273,7 +358,7 @@ epochToDate = (dateVal) => {
     };
     var values = (
       <div>
-        {this.state.blueLeftData.length>0 && this.state.blueLeftData.map((item, index) => {
+        {this.state.blueLeftData.length > 0 && this.state.blueLeftData.map((item, index) => {
           return <Time
             value={item.value}
             binName={item.binName}
@@ -285,7 +370,7 @@ epochToDate = (dateVal) => {
     )
     var greenValues = (
       <div>
-        {this.state.greenLeftData.length>0 && this.state.greenLeftData.map((item, index) => {
+        {this.state.greenLeftData.length > 0 && this.state.greenLeftData.map((item, index) => {
           return <Time
             value={item.value}
             binName={item.binName}
@@ -296,7 +381,7 @@ epochToDate = (dateVal) => {
       </div>
     )
     return (
-      <div className="data-container">
+      <div>
         <div className="tkey-header">
           <BackButton />
           <Breadcrumb pages={this.state.pages} />
@@ -307,42 +392,40 @@ epochToDate = (dateVal) => {
             dropdownselectedValue={this.state.dropdownSelectedValue}
           />
         </div>
-        <div className="bin-container">
-          <div className="bin-container-heading">
-          Raw Material Bins
-            </div>
+
+        <div className="data-container bin-view-page">
           <div className="bin-graph-container">
-            <div className="refill-container">
+            <div className="refill-container card-tile">
               <div className="bin-view">
-                <p className="bin-view-heading">Time Left to Refill</p>
-                {values} {greenValues}
+                <p className="bin-view-heading"><h4>Time Left to Refill</h4></p>
+                {greenValues} {values}
               </div>
             </div>
-            <div className="bin1-graph">
+            <div className="bin1-graph card-tile">
               <div className="graph-heading">
-              Sealant Bin Level
+                Sealant Bin Level
                 </div>
               <Bar data={this.state.GreenBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate + " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " units per minute"}</span>
               </div>
             </div>
-            <div className="bin2-graph">
+            <div className="bin2-graph card-tile">
               <div className="graph-heading">
-              Dye Bin Level
+                Dye Bin Level
                 </div>
               <Bar data={this.state.BlueBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate+ " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2) + " units per minute"}</span>
               </div>
             </div>
           </div>
-        </div>
-        <div className="table-details-container">
-          <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-          <div className="table-date">{tableData.length >0 && <Table data={tableData} /> }</div>
+          <div className="table-details-container card-tile">
+            {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
+          </div>
         </div>
       </div>
     );

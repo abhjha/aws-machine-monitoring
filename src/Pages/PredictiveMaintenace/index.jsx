@@ -29,7 +29,7 @@ class PredictiveMaintenace extends Component {
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="pred-main-heading">
+                <div className="pred-main-heading card-tile">
                     <div className="pred-main-title">
                     Predictive Maintenace
                   </div>
@@ -38,7 +38,7 @@ class PredictiveMaintenace extends Component {
                   </div>
                 </div>
                 <div className="pred-main-graph">
-                    <div className="pred-graph-details">
+                    <div className="pred-graph-details" >
                         <SetpointTable data={this.state.predLine} /><SetpointTable data={this.state.predAsset} />
                     </div>
                     <div className="pred-graph-img">

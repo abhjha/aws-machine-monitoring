@@ -1,0 +1,41 @@
+.card-tile{
+    @include tile-card() ;
+}
+.card-heading{
+    h1{
+        @include heading-sub();
+        margin:0;
+        padding: 0;
+    }
+}
+.tkey-header{
+    @include page-heading();
+    .page-dropdown-heading {
+        color: $warning-yellow;
+        font-size: 22px;
+        /* float: right; */
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+  }
+.data-container{
+    .blender-graph,.blender-reading,.blender-temp, .blender-speed{
+        background-color: $card-bg-color;
+    }
+    .blender-graph-container{
+        display: grid;
+        grid-template-columns: 40% 22% 12% 22%;
+        grid-column-gap: 20px;
+    }
+    .blender-speed-value{
+        padding : 20px 0 0 20px;
+    }
+    &.blender-view{
+        height: calc(100vh - 75px);
+          display: grid;
+          grid-template-rows:1fr 1fr;
+          grid-gap: 20px ;
+          padding: 20px;
+      }
+}

@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
-import './index.css';
 
 class Chart extends Component {
   constructor(props) {
@@ -12,41 +11,46 @@ class Chart extends Component {
   }
 
   render() {
+    console.log(this.state.chartData);
+
     return (
       <div className="chart">
         <div className="hopper-rate-heading">{this.props.chartHeader}</div>
         <div className="line-charts">
           <Line
-            data={this.state.chartData}
+            data={this.props.data}
             options={{
               legend: {
                 position: 'top',
+                
                 labels: {
                   boxWidth: 29,
                   fontColor: 'white',
-                  fontSize: 20
-                }
+                  fontSize: 10,
+                  usePointStyle :true
+                },
               },
               responsive: true,
               maintainAspectRatio: false,
               scales: {
                 yAxes: [{
-                  label: "Current(amps)",
                   scaleLabel: {
                     display: true,
+                    labelString: "Current (amps)",
                     fontSize: 16,
-                    fontColor: '#98A7B9',
+                    fontColor: 'white',
                   },
                   ticks: {
                     beginAtZero: true,
                     min: 0,
-                    stepSize: 5,
+                    max: 1,
+                    stepSize: 0.2,
                     lineWidth: 1,
-                    fontColor: '#98A7B9',
-                    fontSize: 16,
+                    fontColor: 'white',
+                    fontSize: 12,
                   },
                   gridLines: {
-                    color: '#242E42',
+                    color: 'transparent',
                     drawTicks: false,
                   }
                 }],
@@ -54,13 +58,22 @@ class Chart extends Component {
                   gridLines: {
                     borderDash: [6, 4],
                     zeroLineBorderDash: [6, 4],
-                    color: "#242E42",
-                    drawTicks: false
+                    color: "gray",
+                    drawTicks: true,
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: "Time (s)",
+                    fontSize: 16,
+                    fontColor: 'white',
                   },
                   ticks: {
-                    fontColor: '#98A7B9',
-                    fontSize: 16,
-                    padding: 10.5
+                    fontColor: 'white',
+                    fontSize: 8,
+                    stepSize : 60,
+                    min : -60,
+                    max: 0
+
                   }
                 }
                 ]

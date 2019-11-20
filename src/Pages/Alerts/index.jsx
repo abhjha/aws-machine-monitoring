@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import './index.css';
 import Button from '../../Component/Button';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
-var tableAlerts =0;
-var tableWarnings =0;
+var tableAlerts = 0;
+var tableWarnings = 0;
 class AlertView extends Component {
     constructor(props) {
         super(props);
@@ -13,19 +12,24 @@ class AlertView extends Component {
             resetButton: "Reset",
             activeButton: "Active",
             resolvedButton: "Resolved",
-            tableFilterData:[{}],
+            tableFilterData: [{}],
             tableData: [],
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
         }
     }
 
     filterAlarms = (e) => {
-        const filterValue = e.target.innerHTML;
-        if(filterValue==='Reset'){
-            this.setState({tableFilterData: this.state.tableData});
+        const filterValue = e.target;
+        if (filterValue.innerHTML === 'Reset') {
+            this.setState({ tableFilterData: this.state.tableData });
+
         } else {
-            const filterResult = this.state.tableData.filter(item=> item.STATUS === filterValue);
-            this.setState({tableFilterData: filterResult});
-    
+            filterValue.classList.add("active");
+            const filterResult = this.state.tableData.filter(item => item.STATUS === filterValue.innerHTML);
+            this.setState({ tableFilterData: filterResult });
+
         }
     }
     millisToMinutesAndSeconds = (millis) => {
@@ -34,21 +38,36 @@ class AlertView extends Component {
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
     epochToDate = (dateVal) => {
-        var date = new Date(parseFloat(dateVal.substr(6)));
-        return(
-            (date.getMonth() + 1) + "/" +
-            date.getDate() + "/" +
-            date.getFullYear() + " " +
-            date.getHours() + ":" +
-            date.getMinutes() + ":" +
-            date.getSeconds()
-        );
+        dateVal = parseInt(dateVal);
+        var month = [];
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(dateVal).getDate();
+        var monthName = month[new Date(dateVal).getMonth()];
+        var year = new Date(dateVal).getFullYear();
+        var hours = new Date(dateVal).getHours();
+        var mins = new Date(dateVal).getMinutes();
+        var seconds = new Date(dateVal).getSeconds();
+
+        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
 
     triggerPlantAlertData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
             .then((data) => {
+                tableAlerts =0;
+                tableWarnings = 0;
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Line = "";
@@ -58,11 +77,11 @@ class AlertView extends Component {
                     for (let j = 0; j < data.children[i].alarms.length; j++) {
                         data.children[i].alarms[j].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].alarms[j].START_TIME));
                         data.children[i].alarms[j].Line = data.children[i].alarms[0].ASSET;
-                        data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
-                        if(data.children[i].alarms[j].SEVERITY == "Alert"){
+                        data.children[i].alarms[j].START_TIME = this.epochToDate((data.children[i].alarms[j].START_TIME).toLocaleString());
+                        if (data.children[i].alarms[j].SEVERITY == "Alert") {
                             data.children[i].alarms[j][""] = <img src={alert} />;
                             tableAlerts++;
-                        }else{
+                        } else {
                             data.children[i].alarms[j][""] = <img src={warning} />;
                             tableWarnings++;
                         }
@@ -76,57 +95,96 @@ class AlertView extends Component {
                                 data.children[i].children[k].alarms[z].Line = "";
                             }
                             data.children[i].children[k].alarms[z].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].children[k].alarms[z].START_TIME));
-                            data.children[i].children[k].alarms[z].START_TIME = this.epochToDate(data.children[i].children[k].alarms[z].START_TIME);
-                            if(data.children[i].children[k].alarms[z].SEVERITY == "Alert"){
+                            data.children[i].children[k].alarms[z].START_TIME = this.epochToDate((data.children[i].children[k].alarms[z].START_TIME).toLocaleString());
+                            if (data.children[i].children[k].alarms[z].SEVERITY == "Alert") {
                                 data.children[i].children[k].alarms[z][""] = <img src={alert} />;
                                 tableAlerts++;
-                            }else{
+                            } else {
                                 data.children[i].children[k].alarms[z][""] = <img src={warning} />;
                                 tableWarnings++;
                             }
-                            
+
                             alarmsData.push(data.children[i].children[k].alarms[z]);
                         }
                     }
                 }
-                this.setState({ 
+                this.setState({
                     tableFilterData: alarmsData,
-                    tableData : alarmsData
-                 });
+                    tableData: alarmsData
+                });
                 console.log(this.state.tableData);
             })
             .catch(function (err) {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
+    setAutoRefresh = () => {
+        clearInterval(this.apiTimerReferenceonload);
+        this.setState((prevState) => {
+            const { autoRefreshState } = prevState;
+            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-    componentDidMount(){
-        
+            return {
+                autoRefreshState: !autoRefreshState,
+                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+            }
+        }, () => {
+            if (this.state.autoRefreshState) {
+                this.apiTimerReference = setInterval(() => {
+                    this.triggerPlantAlertData();
+                }, 2000);
+            } else {
+                clearInterval(this.apiTimerReference);
+            }
+        });
+
+    }
+    componentDidMount() {
         this.triggerPlantAlertData();
-        this.setState({tableFilterData: this.state.tableData});
+        if (sessionStorage.autoRefreshState === "true") {
+            this.apiTimerReferenceonload = setInterval(() => {
+                this.triggerPlantAlertData();
+            }, 2000);
+            this.setState(() => {
+                return {
+                    autoRefreshState: true,
+                    buttonLabel: 'STOP REFRESH',
+                    autoRefreshStatus: 'auto-refresh',
+                }
+            });
+        }
+    }
+    componentWillUnmount() {
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
+        tableAlerts=0;
+        tableWarnings =0;
     }
 
 
     render() {
-        
+
         return (
             <div className="alertView">
-                <div className="data-container">
-                    <div className="page-header">
-                        <div className="page-header-value">
+                <div className="data-container alert-view">
+                    <div className="alert-page-header card-tile">
+                        <div className="alert-page-header-value">
                             Activity Log
                         </div>
                         <div className="alog-reset">
-                            <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.filterAlarms}  />
+                            <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.filterAlarms} />
+                            <Button type={'refresh-button ' + this.state.autoRefreshStatus} labelName={this.state.buttonLabel} triggerAction={this.setAutoRefresh} />
+                            
                         </div>
                     </div>
                     <div className="page-buttons">
-                        <Button labelName={this.state.activeButton} triggerAction={this.filterAlarms} /> 
+                        <Button labelName={this.state.activeButton} triggerAction={this.filterAlarms} />
                         <Button labelName={this.state.resolvedButton} triggerAction={this.filterAlarms} />
                     </div>
-                    <div className="table-alert-details-container">
-                        <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                        <div className="table-data">{this.state.tableFilterData.length > 0 && <Table data={this.state.tableFilterData} />} </div>
+                    <div className="table-alert-details-container card-tile">
+                        {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        
                     </div>
                 </div>
             </div>

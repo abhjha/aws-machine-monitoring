@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import './index.css';
 import Dropdown from '../../Component/Dropdown';
 import Back from '../../Component/Back'
 import Navigation from '../../Component/Breadcrumb'
 import ReactSpeedometer from "react-d3-speedometer"
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import Chart from '../../Component/Chart';
@@ -16,14 +15,37 @@ var tableWarnings = 0;
 class HopperView extends Component {
   constructor(props) {
     super(props);
-    console.log(props, "hopperView")
     this.state = {
-      pages: ['Plant View', this.props.location.state.lineValue, 'Mixing Unit'],
-      dropdownSelectedValue: 'Mixing Unit',
-      dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+      pages: ['Plant View', 'Line 3', 'Hopper'],
+      dropdownSelectedValue: 'Hopper',
+      dropdownOptions: ['Bin', 'Hopper', 'Blender'],
       MixRatioValue: '50:50',
       greenHopperGraphData: {},
-      blueHopperGraphData: {},
+      blueHopperGraphData: {
+        labels: "",
+        datasets: [
+          {
+            steppedLine: true,
+            label: "Actual",
+            fill: false,
+            data: [],
+            backgroundColor: '#1F8EFA',
+            borderColor: '#1F8EFA',
+            borderWidth: 2,
+            pointRadius : 1,
+          },
+          {
+            steppedLine: true,
+            fill: false,
+            label: "Expected",
+            borderColor: '#bb5be3',
+            backgroundColor: '#bb5be3',
+            data: [],
+            borderWidth: 1,
+            pointRadius : 1,
+          }
+        ]
+      },
       blueHopperFillValue: 0,
       blueHopperFillTarget: 0,
       greenHopperFillValue: 0,
@@ -33,9 +55,13 @@ class HopperView extends Component {
       hopperMixBlue: 0,
       hoppermixLabel: 0,
       gaugeMin: 0,
-      gaugeMax: 0
+      gaugeMax: 0,
+      buttonLabel: 'START REFRESH',
+      autoRefreshStatus: '',
+      autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
     }
   }
+
 
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
@@ -58,15 +84,29 @@ class HopperView extends Component {
     }
   }
   triggerBlueHopperViewData = () => {
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=5')
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data, "blue");
-        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
+        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
+        var differnceDate = new Date().getTime();
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        timeStampData.sort(function(a, b){return b-a});
+        
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
+        currentData.sort(function(a, b){return b-a});
+        currentData.unshift("");
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        timeStampData.push('Time(s)');
+        expectedData.sort(function(a, b){return b-a});
+        expectedData.unshift("");
+        var gaugeValue = 0;
+        if (data.currentValues.HopperFillRate < 0) {
+          gaugeValue = 0;
+        } else if (data.currentValues.HopperFillRate > data.currentValues.HopperFillRateMax) {
+          gaugeValue = data.currentValues.HopperFillRateMax
+        } else {
+          gaugeValue = data.currentValues.HopperFillRate
+        }
+        // timeStampData.push('Time(s)');
         this.setState({
           blueHopperFillValue: data.currentValues.hopperLevel,
           blueHopperFillTarget: data.currentValues.HopperLevelTarget,
@@ -74,25 +114,29 @@ class HopperView extends Component {
           hoppermixLabel: data.currentValues.MixTarget,
           gaugeMax: data.currentValues.HopperFillRateMax,
           gaugeMin: data.currentValues.HopperFillRateMin,
-          blueHopperGaugeRate: data.currentValues.HopperFillRate,
+          blueHopperGaugeRate: gaugeValue,
           blueHopperGraphData: {
             labels: timeStampData,
             datasets: [
               {
                 steppedLine: true,
-                label: "Current",
+                label: "Actual",
                 fill: false,
                 data: currentData,
-                borderColor: '#BB5BE3',
-                borderWidth: 1
+                backgroundColor: '#1F8EFA',
+                borderColor: '#1F8EFA',
+                borderWidth: 2,
+                pointRadius : 1,
               },
               {
                 steppedLine: true,
                 fill: false,
                 label: "Expected",
-                borderColor: '#1F8EFA',
+                borderColor: '#bb5be3',
+                backgroundColor: '#bb5be3',
                 data: expectedData,
-                borderWidth: 1
+                borderWidth: 1,
+                pointRadius : 1,
               }
             ]
           }
@@ -107,39 +151,61 @@ class HopperView extends Component {
       });
   }
   triggerGreenHopperViewData = () => {
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN002&lengthOfHistory=5')
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN002&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data, "green");
-        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
+        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
+        var differnceDate = new Date().getTime();
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        timeStampData.sort(function(a, b){return b-a});
+        timeStampData.unshift("-60");
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
+        currentData.sort(function(a, b){return b-a});
+        currentData.unshift("");
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        timeStampData.push('Time(s)');
+        expectedData.sort(function(a, b){return b-a});
+        expectedData.unshift("");
+        var gaugeValue = 0;
+        if (data.currentValues.HopperFillRate < 0) {
+          gaugeValue = 0;
+        } else if (data.currentValues.HopperFillRate > data.currentValues.HopperFillRateMax) {
+          gaugeValue = data.currentValues.HopperFillRateMax
+        } else {
+          gaugeValue = data.currentValues.HopperFillRate
+        }
         this.setState({
           greenHopperFillValue: data.currentValues.hopperLevel,
           greenHopperFillTarget: data.currentValues.HopperLevelTarget,
           gaugeMax: data.currentValues.HopperFillRateMax,
           gaugeMin: data.currentValues.HopperFillRateMin,
-          greenHopperGaugeRate: data.currentValues.HopperFillRate,
+          greenHopperGaugeRate: gaugeValue,
           greenHopperGraphData: {
             labels: timeStampData,
             datasets: [
               {
-                steppedLine: true,
-                label: "Current",
-                fill: false,
+
+                label: "Actual",
+                backgroundColor: '#1F8EFA',
+                borderColor: '#1F8EFA',
                 data: currentData,
-                borderColor: '#BB5BE3',
-                borderWidth: 1
+                borderWidth: 1,
+                steppedLine: true,
+                fill : false,
+                pointRadius: 1,
+                // borderColor: '#1F8EFA',
+                // backgroundColor: '#1F8EFA',
+
               },
               {
-                steppedLine: true,
-                fill: false,
+                
                 label: "Expected",
-                borderColor: '#1F8EFA',
+                borderColor: '#bb5be3',
+                backgroundColor: '#bb5be3',
                 data: expectedData,
-                borderWidth: 1
+                borderWidth: 1,
+                steppedLine: true,
+                fill : false,
+                pointRadius: 1,
               }
             ]
           },
@@ -156,17 +222,32 @@ class HopperView extends Component {
     return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
   }
   epochToDate = (dateVal) => {
-    var date = new Date(parseFloat(dateVal.substr(6)));
-    return (
-      (date.getMonth() + 1) + "/" +
-      date.getDate() + "/" +
-      date.getFullYear() + " " +
-      date.getHours() + ":" +
-      date.getMinutes() + ":" +
-      date.getSeconds()
-    );
+    dateVal = parseInt(dateVal);
+    var month = [];
+    month[0] = "Jan";
+    month[1] = "Feb";
+    month[2] = "Mar";
+    month[3] = "Apr";
+    month[4] = "May";
+    month[5] = "Jun";
+    month[6] = "Jul";
+    month[7] = "Aug";
+    month[8] = "Sep";
+    month[9] = "Oct";
+    month[10] = "Nov";
+    month[11] = "Dec";
+    var date = new Date(dateVal).getDate();
+    var monthName = month[new Date(dateVal).getMonth()];
+    var year = new Date(dateVal).getFullYear();
+    var hours = new Date(dateVal).getHours();
+    var mins = new Date(dateVal).getMinutes();
+    var seconds = new Date(dateVal).getSeconds();
+
+    return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
   }
   triggerGreenHopperViewTableData = () => {
+    tableAlerts = 0;
+    tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
@@ -180,6 +261,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
+            console.log(tableWarnings, "green hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -190,6 +272,7 @@ class HopperView extends Component {
       });
   }
   triggerBlueHopperViewTableData = () => {
+    tableData = [];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
       .then((response) => response.json())
       .then((data) => {
@@ -203,6 +286,7 @@ class HopperView extends Component {
           } else {
             data.alarms[i][""] = <img src={warning} />;
             tableWarnings++;
+            console.log(tableWarnings, "blue hopper");
           }
           tableData.push(data.alarms[i]);
         }
@@ -212,7 +296,32 @@ class HopperView extends Component {
         console.log(err, 'Something went wrong, blue hopper table data')
       });
   }
+  // setAutoRefresh = () => {
+  //   clearInterval(this.apiTimerReferenceonload);
+  //   this.setState((prevState) => {
+  //     const { autoRefreshState } = prevState;
+  //     sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
+  //     return {
+  //       autoRefreshState: !autoRefreshState,
+  //       buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+  //       autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+  //     }
+  //   }, () => {
+  //     if (this.state.autoRefreshState) {
+  //       this.apiTimerReference = setInterval(() => {
+  //         this.triggerBlueHopperViewData();
+  //         this.triggerGreenHopperViewData();
+  //         this.triggerBlueHopperViewTableData();
+  //         this.triggerGreenHopperViewTableData();
+
+  //       }, 2000);
+  //     } else {
+  //       clearInterval(this.apiTimerReference);
+  //     }
+  //   });
+
+  // }
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -223,9 +332,33 @@ class HopperView extends Component {
     this.triggerGreenHopperViewData();
     this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
+    if (sessionStorage.autoRefreshState === "true") {
+      this.apiTimerReferenceonload = setInterval(() => {
+        this.triggerBlueHopperViewData();
+        this.triggerGreenHopperViewData();
+        this.triggerBlueHopperViewTableData();
+        this.triggerGreenHopperViewTableData();
+      }, 2000);
+      this.setState(() => {
+        return {
+          autoRefreshState: true,
+          buttonLabel: 'STOP REFRESH',
+          autoRefreshStatus: 'auto-refresh',
+        }
+      });
+    }
   }
-
+  componentWillUnmount() {
+    tableAlerts = 0;
+    tableWarnings = 0;
+    tableData = [];
+    clearInterval(this.apiTimerReference);
+    clearInterval(this.apiTimerReferenceonload);
+    tableAlerts = 0;
+    tableWarnings = 0;
+  }
   render() {
+
     const { greenHopperGraphData,
       blueHopperGraphData,
       blueHopperFillValue,
@@ -236,169 +369,155 @@ class HopperView extends Component {
       greenHopperGaugeRate,
       hopperMixBlue,
       hoppermixLabel,
-    } = this.state;
-    const graphoptions = {
-      scales: {
-        yAxes: [{
-          ticks: {
-            ticks: {
-              min: 0,
-              max: 100,
+      autoRefreshStatus,
+      buttonLabel
 
-              // forces step size to be 5 units
-              stepSize: 20 // <----- This prop sets the stepSize
-            }
-          }
-        }]
-      }
-    }
+    } = this.state;
+    var annotationContentGreen = `<div style="text-align:left;width:70px;color:white">Target : ${greenHopperFillTarget}</div>`;
+    var annotationContentBlue = `<div style="text-align:left;width:70px;color:white">Target : ${blueHopperFillTarget}</div>`
 
 
     return (
       <div className="hopperView">
-        <div className="data-container">
-          <div className="tkey-header">
-            <Back />
-            <Navigation pages={this.state.pages} />
-            <div className="page-dropdown-heading">Asset</div>
-            <Dropdown
-              options={this.state.dropdownOptions}
-              setDropdownSelectedValue={this.setDropdownSelectedValue}
-              dropdownselectedValue={this.state.dropdownSelectedValue}
-            />
-          </div>
-          <div className="bin-container">
-            <div className="bin-container-heading">
-              Mixing Unit
-            </div>
-            <div className="hopper-data-container">
-              <div className="graph-container">
-                <div className="hopper-step-graph">
-                  {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} options={graphoptions} />}
-                </div>
-                <div className="hopper-step-graph">
-                  {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} options={graphoptions} />}
-                </div>
-              </div>
+        <div className="tkey-header">
+          <Back />
+          <Navigation pages={this.state.pages} />
+          <div className="page-dropdown-heading">Asset</div>
+          <Dropdown
+            options={this.state.dropdownOptions}
+            setDropdownSelectedValue={this.setDropdownSelectedValue}
+            dropdownselectedValue={this.state.dropdownSelectedValue}
+          />
+        </div>
+        <div className="data-container hopper-view">
 
-              <div className="gauge-container">
-                <div className="hopper-gauge">
-                  <div className="hopper-rate-heading">
-                    Dye Hopper Fill Rate
-                    </div>
-                  <div className="hopper-rate-meter">
-                    <div className="speedoMeter-blue-bin">
-                      {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
-                        minValue={0}
-                        height={130}
-                        maxValue={100}
-                        value={blueHopperGaugeRate}
-                        customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax, 100]}
-                        segmentColors={['#EE423D', '#05C985', '#EE423D']}
-                        ringWidth={10}
-                        width={130}
-                        currentValueText="Litres per Minute"
-                        currentValuePlaceholderStyle="#{value}"
-                        needleColor={'white'}
-                        textColor={'white'}
-                      />}
-                      <p>Litres per minute</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="hopper-gauge">
-                  <div className="hopper-rate-heading">
+          <div className="hopper-data-container ">
+            <div className="graph-container">
+
+              <div className="hopper-step-graph card-tile">
+                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} />}
+              </div>
+              <div className="hopper-step-graph card-tile">
+                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} />}
+              </div>
+            </div>
+
+            <div className="gauge-container">
+
+              <div className="hopper-gauge card-tile">
+                <div className="hopper-rate-heading">
                   Sealant Fill Rate
                     </div>
-                  <div className="hopper-rate-meter">
-                    <div className="speedoMeter-blue-bin">
-                      {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
-                        minValue={0}
-                        maxValue={100}
-                        height={130}
-                        value={greenHopperGaugeRate}
-                        customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax, 100]}
-                        segmentColors={['#EE423D', '#05C985', '#EE423D']}
-                        ringWidth={10}
-                        width={130}
-                        currentValueText="Litres per Minute"
-                        currentValuePlaceholderStyle="#{value}"
-                        needleColor={'white'}
-                        textColor={'white'}
-                      />}
-                      <p>Litres per minute</p>
-                    </div>
+                <div className="hopper-rate-meter">
+                  <div className="speedoMeter-blue-bin">
+                    {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
+                      minValue={0}
+                      maxValue={this.state.gaugeMax}
+                      height={190}
+                      value={greenHopperGaugeRate}
+                      customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
+                      segmentColors={['#EE423D', '#05C985']}
+                      ringWidth={30}
+                      width={180}
+                      currentValueText={"Balls per Minute: " + greenHopperGaugeRate.toFixed(0)}
+                      currentValuePlaceholderStyle="#{value}"
+                      needleColor={'white'}
+                      textColor={'white'}
+                    />}
                   </div>
                 </div>
               </div>
-
-              <div className="hopper-scale-container">
-                <div className="hopper-scale">
-                  <div className="hopper-rate-heading">
-                    Dye Hopper Level
+              <div className="hopper-gauge card-tile">
+                <div className="hopper-rate-heading">
+                  Dye Hopper Fill Rate
                     </div>
-                  <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#242e42' }} orientation={"horizontal"} background={'transparent'} >
-                    <Inject services={[Annotations]} />
-                    <AxesDirective>
-                      <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: '#252f43' }} minorTicks={{ interval: 0.1, color: '#252f43' }} labelStyle={{ font: { color: 'white' } }} >
-                        <PointersDirective>
-                          <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                      <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: '#252f43' }} minorTicks={{ interval: 0.1, color: '#252f43' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
-                        <PointersDirective>
-                          <PointerDirective width={0}>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                    </AxesDirective>
-                    <AnnotationsDirective>
-                      <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} zIndex={1}>
-                      </AnnotationDirective>
-                      <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={blueHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
-                      </AnnotationDirective>
-                    </AnnotationsDirective>
-                  </LinearGaugeComponent>
+                <div className="hopper-rate-meter">
+                  <div className="speedoMeter-blue-bin">
+                    {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
+                      minValue={0}
+                      height={190}
+                      maxValue={this.state.gaugeMax}
+                      value={blueHopperGaugeRate}
+                      customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
+                      segmentColors={['#EE423D', '#05C985']}
+                      ringWidth={30}
+                      width={180}
+                      currentValueText={"Balls per Minute: " + blueHopperGaugeRate.toFixed(0)}
+                      currentValuePlaceholderStyle="#{value}"
+                      needleColor={'white'}
+                      textColor={'white'}
+                    />}
+                  </div>
                 </div>
-                <div className="hopper-scale">
-                  <div className="hopper-rate-heading">
-                    Sealant Hopper Level
-                    </div>
-                  <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#242e42' }} orientation={"horizontal"} background={'transparent'} >
-                    <Inject services={[Annotations]} />
-                    <AxesDirective>
-                      <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: '#252f43' }} minorTicks={{ interval: 0.1, color: '#252f43' }} labelStyle={{ font: { color: 'white' } }} >
-                        <PointersDirective>
-                          <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                      <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: '#252f43' }} minorTicks={{ interval: 0.1, color: '#252f43' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
-                        <PointersDirective>
-                          <PointerDirective width={0}>
-                          </PointerDirective>
-                        </PointersDirective>
-                      </AxisDirective>
-                    </AxesDirective>
-                    <AnnotationsDirective>
-                      <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} zIndex={1}>
-                      </AnnotationDirective>
-                      <AnnotationDirective content='<div style="text-align:left;color:white">Target</div>' verticalAlignment={"Center"} x={greenHopperFillTarget * 76 + 32} y={-80} zIndex='1' >
-                      </AnnotationDirective>
-                    </AnnotationsDirective>
-                  </LinearGaugeComponent>
-                </div>
-              </div>
-              <div className="mix-hopper">
-                <MixRatio hopperMixBlue={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
               </div>
             </div>
-          </div>
 
-          <div className="table-details-container">
-            <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-            <div className="table-date">{tableData.length > 0 && <Table data={tableData} />} </div>
+            <div className="hopper-scale-container">
+
+              <div className="hopper-scale card-tile">
+                <div className="hopper-rate-heading">
+                  Sealant Hopper Level
+                    </div>
+                <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030 ' }} orientation={"horizontal"} background={'transparent'} >
+                  <Inject services={[Annotations]} />
+                  <AxesDirective>
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
+                      <PointersDirective>
+                        <PointerDirective value={greenHopperFillValue} height={40} type='Bar' color='#05C985'>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                      <PointersDirective>
+                        <PointerDirective width={0}>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                  </AxesDirective>
+                  <AnnotationsDirective>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20} axisValue={greenHopperFillTarget} zIndex={1}>
+                    </AnnotationDirective>
+                    <AnnotationDirective content={annotationContentGreen} verticalAlignment={"Center"} axisIndex={0} axisValue={greenHopperFillTarget} y={-60} zIndex='1' >
+                    </AnnotationDirective>
+                  </AnnotationsDirective>
+                </LinearGaugeComponent>
+              </div>
+              <div className="hopper-scale card-tile">
+                <div className="hopper-rate-heading">
+                  Dye Hopper Level
+                    </div>
+                <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030' }} orientation={"horizontal"} background={'transparent'} >
+                  <Inject services={[Annotations]} />
+                  <AxesDirective>
+                    <AxisDirective minimum={0} maximum={5} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
+                      <PointersDirective>
+                        <PointerDirective value={blueHopperFillValue} height={40} type='Bar' color='#1f8efa'>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                    <AxisDirective minimum={0} maximum={5} line={{ width: 0 }} majorTicks={{ interval: 1, color: 'white' }} labelStyle={{ font: { color: 'white' } }} opposedPosition={true}>
+                      <PointersDirective>
+                        <PointerDirective width={0}>
+                        </PointerDirective>
+                      </PointersDirective>
+                    </AxisDirective>
+                  </AxesDirective>
+                  <AnnotationsDirective>
+                    <AnnotationDirective content='<div id="title" style="width:3px;height:125px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} y={20} axisValue={blueHopperFillTarget} zIndex={1}>
+                    </AnnotationDirective>
+                    <AnnotationDirective content={annotationContentBlue} verticalAlignment={"Center"} axisIndex={0} axisValue={blueHopperFillTarget} y={-60} zIndex='1' >
+                    </AnnotationDirective>
+                  </AnnotationsDirective>
+                </LinearGaugeComponent>
+              </div>
+            </div>
+            <div className="mix-hopper card-tile">
+              <MixRatio hopperMixBlue={hoppermixLabel} hopperMixBlueActual={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
+            </div>
+          </div>
+          <div className="table-details-container card-tile">
+            {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
           </div>
         </div>
       </div>

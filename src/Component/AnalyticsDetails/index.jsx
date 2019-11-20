@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import './index.css';
+import React from 'react';
 
 var tabledata = [{
     Analysis : "Labor Correlation",

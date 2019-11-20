@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
 import back from './back.png';
-import './index.css';
+
 
 
 class BackButton extends React.Component {

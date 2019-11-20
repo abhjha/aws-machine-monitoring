@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import './index.css';
-
-const pages =["Plant View", "Line 03", "Bins" ];
+import React from 'react';
 
 function Navigation (props){
     return (

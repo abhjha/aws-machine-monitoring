@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Dropdown from '../../Component/Dropdown';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import LabelCard from '../../Component/LabelCard'
 import warning from '../../Images/warning.png';
@@ -17,21 +17,25 @@ import BinView from '../../Pages/BinView/index';
 import HopperView from '../../Pages/HopperView/index';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var lineAssetData = {};
+//var lineAssetData = {};
+
 class LineView extends Component {
     constructor(props) {
         super(props);
+        //sessionStorage.autoRefreshState = "false";
         this.state = {
-            pages: ['Plant View', "Paint Shop"],
-            dropdownSelectedValue: 'Line',
+            pages: ['Plant View', "Line 3"],
+            dropdownSelectedValue: 'Line 3',
             selectedLine: 'Line_3',
-            dropdownOptions: ['Paint Shop'],
+            dropdownOptions: [],
             tableData: [],
             DefectAnalysis: {},
             DowntimeDetails: {},
             lineData: {},
             lineAssetData: {},
-
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus : '',
+            autoRefreshState : sessionStorage.autoRefreshState === "false" ? false : true,
         }
     }
 
@@ -48,37 +52,40 @@ class LineView extends Component {
     }
     navigateAsset = (e) => {
         const assetID = e.currentTarget.getAttribute('data-id');
-        if (assetID == "SN005" || assetID == "SN006") {
+        if (assetID == "Bin") {
             this.props.history.push({
                 pathname: '/binView',
                 Component: { BinView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN002" || assetID == "SN001") {
+        } else if (assetID == "Hopper") {
             this.props.history.push({
                 pathname: '/hopperView',
                 Component: { HopperView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN003") {
+        } else if (assetID == "Blender") {
             this.props.history.push({
                 pathname: '/blenderView',
                 Component: { BlenderView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        } else if (assetID == "SN004") {
+        } else if (assetID == "Finished Goods") {
             this.props.history.push({
                 pathname: '/finishedGoodsView',
                 Component: { FinishedGoodsView },
                 state: { assetID, lineValue: this.props.location.state.lineID }
             });
-        }
+        } 
     }
     lineViewData = () => {
         const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=${this.props.location.state.lineID}`;
         fetch(url)
             .then((response) => response.json())
             .then((goodsData) => {
+                goodsData.currentValues.DamagedUnitCount = 3;
+                goodsData.currentValues.DamagedCasesCount = 2;
+                goodsData.currentValues.OverheatedCount = 1;
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
                     lineData: goodsData.currentValues,
@@ -96,15 +103,28 @@ class LineView extends Component {
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
     epochToDate = (dateVal) => {
-        var date = new Date(parseFloat(dateVal.substr(6)));
-        return (
-            (date.getMonth() + 1) + "/" +
-            date.getDate() + "/" +
-            date.getFullYear() + " " +
-            date.getHours() + ":" +
-            date.getMinutes() + ":" +
-            date.getSeconds()
-        );
+        dateVal = parseInt(dateVal);
+        var month = [];
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(dateVal).getDate();
+        var monthName = month[new Date(dateVal).getMonth()];
+        var year = new Date(dateVal).getFullYear();
+        var hours = new Date(dateVal).getHours();
+        var mins = new Date(dateVal).getMinutes();
+        var seconds = new Date(dateVal).getSeconds();
+
+        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
 
     //Alert Table Data
@@ -113,17 +133,19 @@ class LineView extends Component {
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                lineAssetData = data;
+                tableAlerts = 0;
+                tableWarnings = 0;
+                //lineAssetData = data;
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].Line = data.alarms[i].ASSET_NAME;
                     data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
                     if (data.alarms[i].SEVERITY == "Alert") {
-                        data.alarms[i][""] = <img src={alert} />;
+                        data.alarms[i]["statusBox"] = <img src={alert} />;
                         tableAlerts++;
                     } else {
-                        data.alarms[i][""] = <img src={warning} />;
+                        data.alarms[i]["statusBox"] = <img src={warning} />;
                         tableWarnings++;
                     }
                     alarmsData.push(data.alarms[i]);
@@ -131,32 +153,56 @@ class LineView extends Component {
                 for (let i = 0; i < data.children.length; i++) {
                     for (let j = 0; j < data.children[i].alarms.length; j++) {
                         if (data.alarms.length > 0) {
-                            data.children[i].alarms[j].Line = data.alarms[0].ASSET;
+                            data.children[i].alarms[j].Line = data.alarms[0].ASSET_NAME;
                         } else {
                             data.children[i].alarms[j].Line = "";
                         }
                         data.children[i].alarms[j].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].alarms[j].START_TIME));
                         data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
                         if (data.children[i].alarms[j].SEVERITY == "Alert") {
-                            data.children[i].alarms[j][""] = <img src={alert} />;
+                            data.children[i].alarms[j]["statusBox"] = <img src={alert} />;
                             tableAlerts++;
                         } else {
-                            data.children[i].alarms[j][""] = <img src={warning} />;
+                            data.children[i].alarms[j]["statusBox"] = <img src={warning} />;
                             tableWarnings++;
                         }
                         alarmsData.push(data.children[i].alarms[j]);
                     }
                 }
                 this.setState({
-
+                    lineAssetData : data,
                     tableData: alarmsData,
                 });
+                // this.state.tableData = alarmsData;
 
             })
             .catch(function (err) {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState)=> {
+    //         const {autoRefreshState} = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if(this.state.autoRefreshState){
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerAlertTableData();
+    //                 this.lineViewData(); 
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
+        
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -165,55 +211,80 @@ class LineView extends Component {
         // };
         this.triggerAlertTableData();
         this.lineViewData();
-        
-    }
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+                this.triggerAlertTableData();
+                this.lineViewData(); 
+            }, 2000);
+            this.setState(()=> {
+                return {
+                    autoRefreshState: true,
+                    buttonLabel : 'STOP REFRESH',
+                    autoRefreshStatus : 'auto-refresh' ,
+                }
+            });
+        }
 
+    }
+    componentWillUnmount(){
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
+        tableAlerts=0;
+        tableWarnings =0;
+        //sessionStorage.autoRefreshState= false;
+    }
     render() {
+        const {lineAssetData,dropdownOptions,pages,dropdownSelectedValue,lineData,autoRefreshStatus,buttonLabel,tableData} = this.state;
         return (
-            <div className="data-container line-view">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
-                    <Breadcrumb pages={this.state.pages} />
+                    <Breadcrumb pages={pages} />
                     <div className="page-dropdown-heading">Line</div>
                     <Dropdown
-                        options={this.state.dropdownOptions}
+                        options={dropdownOptions}
                         setDropdownSelectedValue={this.setDropdownSelectedValue}
-                        dropdownselectedValue={this.state.dropdownSelectedValue}
+                        dropdownselectedValue={dropdownSelectedValue}
                     />
                 </div>
-                <div className="line-header">Line</div>
-                <div className="line-header-values">
-                    <LabelCard heading={"Department OEE"} value={this.state.lineData.OEE} />
-                    <LabelCard heading={"Availability"} value={this.state.lineData.Availability} />
-                    <LabelCard heading={"Performance"} value={this.state.lineData.Performance} />
-                    <LabelCard heading={"Quality"} value={this.state.lineData.Quality} />
-                </div>
-                <div className="line-view-components">
 
-                    <div className="line-assets">
-                    <div className="line-view-heading">
-                           Assets
-                        </div>
-                        {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
+                <div className="data-container line-view">
+
+                    <div className="line-header-values">
+                        <LabelCard heading={"Line OEE"} value={lineData.OEE} />
+                        <LabelCard heading={"Availability"} value={lineData.Availability} />
+                        <LabelCard heading={"Performance"} value={lineData.Performance} />
+                        <LabelCard heading={"Quality"} value={lineData.Quality} />
                     </div>
-                    <ScheduleAdherence data={this.state.lineData} />
-                    <div className="downtime-details">
-                        <div className="line-view-heading">
-                            Downtime Details
+                    <div className="line-view-components">
+
+                        <div className="line-assets card-tile">
+                            <div className="line-view-heading">
+                                <h3>Assets</h3>
                         </div>
-                        <DowntimeDetails data={this.state.DowntimeDetails} />
-                    </div>
-                    <div className="goods-data-container">
-                        <div className="finished-goods-rate-heading">
-                            Defect Analysis
+                            {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
+                        </div>
+                        <div className="line-view-adherence" data-id="finished-goods">
+                            <ScheduleAdherence data={lineData} />
+                        </div>
+                        <div className="downtime-details card-tile">
+                            <div className="line-view-heading">
+                                <h3>Downtime Details</h3>
+                        </div>
+                            <DowntimeDetails data={this.state.DowntimeDetails} />
+                        </div>
+                        <div className="goods-data-container card-tile">
+                            <div className="line-view-heading">
+                                <h3>Defect Analysis</h3>
                             </div>
-                        {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
+                            {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
+                        </div>
                     </div>
-                    {/* {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />} */}
-                </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length > 0 && <Table data={this.state.tableData} />} </div>
+                    <div className="table-details-container card-tile">
+
+                        { <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>  */}
+                    </div>
                 </div>
             </div>
         );

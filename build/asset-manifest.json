@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f27cf041.chunk.css",
+    "main.js": "/static/js/main.12db2354.chunk.js",
+    "main.js.map": "/static/js/main.12db2354.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.eadeb10f.js",
+    "runtime~main.js.map": "/static/js/runtime~main.eadeb10f.js.map",
+    "static/js/2.e6d5d0a4.chunk.js": "/static/js/2.e6d5d0a4.chunk.js",
+    "static/js/2.e6d5d0a4.chunk.js.map": "/static/js/2.e6d5d0a4.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.edcedff6243956aa61366877176c17d9.js": "/precache-manifest.edcedff6243956aa61366877176c17d9.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.f27cf041.chunk.css.map": "/static/css/main.f27cf041.chunk.css.map",
+    "static/media/ambHum.png": "/static/media/ambHum.7eb07865.png",
+    "static/media/ambTemp.png": "/static/media/ambTemp.636d1ce6.png",
+    "static/media/assessment.png": "/static/media/assessment.bb35032e.png",
+    "static/media/bar.png": "/static/media/bar.ce405bd7.png",
+    "static/media/graph.png": "/static/media/graph.bb865ad6.png",
+    "static/media/heatmap.png": "/static/media/heatmap.8c2cd0d0.png",
+    "static/media/scrap.png": "/static/media/scrap.a0d16993.png",
+    "static/media/setpoint.png": "/static/media/setpoint.716f20e4.png",
+    "static/media/table.png": "/static/media/table.09fb242e.png"
+  }
+}

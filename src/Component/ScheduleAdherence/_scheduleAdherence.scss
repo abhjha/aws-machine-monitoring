@@ -1,0 +1,78 @@
+*{
+    box-sizing: border-box;
+}
+.card-tile{
+    @include tile-card() ;
+}
+.card-heading{
+    h1{
+        @include heading-sub();
+        margin:0;
+        padding: 0;
+    }
+}
+.adherence-container {
+    width: 100%;
+    color: black;
+    padding: 20px 20px 0 20px;
+    display: grid;
+    grid-template-rows: 15% 25% 55%;
+    grid-gap: 20px;
+    height : 100%;
+}
+.value-container {
+    display: flex;
+    align-items: center;
+    background-color: $base-color;
+    padding: 20px 0 20px 20px; 
+    border-radius: 10px;
+}
+
+.adherence-heading{
+    display: flex;
+    align-items: center;
+}
+.adherence-label-main {
+    font-size: 18px;
+    font-weight: bold;
+    width:80%;
+}
+.adherence-value-main {
+    width: 20%;
+    text-align: center;
+    font-size: 36px;
+    &.red{
+        color: #EE423D;
+    }
+    &.orange{
+        color: orange;
+    }
+    &.green{
+        color: #05C985;
+    }
+}
+
+.adherence-label {
+    width: 80%;
+}
+.adherence-value{
+    width:20%;
+    text-align: center;
+}
+.current-adherence{
+    &.end-adherence{
+        font-size: 18px;
+    }
+}
+.current-adherence{
+    display: grid;
+    grid-template-rows: 20% 60%;
+    grid-gap: 10px;
+    padding-bottom: 10px;
+
+}
+.end-adherence{
+    display: grid;
+    grid-template-rows: 10% 25% 25%;
+    grid-gap: 10px;
+}

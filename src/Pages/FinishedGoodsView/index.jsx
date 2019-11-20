@@ -3,25 +3,24 @@ import { withRouter } from "react-router-dom";
 import Dropdown from '../../Component/Dropdown';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import FinishedMixRatio from '../../Component/FinishedMixRatio';
-import './index.css';
 import DefectAnalysis from '../../Component/DefectAnalysis';
-var tableAlerts =0;
+var tableAlerts = 0;
 var tableWarnings = 0;
 class FinishedGoodsView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', this.props.location.state.lineValue, 'Finished Goods View'],
+            pages: ['Plant View', 'Line 3', 'Finished Goods View'],
             dropdownSelectedValue: 'Finished Goods View',
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
-            
-            tableData: [{}],
+
+            tableData: [],
             graphData: {
                 labels: [],
                 datasets: [{
@@ -35,7 +34,10 @@ class FinishedGoodsView extends Component {
             MixRatio: {},
             TargetMix: {},
             HopperMix: {},
-            FinishedGoodsMix: {}
+            FinishedGoodsMix: {},
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
         }
     }
 
@@ -43,39 +45,40 @@ class FinishedGoodsView extends Component {
         const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
         //this.setState({ dropdownSelectedValue });
         if (dropdownSelectedValue === 'Hopper') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/hopperView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Bin') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/binView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Blender') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/blenderView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         }
     }
-    
+
     finishedGoodsViewData = () => {
+
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN004&lengthOfHistory=5')
             .then((response) => response.json())
             .then((goodsData) => {
                 console.log(goodsData);
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
-                    MixRatio:{"TargetMix":(({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues),"HopperMix":(({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues),"FinishedGoodsMix":(({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues)}
+                    MixRatio: { "Target Mix": (({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues), "Hopper Mix": (({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues), "Finished Goods Mix": (({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues) }
                     ,
                     graphData: {
-                        labels: ['TotalCases',' Defect Cases'],
+                        labels: ['Total Complete Cases', ' Defect Cases'],
                         datasets: [{
                             label: "",
                             backgroundColor: ['#1F8EFA', '#C31FFA'],
                             borderColor: 'rgb(255, 99, 132)',
-                            data: [goodsData.currentValues.TotalCases, goodsData.currentValues.DefectCases],
+                            data: [goodsData.currentValues.CasesComplete, goodsData.currentValues.DefectCases],
                         }]
                     }
                 })
@@ -104,43 +107,81 @@ class FinishedGoodsView extends Component {
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
     epochToDate = (dateVal) => {
-        var date = new Date(parseFloat(dateVal.substr(6)));
-        return (
-            (date.getMonth() + 1) + "/" +
-            date.getDate() + "/" +
-            date.getFullYear() + " " +
-            date.getHours() + ":" +
-            date.getMinutes() + ":" +
-            date.getSeconds()
-        );
+        dateVal = parseInt(dateVal);
+        var month = [];
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(dateVal).getDate();
+        var monthName = month[new Date(dateVal).getMonth()];
+        var year = new Date(dateVal).getFullYear();
+        var hours = new Date(dateVal).getHours();
+        var mins = new Date(dateVal).getMinutes();
+        var seconds = new Date(dateVal).getSeconds();
+
+        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
     triggerFinishedGoodsTableData = () => {
+        tableAlerts = 0;
+        tableWarnings = 0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN004')
-          .then((response) => response.json())
-          .then((data) => {
-              var alarmsData =[];
-            for (let i = 0; i < data.alarms.length; i++) {
-              data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-              data.alarms[i].Line = data.alarms[i].ASSET;
-              data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
-              if (data.alarms[i].SEVERITY == "Alert") {
-                data.alarms[i][""] = <img src={alert} />;
-                tableAlerts++;
-              } else {
-                data.alarms[i][""] = <img src={warning} />;
-                tableWarnings++;
-              }
-              alarmsData.push(data.alarms[i]);
-            }
-            this.setState({
-                tableData : alarmsData,
+            .then((response) => response.json())
+            .then((data) => {
+                var alarmsData = [];
+                for (let i = 0; i < data.alarms.length; i++) {
+                    data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+                    if (data.alarms[i].SEVERITY == "Alert") {
+                        data.alarms[i][""] = <img src={alert} />;
+                        tableAlerts++;
+                    } else {
+                        data.alarms[i][""] = <img src={warning} />;
+                        tableWarnings++;
+                    }
+                    alarmsData.push(data.alarms[i]);
+                }
+                this.setState({
+                    tableData: alarmsData,
+                })
+                console.log(this.state.tableData, "blenderalarms");
             })
-            console.log(this.state.tableData, "blenderalarms");
-          })
-          .catch(function (err) {
-            console.log(err, 'Something went wrong, finished goods table data')
-          });
-      }
+            .catch(function (err) {
+                console.log(err, 'Something went wrong, finished goods table data')
+            });
+    }
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerFinishedGoodsTableData();
+    //                 this.finishedGoodsViewData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
+
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -150,6 +191,25 @@ class FinishedGoodsView extends Component {
         this.triggerFinishedGoodsTableData();
         // this.tableSummaryData();
         this.finishedGoodsViewData();
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+            this.triggerFinishedGoodsTableData();
+            this.finishedGoodsViewData(); 
+        }, 2000);
+        this.setState(()=> {
+            return {
+                autoRefreshState: true,
+                buttonLabel : 'STOP REFRESH',
+                autoRefreshStatus : 'auto-refresh' ,
+            }
+        });
+    }
+    }
+    componentWillUnmount() {
+        tableAlerts = 0;
+        tableWarnings = 0;
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
     }
 
     render() {
@@ -162,10 +222,12 @@ class FinishedGoodsView extends Component {
                 xAxes: [{
                     ticks: {
                         fontColor: "white",
+
                     },
                     barThickness: 150,
                     gridLines: {
-                        offsetGridLines: true
+                        offsetGridLines: true,
+
                     }
                 }],
                 yAxes: [{
@@ -173,6 +235,9 @@ class FinishedGoodsView extends Component {
                     ticks: {
                         beginAtZero: true,
                         fontColor: "white",
+                        min :0,
+                        max : 1000,
+                        stepSize : 100
                     },
 
                 }]
@@ -180,7 +245,7 @@ class FinishedGoodsView extends Component {
         }
         return (
 
-            <div className="data-container">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
@@ -191,10 +256,9 @@ class FinishedGoodsView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="finished-goods-container">
-                    <div className="finished-goods-container-heading">Finished Goods View</div>
+                <div className="data-container finished-view">
                     <div className="finished-graph-container">
-                        <div className="mix-ratio-container">
+                        <div className="mix-ratio-container card-tile">
                             <div className="finished-goods-rate-heading">
                                 Mix Ratio
                             </div>
@@ -203,23 +267,24 @@ class FinishedGoodsView extends Component {
                             )
                             }
                         </div>
-                        <div className="goods-data-container">
+                        <div className="goods-data-container card-tile">
                             <div className="finished-goods-rate-heading">
                                 Defect Analysis
                             </div>
                             {Object.keys(this.state.DefectAnalysis).length > 0 && <DefectAnalysis data={Object.entries(this.state.DefectAnalysis)} />}
                         </div>
-                        <div className="cases-graph">
+                        <div className="cases-graph card-tile">
                             <div className="finished-goods-rate-heading">
                                 Cases
                             </div>
                             <Bar data={this.state.graphData} options={graphOptions} />
                         </div>
                     </div>
-                </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length > 0 && <Table data={this.state.tableData} />} </div>
+
+                    <div className="table-details-container card-tile">
+                        <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
+                        {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
+                    </div>
                 </div>
             </div>
         );

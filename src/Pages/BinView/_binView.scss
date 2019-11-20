@@ -1,0 +1,103 @@
+
+  .card-tile{
+    @include tile-card() ;
+}
+.card-heading{
+    h1{
+        @include heading-sub();
+        margin:0;
+        padding: 0;
+    }
+}
+.tkey-header{
+  @include page-heading();
+  .page-dropdown-heading {
+      color: black;
+      font-size: 22px;
+      /* float: right; */
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+  }
+}
+
+  .data-container{
+    
+    .bin-container-heading{
+      color: $font-color;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: white;
+      
+    }
+  
+    .bin-graph-container{
+      display: grid;
+      grid-template-columns: 20% 1fr 1fr;
+      grid-column-gap: 20px;
+      
+    }
+  
+    .bin1-graph,.bin2-graph,.refill-container{
+      background-color: $card-bg-color;
+      padding: 20px ;
+    }
+    
+    .bin-view {
+      color:$font-color;
+      background-color : $card-bg-color;
+    
+    }
+    .bin-view-heading {
+      font-weight: bold;
+    }
+    .bin-view {
+      .bin-component {
+        width: 100%;
+      }
+    }
+    .graph-heading{
+      font-size: 18px;
+      color: $font-color;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .consumption-rate{
+      height: 44px;
+      color:$font-color;
+      font-size: 16px;
+      background-color: $base-color;
+      padding: 12px 18px 13px 18px;
+    }
+    span{
+      &.consumption-rate-heading{
+        float: left;
+      }
+      &.consumption-rate-value{
+        float: right;
+      }
+    }
+    
+    .table-summary {
+      text-align: left;
+      color: black;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .table-summary {
+      span{
+        margin: 0 5px;
+      }
+    }
+    &.bin-view-page{
+      height: calc(100vh - 75px);
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 20px ;
+        padding: 20px;
+    }
+    
+  }

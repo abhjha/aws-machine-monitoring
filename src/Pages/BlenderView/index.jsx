@@ -3,25 +3,24 @@ import { withRouter } from "react-router-dom";
 import Dropdown from '../../Component/Dropdown';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import Table from '../../Component/Table';
+import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import alert from '../../Images/alert.png';
 import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import AmbientReadings from '../../Component/AmbientReading';
 import ReactSpeedometer from "react-d3-speedometer";
 import { LinearGaugeComponent, AxesDirective, AxisDirective, PointersDirective, PointerDirective, AnnotationsDirective, AnnotationDirective, Annotations, Inject } from '@syncfusion/ej2-react-lineargauge';
-import './index.css';
 var tableWarnings = 0;
 var tableAlerts = 0;
 class BlenderView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', this.props.location.state.lineValue, 'Paint Machine'],
-            dropdownSelectedValue: 'Paint Machine',
+            pages: ['Plant View', 'Line 3', 'Blender'],
+            dropdownSelectedValue: 'Blender',
             selectedLine: 'Line_3',
-            tableData: [{}],
-            dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+            tableData: [],
+            dropdownOptions: ['Bin', 'Hopper', 'Blender'],
             blenderGraphData: {
                 labels: [],
                 datasets: [{
@@ -40,29 +39,32 @@ class BlenderView extends Component {
             tempUpperBound: 0,
             blenderVibrationAlert: 0,
             blenderVibrtionWarning: 0,
-            minBlenderSpeed : 0,
-            maxBlenderSpeed : 0,
-            temperatureBackground : ""
+            minBlenderSpeed: 0,
+            maxBlenderSpeed: 0,
+            temperatureBackground: "",
+            buttonLabel: 'START REFRESH',
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
         }
     }
     setDropdownSelectedValue = (e) => {
         const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
         //this.setState({ dropdownSelectedValue });
         if (dropdownSelectedValue === 'Hopper') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/hopperView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Bin') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/binView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         } else if (dropdownSelectedValue === 'Finished Goods View') {
-            this.props.history.push({ 
+            this.props.history.push({
                 pathname: '/finishedGoodsView',
                 state: { lineValue: this.props.location.state.lineValue },
-             });
+            });
         }
     }
     millisToMinutesAndSeconds = (millis) => {
@@ -71,15 +73,37 @@ class BlenderView extends Component {
         return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
     epochToDate = (dateVal) => {
-        var date = new Date(parseFloat(dateVal.substr(6)));
-        return (
-            (date.getMonth() + 1) + "/" +
-            date.getDate() + "/" +
-            date.getFullYear() + " " +
-            date.getHours() + ":" +
-            date.getMinutes() + ":" +
-            date.getSeconds()
-        );
+        dateVal = parseInt(dateVal);
+        var month = [];
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var date = new Date(dateVal).getDate();
+        var monthName = month[new Date(dateVal).getMonth()];
+        var year = new Date(dateVal).getFullYear();
+        var hours = new Date(dateVal).getHours();
+        var mins = new Date(dateVal).getMinutes();
+        var seconds = new Date(dateVal).getSeconds();
+
+        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+    }
+    getBarColor = (data , warning , alert) =>{
+        if(data<=warning){
+            return "#05C985";
+        } else if(data>warning && data<=alert){
+            return "orange";
+        } else if(data > alert){
+            return "#EE423D";
+        }
     }
     blednerViewData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN003&lengthOfHistory=5')
@@ -87,33 +111,36 @@ class BlenderView extends Component {
             .then((blenderData) => {
                 console.log(blenderData);
                 var blnderTempBG = "";
-                if(blenderData.currentValues.TemperatureSetpoint > blenderData.currentValues.TemperatureUpperLimit || blenderData.currentValues.TemperatureSetpoint < blenderData.currentValues.TemperatureLowerLimit){
-                    blnderTempBG ="#EE423D";
-                }else{
+                if (blenderData.currentValues.ThermometerTemperature > blenderData.currentValues.TemperatureUpperLimit || blenderData.currentValues.ThermometerTemperature < blenderData.currentValues.TemperatureLowerLimit) {
+                    blnderTempBG = "#EE423D";
+                } else {
                     blnderTempBG = "#05c985";
-                }
+                } 
                 this.setState({
                     ambientPressure: blenderData.currentValues.AmbientPressure,
                     ambientTemperature: blenderData.currentValues.AmbientTemperature,
                     ambientHumidity: blenderData.currentValues.AmbientHumidity,
-                    blenderTemperature: blenderData.currentValues.TemperatureSetpoint,
+                    blenderTemperature: blenderData.currentValues.ThermometerTemperature,
                     tempLowerBound: blenderData.currentValues.TemperatureLowerLimit,
                     tempUpperBound: blenderData.currentValues.TemperatureUpperLimit,
-                    temperatureBackground : blnderTempBG,
+                    temperatureBackground: blnderTempBG,
                     blenderGraphData: {
                         labels: ["Motor", "Bearing 1", "Bearing 2"],
                         datasets: [{
                             label: "",
-                            backgroundColor: '#05C985',
+                            backgroundColor: [this.getBarColor(blenderData.currentValues.Motor,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
+                                this.getBarColor(blenderData.currentValues.Bearing1,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
+                                this.getBarColor(blenderData.currentValues.Bearing2,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel)],
                             borderColor: 'rgb(255, 99, 132)',
-                            data: [blenderData.currentValues.Motor , blenderData.currentValues.Bearing1 , blenderData.currentValues.Bearing2],
+                            data: [blenderData.currentValues.Motor, blenderData.currentValues.Bearing1, blenderData.currentValues.Bearing2],
+
                         }]
                     },
                     blenderVibrationAlert: blenderData.currentValues.VibrationAlertLevel,
                     blenderVibrtionWarning: blenderData.currentValues.VibrationWarningLevel,
-                    minBlenderSpeed : blenderData.currentValues.SpeedLowerLimit,
-                    maxBlenderSpeed : blenderData.currentValues.SpeedUpperLimit,
-                    blenderSpeed : blenderData.currentValues.BlenderSpeed,
+                    minBlenderSpeed: blenderData.currentValues.SpeedLowerLimit,
+                    maxBlenderSpeed: blenderData.currentValues.SpeedUpperLimit,
+                    blenderSpeed: blenderData.currentValues.BlenderSpeed,
                 })
             })
             .catch(function (err) {
@@ -136,33 +163,57 @@ class BlenderView extends Component {
     }
     //Alert Table Data
     triggerBlenderTableData = () => {
+        tableAlerts =0;
+        tableWarnings =0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN003')
-          .then((response) => response.json())
-          .then((data) => {
-              var alarmsData =[];
-            for (let i = 0; i < data.alarms.length; i++) {
-              data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-              data.alarms[i].Line = data.alarms[i].ASSET;
-              data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
-              if (data.alarms[i].SEVERITY == "Alert") {
-                data.alarms[i][""] = <img src={alert} />;
-                tableAlerts++;
-              } else {
-                data.alarms[i][""] = <img src={warning} />;
-                tableWarnings++;
-              }
-              alarmsData.push(data.alarms[i]);
-            }
-            this.setState({
-                tableData : alarmsData,
+            .then((response) => response.json())
+            .then((data) => {
+                var alarmsData = [];
+                for (let i = 0; i < data.alarms.length; i++) {
+                    data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+                    if (data.alarms[i].SEVERITY == "Alert") {
+                        data.alarms[i][""] = <img src={alert} />;
+                        tableAlerts++;
+                    } else {
+                        data.alarms[i][""] = <img src={warning} />;
+                        tableWarnings++;
+                    }
+                    alarmsData.push(data.alarms[i]);
+                }
+                this.setState({
+                    tableData: alarmsData,
+                })
+
             })
-    
-          })
-          .catch(function (err) {
-            console.log(err, 'Something went wrong, blender table data')
-          });
-      }
-    
+            .catch(function (err) {
+                console.log(err, 'Something went wrong, blender table data')
+            });
+    }
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerBlenderTableData();
+    //                 this.blednerViewData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
+
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -171,6 +222,25 @@ class BlenderView extends Component {
         // };
         this.triggerBlenderTableData();
         this.blednerViewData();
+        if( sessionStorage.autoRefreshState === "true"){
+            this.apiTimerReferenceonload = setInterval(() => {
+            this.triggerBlenderTableData();
+            this.blednerViewData(); 
+        }, 2000);
+        this.setState(()=> {
+            return {
+                autoRefreshState: true,
+                buttonLabel : 'STOP REFRESH',
+                autoRefreshStatus : 'auto-refresh' ,
+            }
+        });
+    }
+    }
+    componentWillUnmount() {
+        clearInterval(this.apiTimerReference);
+        clearInterval(this.apiTimerReferenceonload);
+        tableAlerts=0;
+        tableWarnings =0;
     }
     render() {
         const graphOptions = {
@@ -184,7 +254,7 @@ class BlenderView extends Component {
                     mode: 'horizontal',
                     scaleID: 'y-axis-0',
                     value: this.state.blenderVibrationAlert,
-                    borderColor: '#ffffff',
+                    borderColor: 'white',
                     borderWidth: 2,
                     borderDash: [3, 3],
                     label: {
@@ -201,7 +271,7 @@ class BlenderView extends Component {
                     mode: 'horizontal',
                     scaleID: 'y-axis-0',
                     value: this.state.blenderVibrtionWarning,
-                    borderColor: '#ffffff',
+                    borderColor: 'white',
                     borderWidth: 2,
                     borderDash: [3, 3],
                     label: {
@@ -232,14 +302,17 @@ class BlenderView extends Component {
                     ticks: {
                         fontColor: "white",
                         beginAtZero: true,
+                        min: 0,
+                        max: 1,
+                        stepSize: 0.1
                     },
 
                 }]
             },
         };
-        console.log(this.state.minBlenderSpeed , this.state.maxBlenderSpeed , this.state.BlenderSpeed);
+        console.log(this.state.minBlenderSpeed, this.state.maxBlenderSpeed, this.state.BlenderSpeed);
         return (
-            <div className="data-container">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
@@ -250,32 +323,29 @@ class BlenderView extends Component {
                         dropdownselectedValue={this.state.dropdownSelectedValue}
                     />
                 </div>
-                <div className="bin-container">
-                    <div className="bin-container-heading">
-                    Paint Machine
-                    </div>
-                    <div className="blender-graph-container">
-                        <div className="blender-graph">
+                <div className="data-container blender-view">
+                    <div className="blender-graph-container ">
+                        <div className="blender-graph card-tile">
                             <div className="hopper-rate-heading">
-                                Vibration for Bearings
+                                Vibration Readings
                             </div>
                             <Bar data={this.state.blenderGraphData} options={graphOptions}
                             />
                         </div>
-                        <div className="blender-reading">
+                        <div className="blender-reading card-tile">
                             <div className="hopper-rate-heading">
                                 Ambient Readings
                             </div>
                             <AmbientReadings temp={this.state.ambientTemperature} humidity={this.state.ambientHumidity} pressure={this.state.ambientPressure} />
                         </div>
-                        <div className="blender-temp">
+                        <div className="blender-temp card-tile">
                             <div className="hopper-rate-heading">
-                                Blender Temp.
+                               Temperature
                             </div>
-                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#242e42', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
+                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
                                 <Inject services={[Annotations]} />
                                 <AxesDirective>
-                                    <AxisDirective minimum={0} maximum={500} majorTicks={{ interval: 50, color: '#252f43' }} minorTicks={{ interval: 10, color: '#252f43' }} labelStyle={{ font: { color: 'white' } }} >
+                                    <AxisDirective minimum={0} maximum={500} majorTicks={{ interval: 50, color: 'white' }} minorTicks={{ interval: 10, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                                         <PointersDirective>
                                             <PointerDirective value={this.state.blenderTemperature} height={40} type='Bar' color={this.state.temperatureBackground}>
                                             </PointerDirective>
@@ -283,30 +353,30 @@ class BlenderView extends Component {
                                     </AxisDirective>
                                 </AxesDirective>
                                 <AnnotationsDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={76} zIndex={1} y={-155.5 + (500 - this.state.tempLowerBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempLowerBound) * 0.6}>
                                     </AnnotationDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={76} zIndex={1} y={-155.5 + (500 - this.state.tempUpperBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempUpperBound) * 0.6}>
                                     </AnnotationDirective>
                                 </AnnotationsDirective>
                             </LinearGaugeComponent>}
                         </div>
-                        <div className="blender-speed">
+                        <div className="blender-speed card-tile">
                             <div className="hopper-rate-heading">
-                            Paint Machine Motor Speed
+                                Blender Speed
                             </div>
                             <div className="blender-speed-value">
                                 {this.state.minBlenderSpeed > 0 && <ReactSpeedometer needleHeightRatio={0.7}
                                     minValue={0}
                                     height={280}
-                                    maxValue={100}
+                                    maxValue={50}
                                     value={this.state.blenderSpeed}
-                                    customSegmentStops={[0, this.state.minBlenderSpeed,this.state.maxBlenderSpeed, 100]}
+                                    customSegmentStops={[0, this.state.minBlenderSpeed, this.state.maxBlenderSpeed, 50]}
                                     // startColor={"red"}
                                     // endColor={"green"}
-                                    segmentColors = {['#EE423D','#05C985','#EE423D']}
+                                    segmentColors={['#EE423D', '#05C985', '#EE423D']}
                                     ringWidth={40}
                                     width={280}
-                                    currentValueText="Blender Speed"
+                                    currentValueText={"RPM : " + this.state.blenderSpeed}
                                     currentValuePlaceholderStyle="#{value}"
                                     needleColor={'white'}
                                     textColor={'white'}
@@ -314,12 +384,11 @@ class BlenderView extends Component {
                             </div>
 
                         </div>
-
                     </div>
-                </div>
-                <div className="table-details-container">
-                    <div className="table-summary"><span >Active</span><span ><img src={alert} /> Alerts {tableAlerts}</span> and <span><img src={warning} /> Warnings {tableWarnings}</span></div>
-                    <div className="table-date">{this.state.tableData.length>0 && <Table data={this.state.tableData} />} </div>
+                    <div className="table-details-container card-tile">
+                        {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
+                    </div>
                 </div>
             </div>
         );

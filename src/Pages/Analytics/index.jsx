@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import AnalyticsDetails from '../../Component/AnalyticsDetails';
 import BackButton from '../../Component/Back';
 import Breadcrumb from '../../Component/Breadcrumb';
-import './index.css';
 class AnalyticsView extends React.Component {
     constructor(props) {
         super(props);
@@ -50,7 +49,7 @@ class AnalyticsView extends React.Component {
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="analytics-container">
+                <div className="analytics-container card-tile">
                     <div className="analytics-heading">
                         Operational Insights
                 </div>
