@@ -16,11 +16,11 @@ class BlenderView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', 'Paint Shop', 'Paint Machine'],
-            dropdownSelectedValue: 'Paint Machine',
+            pages: ['Plant View', 'Line 3', 'Blender'],
+            dropdownSelectedValue: 'Blender',
             selectedLine: 'Line_3',
             tableData: [],
-            dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+            dropdownOptions: ['Bin', 'Hopper', 'Blender'],
             blenderGraphData: {
                 labels: [],
                 datasets: [{
@@ -96,6 +96,15 @@ class BlenderView extends Component {
 
         return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
+    getBarColor = (data , warning , alert) =>{
+        if(data<=warning){
+            return "#05C985";
+        } else if(data>warning && data<=alert){
+            return "orange";
+        } else if(data > alert){
+            return "#EE423D";
+        }
+    }
     blednerViewData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN003&lengthOfHistory=5')
             .then((response) => response.json())
@@ -106,7 +115,7 @@ class BlenderView extends Component {
                     blnderTempBG = "#EE423D";
                 } else {
                     blnderTempBG = "#05c985";
-                }
+                } 
                 this.setState({
                     ambientPressure: blenderData.currentValues.AmbientPressure,
                     ambientTemperature: blenderData.currentValues.AmbientTemperature,
@@ -119,9 +128,12 @@ class BlenderView extends Component {
                         labels: ["Motor", "Bearing 1", "Bearing 2"],
                         datasets: [{
                             label: "",
-                            backgroundColor: '#05C985',
+                            backgroundColor: [this.getBarColor(blenderData.currentValues.Motor,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
+                                this.getBarColor(blenderData.currentValues.Bearing1,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
+                                this.getBarColor(blenderData.currentValues.Bearing2,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel)],
                             borderColor: 'rgb(255, 99, 132)',
                             data: [blenderData.currentValues.Motor, blenderData.currentValues.Bearing1, blenderData.currentValues.Bearing2],
+
                         }]
                     },
                     blenderVibrationAlert: blenderData.currentValues.VibrationAlertLevel,
@@ -151,6 +163,8 @@ class BlenderView extends Component {
     }
     //Alert Table Data
     triggerBlenderTableData = () => {
+        tableAlerts =0;
+        tableWarnings =0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN003')
             .then((response) => response.json())
             .then((data) => {
@@ -177,29 +191,29 @@ class BlenderView extends Component {
                 console.log(err, 'Something went wrong, blender table data')
             });
     }
-    setAutoRefresh = () => {
-        clearInterval(this.apiTimerReferenceonload);
-        this.setState((prevState) => {
-            const { autoRefreshState } = prevState;
-            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-            return {
-                autoRefreshState: !autoRefreshState,
-                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-            }
-        }, () => {
-            if (this.state.autoRefreshState) {
-                this.apiTimerReference = setInterval(() => {
-                    this.triggerBlenderTableData();
-                    this.blednerViewData();
-                }, 2000);
-            } else {
-                clearInterval(this.apiTimerReference);
-            }
-        });
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerBlenderTableData();
+    //                 this.blednerViewData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
 
-    }
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -313,7 +327,7 @@ class BlenderView extends Component {
                     <div className="blender-graph-container ">
                         <div className="blender-graph card-tile">
                             <div className="hopper-rate-heading">
-                                Vibration for Bearings
+                                Vibration Readings
                             </div>
                             <Bar data={this.state.blenderGraphData} options={graphOptions}
                             />
@@ -326,7 +340,7 @@ class BlenderView extends Component {
                         </div>
                         <div className="blender-temp card-tile">
                             <div className="hopper-rate-heading">
-                                Blender Temp.
+                               Temperature
                             </div>
                             {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
                                 <Inject services={[Annotations]} />
@@ -348,7 +362,7 @@ class BlenderView extends Component {
                         </div>
                         <div className="blender-speed card-tile">
                             <div className="hopper-rate-heading">
-                                Paint Machine Motor Speed
+                                Blender Speed
                             </div>
                             <div className="blender-speed-value">
                                 {this.state.minBlenderSpeed > 0 && <ReactSpeedometer needleHeightRatio={0.7}
@@ -362,7 +376,7 @@ class BlenderView extends Component {
                                     segmentColors={['#EE423D', '#05C985', '#EE423D']}
                                     ringWidth={40}
                                     width={280}
-                                    currentValueText={"Blender Speed : " + this.state.blenderSpeed}
+                                    currentValueText={"RPM : " + this.state.blenderSpeed}
                                     currentValuePlaceholderStyle="#{value}"
                                     needleColor={'white'}
                                     textColor={'white'}
@@ -373,7 +387,7 @@ class BlenderView extends Component {
                     </div>
                     <div className="table-details-container card-tile">
                         {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
+                        {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
                     </div>
                 </div>
             </div>

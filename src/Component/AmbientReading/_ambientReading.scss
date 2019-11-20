@@ -17,12 +17,13 @@
 .description-value {
     height: 44px;
     width: 98%;
-    background-color: $base-color;
+    background-color: rgb(64,78,105);
     display: flex;
     margin-top: 15px;
-    padding: 10px;
+    padding: 0 10px;
     color: $font-color;
     border-radius: $border-radius;
+    align-items: center;
 
 }
 .description-heading {

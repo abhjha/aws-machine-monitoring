@@ -15,14 +15,37 @@ var tableWarnings = 0;
 class HopperView extends Component {
   constructor(props) {
     super(props);
-    console.log(props, "hopperView")
     this.state = {
-      pages: ['Plant View', 'Paint Shop', 'Mixing Unit'],
-      dropdownSelectedValue: 'Mixing Unit',
-      dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+      pages: ['Plant View', 'Line 3', 'Hopper'],
+      dropdownSelectedValue: 'Hopper',
+      dropdownOptions: ['Bin', 'Hopper', 'Blender'],
       MixRatioValue: '50:50',
       greenHopperGraphData: {},
-      blueHopperGraphData: {},
+      blueHopperGraphData: {
+        labels: "",
+        datasets: [
+          {
+            steppedLine: true,
+            label: "Actual",
+            fill: false,
+            data: [],
+            backgroundColor: '#1F8EFA',
+            borderColor: '#1F8EFA',
+            borderWidth: 2,
+            pointRadius : 1,
+          },
+          {
+            steppedLine: true,
+            fill: false,
+            label: "Expected",
+            borderColor: '#bb5be3',
+            backgroundColor: '#bb5be3',
+            data: [],
+            borderWidth: 1,
+            pointRadius : 1,
+          }
+        ]
+      },
       blueHopperFillValue: 0,
       blueHopperFillTarget: 0,
       greenHopperFillValue: 0,
@@ -38,7 +61,7 @@ class HopperView extends Component {
       autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
     }
   }
-  
+
 
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
@@ -64,11 +87,25 @@ class HopperView extends Component {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data, "blue");
-        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
+        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
+        var differnceDate = new Date().getTime();
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        timeStampData.sort(function(a, b){return b-a});
+        
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
+        currentData.sort(function(a, b){return b-a});
+        currentData.unshift("");
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
+        expectedData.sort(function(a, b){return b-a});
+        expectedData.unshift("");
+        var gaugeValue = 0;
+        if (data.currentValues.HopperFillRate < 0) {
+          gaugeValue = 0;
+        } else if (data.currentValues.HopperFillRate > data.currentValues.HopperFillRateMax) {
+          gaugeValue = data.currentValues.HopperFillRateMax
+        } else {
+          gaugeValue = data.currentValues.HopperFillRate
+        }
         // timeStampData.push('Time(s)');
         this.setState({
           blueHopperFillValue: data.currentValues.hopperLevel,
@@ -77,27 +114,29 @@ class HopperView extends Component {
           hoppermixLabel: data.currentValues.MixTarget,
           gaugeMax: data.currentValues.HopperFillRateMax,
           gaugeMin: data.currentValues.HopperFillRateMin,
-          blueHopperGaugeRate: data.currentValues.HopperFillRate,
+          blueHopperGaugeRate: gaugeValue,
           blueHopperGraphData: {
             labels: timeStampData,
             datasets: [
               {
                 steppedLine: true,
                 label: "Actual",
-                fill: true,
+                fill: false,
                 data: currentData,
                 backgroundColor: '#1F8EFA',
                 borderColor: '#1F8EFA',
-                borderWidth: 2
+                borderWidth: 2,
+                pointRadius : 1,
               },
               {
                 steppedLine: true,
-                fill: true,
+                fill: false,
                 label: "Expected",
                 borderColor: '#bb5be3',
                 backgroundColor: '#bb5be3',
                 data: expectedData,
-                borderWidth: 1
+                borderWidth: 1,
+                pointRadius : 1,
               }
             ]
           }
@@ -115,38 +154,58 @@ class HopperView extends Component {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN002&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data, "green");
-        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        let timeStampData = timeStampDataObject.map(item => new Date(parseInt(item)).getSeconds());
+        let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
+        var differnceDate = new Date().getTime();
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        timeStampData.sort(function(a, b){return b-a});
+        timeStampData.unshift("-60");
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
+        currentData.sort(function(a, b){return b-a});
+        currentData.unshift("");
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        // timeStampData.push('Time(s)');
+        expectedData.sort(function(a, b){return b-a});
+        expectedData.unshift("");
+        var gaugeValue = 0;
+        if (data.currentValues.HopperFillRate < 0) {
+          gaugeValue = 0;
+        } else if (data.currentValues.HopperFillRate > data.currentValues.HopperFillRateMax) {
+          gaugeValue = data.currentValues.HopperFillRateMax
+        } else {
+          gaugeValue = data.currentValues.HopperFillRate
+        }
         this.setState({
           greenHopperFillValue: data.currentValues.hopperLevel,
           greenHopperFillTarget: data.currentValues.HopperLevelTarget,
           gaugeMax: data.currentValues.HopperFillRateMax,
           gaugeMin: data.currentValues.HopperFillRateMin,
-          greenHopperGaugeRate: data.currentValues.HopperFillRate,
+          greenHopperGaugeRate: gaugeValue,
           greenHopperGraphData: {
             labels: timeStampData,
             datasets: [
               {
-                steppedLine: true,
+
                 label: "Actual",
-                fill: true,
-                data: currentData,
-                borderColor: '#1F8EFA',
                 backgroundColor: '#1F8EFA',
-                borderWidth: 1
+                borderColor: '#1F8EFA',
+                data: currentData,
+                borderWidth: 1,
+                steppedLine: true,
+                fill : false,
+                pointRadius: 1,
+                // borderColor: '#1F8EFA',
+                // backgroundColor: '#1F8EFA',
+
               },
               {
-                steppedLine: true,
-                fill: true,
+                
                 label: "Expected",
                 borderColor: '#bb5be3',
                 backgroundColor: '#bb5be3',
                 data: expectedData,
-                borderWidth: 1
+                borderWidth: 1,
+                steppedLine: true,
+                fill : false,
+                pointRadius: 1,
               }
             ]
           },
@@ -185,14 +244,13 @@ class HopperView extends Component {
     var seconds = new Date(dateVal).getSeconds();
 
     return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
-}
+  }
   triggerGreenHopperViewTableData = () => {
     tableAlerts = 0;
     tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data, "greeen hopper table data");
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
           data.alarms[i].Line = data.alarms[i].ASSET;
@@ -238,32 +296,32 @@ class HopperView extends Component {
         console.log(err, 'Something went wrong, blue hopper table data')
       });
   }
-  setAutoRefresh = () => {
-    clearInterval(this.apiTimerReferenceonload);
-    this.setState((prevState) => {
-      const { autoRefreshState } = prevState;
-      sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+  // setAutoRefresh = () => {
+  //   clearInterval(this.apiTimerReferenceonload);
+  //   this.setState((prevState) => {
+  //     const { autoRefreshState } = prevState;
+  //     sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-      return {
-        autoRefreshState: !autoRefreshState,
-        buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-        autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-      }
-    }, () => {
-      if (this.state.autoRefreshState) {
-        this.apiTimerReference = setInterval(() => {
-          this.triggerBlueHopperViewData();
-          this.triggerGreenHopperViewData();
-          this.triggerBlueHopperViewTableData();
-          this.triggerGreenHopperViewTableData();
+  //     return {
+  //       autoRefreshState: !autoRefreshState,
+  //       buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+  //       autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+  //     }
+  //   }, () => {
+  //     if (this.state.autoRefreshState) {
+  //       this.apiTimerReference = setInterval(() => {
+  //         this.triggerBlueHopperViewData();
+  //         this.triggerGreenHopperViewData();
+  //         this.triggerBlueHopperViewTableData();
+  //         this.triggerGreenHopperViewTableData();
 
-        }, 2000);
-      } else {
-        clearInterval(this.apiTimerReference);
-      }
-    });
+  //       }, 2000);
+  //     } else {
+  //       clearInterval(this.apiTimerReference);
+  //     }
+  //   });
 
-  }
+  // }
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -295,9 +353,9 @@ class HopperView extends Component {
     tableWarnings = 0;
     tableData = [];
     clearInterval(this.apiTimerReference);
-        clearInterval(this.apiTimerReferenceonload);
-        tableAlerts=0;
-        tableWarnings =0;
+    clearInterval(this.apiTimerReferenceonload);
+    tableAlerts = 0;
+    tableWarnings = 0;
   }
   render() {
 
@@ -335,7 +393,7 @@ class HopperView extends Component {
 
           <div className="hopper-data-container ">
             <div className="graph-container">
-              
+
               <div className="hopper-step-graph card-tile">
                 {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} />}
               </div>
@@ -345,7 +403,7 @@ class HopperView extends Component {
             </div>
 
             <div className="gauge-container">
-              
+
               <div className="hopper-gauge card-tile">
                 <div className="hopper-rate-heading">
                   Sealant Fill Rate
@@ -355,13 +413,13 @@ class HopperView extends Component {
                     {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
                       minValue={0}
                       maxValue={this.state.gaugeMax}
-                      height={170}
+                      height={190}
                       value={greenHopperGaugeRate}
                       customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
                       segmentColors={['#EE423D', '#05C985']}
-                      ringWidth={20}
-                      width={160}
-                      currentValueText={"Litres per Minute: " + greenHopperGaugeRate.toFixed(0)}
+                      ringWidth={30}
+                      width={180}
+                      currentValueText={"Balls per Minute: " + greenHopperGaugeRate.toFixed(0)}
                       currentValuePlaceholderStyle="#{value}"
                       needleColor={'white'}
                       textColor={'white'}
@@ -377,14 +435,14 @@ class HopperView extends Component {
                   <div className="speedoMeter-blue-bin">
                     {this.state.gaugeMin > 0 && <ReactSpeedometer needleHeightRatio={0.7}
                       minValue={0}
-                      height={170}
+                      height={190}
                       maxValue={this.state.gaugeMax}
                       value={blueHopperGaugeRate}
                       customSegmentStops={[0, this.state.gaugeMin, this.state.gaugeMax]}
                       segmentColors={['#EE423D', '#05C985']}
-                      ringWidth={20}
-                      width={160}
-                      currentValueText={"Litres per Minute: " + blueHopperGaugeRate.toFixed(0)}
+                      ringWidth={30}
+                      width={180}
+                      currentValueText={"Balls per Minute: " + blueHopperGaugeRate.toFixed(0)}
                       currentValuePlaceholderStyle="#{value}"
                       needleColor={'white'}
                       textColor={'white'}
@@ -395,7 +453,7 @@ class HopperView extends Component {
             </div>
 
             <div className="hopper-scale-container">
-              
+
               <div className="hopper-scale card-tile">
                 <div className="hopper-rate-heading">
                   Sealant Hopper Level
@@ -454,12 +512,12 @@ class HopperView extends Component {
               </div>
             </div>
             <div className="mix-hopper card-tile">
-              <MixRatio hopperMixBlue={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
+              <MixRatio hopperMixBlue={hoppermixLabel} hopperMixBlueActual={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
             </div>
           </div>
           <div className="table-details-container card-tile">
             {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-            <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>
+            {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
           </div>
         </div>
       </div>

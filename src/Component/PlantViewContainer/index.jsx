@@ -49,16 +49,16 @@ class PlantAsset extends Component {
                     
                 </div>
                 <div className="plant-asset-heading">
-                Raw Material Bin
+                Bin
                 </div>
                 <div className="plant-asset-heading">
-                Mixing Unit
+                Hopper
                 </div>
                 <div className="plant-asset-heading">
-                    Paint Machine
+                    Blender
                 </div>
                 <div className="plant-asset-heading">
-                Quality Inspection
+                Finished Goods
                 </div>
                 
                 

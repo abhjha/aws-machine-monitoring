@@ -17,8 +17,8 @@ class BinView extends Component {
     super(props);
     console.log(props, "props");
     this.state = {
-      pages: ['Plant View', 'Paint Shop', 'Raw Material Bins'],
-      dropdownSelectedValue: 'Raw Material Bins',
+      pages: ['Plant View', 'Line 3', 'Bin'],
+      dropdownSelectedValue: 'Bin',
       blueLeftData: [{}],
       greenLeftData: [{}],
       BBConsumptioRate: 0,
@@ -43,7 +43,7 @@ class BinView extends Component {
           data: [0],
         }]
       },
-      dropdownOptions: ['Raw Material Bins', 'Mixing Unit', 'Paint Machine'],
+      dropdownOptions: ['Bin', 'Hopper', 'Blender'],
       buttonLabel: 'START REFRESH',
       autoRefreshStatus: '',
       autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
@@ -217,31 +217,31 @@ class BinView extends Component {
       });
     console.log(tableData, "bin table data");
   }
-  setAutoRefresh = () => {
-    clearInterval(this.apiTimerReferenceonload);
-    this.setState((prevState) => {
-      const { autoRefreshState } = prevState;
-      sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+  // setAutoRefresh = () => {
+  //   clearInterval(this.apiTimerReferenceonload);
+  //   this.setState((prevState) => {
+  //     const { autoRefreshState } = prevState;
+  //     sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-      return {
-        autoRefreshState: !autoRefreshState,
-        buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-        autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-      }
-    }, () => {
-      if (this.state.autoRefreshState) {
-        this.apiTimerReference = setInterval(() => {
-          this.triggerBlueBinTableData();
-          this.triggerGreenBinTableData();
-          this.triggerBlueBinViewData();
-          this.triggerGreenBinViewData();
-        }, 2000);
-      } else {
-        clearInterval(this.apiTimerReference);
-      }
-    });
+  //     return {
+  //       autoRefreshState: !autoRefreshState,
+  //       buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+  //       autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+  //     }
+  //   }, () => {
+  //     if (this.state.autoRefreshState) {
+  //       this.apiTimerReference = setInterval(() => {
+  //         this.triggerBlueBinTableData();
+  //         this.triggerGreenBinTableData();
+  //         this.triggerBlueBinViewData();
+  //         this.triggerGreenBinViewData();
+  //       }, 2000);
+  //     } else {
+  //       clearInterval(this.apiTimerReference);
+  //     }
+  //   });
 
-  }
+  // }
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -294,13 +294,16 @@ class BinView extends Component {
           borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
+          
+          
           label: {
             content: "Minimum Target",
             enabled: true,
-            position: "bottom",
-            xAdjust: 217,
+            position: "top",
+            xAdjust: 290,
             yAdjust: 20,
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            endValue: 60,
           }
         },
         {
@@ -335,7 +338,7 @@ class BinView extends Component {
           },
           scaleLabel:{
             display: true,
-  labelString:"Volume(lts.)",
+  labelString:"Weight (kg)",
             fontSize: 16,
             fontColor: 'white',
           },
@@ -345,7 +348,7 @@ class BinView extends Component {
           ticks: {
             beginAtZero: true,
             min: 0,
-            max: 360,
+            max: 300,
             fontColor: 'white',
             stepSize: 30
           },
@@ -405,7 +408,7 @@ class BinView extends Component {
               <Bar data={this.state.GreenBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " units per minute"}</span>
               </div>
             </div>
             <div className="bin2-graph card-tile">
@@ -415,13 +418,13 @@ class BinView extends Component {
               <Bar data={this.state.BlueBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2) + " liters per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2) + " units per minute"}</span>
               </div>
             </div>
           </div>
           <div className="table-details-container card-tile">
             {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-            <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
+            {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
           </div>
         </div>
       </div>

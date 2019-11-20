@@ -8,6 +8,9 @@
     color: $font-color;
     font-size: 18px;
 }
+.tkey-page-details:last-child{
+    font-weight: bold;
+}
 .tkey-page-details::before{
     content: '>';
     margin:0 12px;

@@ -12,7 +12,7 @@ function ScheduleAdherence(props) {
     return (
         <div className="adherence-container card-tile">
             <div className="adherence-heading">
-                <div className="adherence-label-main"><h3>Schedule Adherence</h3></div> <div className={"adherence-value-main " + sacolor}><h1 >{Math.round(props.data.ScheduleAdherence) + "%"}</h1></div>
+                <div className="adherence-label-main"><h3>Schedule Adherence</h3></div> <div className={"adherence-value-main " + sacolor}><h3 >{Math.round(props.data.ScheduleAdherence) + "%"}</h3></div>
             </div>
             <div className="current-adherence">
                 <div className="current-heading">Current</div>

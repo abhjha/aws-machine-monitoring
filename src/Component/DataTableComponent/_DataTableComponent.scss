@@ -66,8 +66,8 @@ a.alertId{
 }
 #tableGridPanel .react-bs-table .react-bs-container-footer>table>thead>tr>th, #tableGridPanel .react-bs-table .react-bs-container-header>table>thead>tr>th {
     @include text-normal-table();
-    border: 2px solid $font-color;
-    background-color: $base-color;
+    border: 2px solid #2F3B52;
+    background-color: #404e69;
     border-radius: 5px;
     font-family: 'Roboto';
     
@@ -75,7 +75,7 @@ a.alertId{
 }
 #tableGridPanel .react-bs-table table td, .react-bs-table table th {
 //     padding: 10px 20px !important;
-text-align: left;
+text-align: center;
 }
 
 #tableGridPanel .react-bs-table table td:focus {

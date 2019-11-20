@@ -24,8 +24,8 @@ class LineView extends Component {
         super(props);
         //sessionStorage.autoRefreshState = "false";
         this.state = {
-            pages: ['Plant View', "Paint Shop"],
-            dropdownSelectedValue: 'Paint Shop',
+            pages: ['Plant View', "Line 3"],
+            dropdownSelectedValue: 'Line 3',
             selectedLine: 'Line_3',
             dropdownOptions: [],
             tableData: [],
@@ -180,29 +180,29 @@ class LineView extends Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-    setAutoRefresh = () => {
-        clearInterval(this.apiTimerReferenceonload);
-        this.setState((prevState)=> {
-            const {autoRefreshState} = prevState;
-            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState)=> {
+    //         const {autoRefreshState} = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-            return {
-                autoRefreshState: !autoRefreshState,
-                buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
-            }
-        }, () => {
-            if(this.state.autoRefreshState){
-                this.apiTimerReference = setInterval(() => {
-                    this.triggerAlertTableData();
-                    this.lineViewData(); 
-                }, 2000);
-            } else {
-                clearInterval(this.apiTimerReference);
-            }
-        });
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel : !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus : !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if(this.state.autoRefreshState){
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerAlertTableData();
+    //                 this.lineViewData(); 
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
         
-    }
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -240,7 +240,7 @@ class LineView extends Component {
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={pages} />
-                    <div className="page-dropdown-heading">Department</div>
+                    <div className="page-dropdown-heading">Line</div>
                     <Dropdown
                         options={dropdownOptions}
                         setDropdownSelectedValue={this.setDropdownSelectedValue}
@@ -251,7 +251,7 @@ class LineView extends Component {
                 <div className="data-container line-view">
 
                     <div className="line-header-values">
-                        <LabelCard heading={"Department OEE"} value={lineData.OEE} />
+                        <LabelCard heading={"Line OEE"} value={lineData.OEE} />
                         <LabelCard heading={"Availability"} value={lineData.Availability} />
                         <LabelCard heading={"Performance"} value={lineData.Performance} />
                         <LabelCard heading={"Quality"} value={lineData.Quality} />
@@ -283,7 +283,7 @@ class LineView extends Component {
                     <div className="table-details-container card-tile">
 
                         { <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                        <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> 
+                        {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>  */}
                     </div>
                 </div>
             </div>

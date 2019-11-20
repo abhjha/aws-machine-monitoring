@@ -5,7 +5,7 @@ class LineAsset extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lineAsset: ["Raw Material Bins", "Mixing Unit", "Paint Machine","Quality Inspection"],
+            lineAsset: ["Bin", "Hopper", "Blender","Finished Goods"],
             // binData: [],
             // mixingUnitData: [],
             // paintMachineData: [],
@@ -66,13 +66,13 @@ class LineAsset extends Component {
 
                 <div className="asset-heading-container">
                     {/* <div className="asset-heading">
-                    Raw Material Bins
+                    Bin
                 </div>
                 <div className="asset-heading">
-                    Mixing Unit
+                    Hopper
                 </div>
                 <div className="asset-heading">
-                    Paint Machine
+                    Blender
                 </div> */}
                     {/* <div className="asset-heading">
                     Finished Goods

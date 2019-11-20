@@ -153,29 +153,29 @@ class PlantView extends React.Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-    setAutoRefresh = () => {
-        clearInterval(this.apiTimerReferenceonload);
-        this.setState((prevState) => {
-            const { autoRefreshState } = prevState;
-            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-            return {
-                autoRefreshState: !autoRefreshState,
-                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-            }
-        }, () => {
-            if (this.state.autoRefreshState) {
-                this.apiTimerReference = setInterval(() => {
-                    this.triggerPlantViewData();
-                    this.triggerPlantAlertData();
-                }, 2000);
-            } else {
-                clearInterval(this.apiTimerReference);
-            }
-        });
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerPlantViewData();
+    //                 this.triggerPlantAlertData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
 
-    }
+    // }
 
     componentDidMount() {
         this.triggerPlantViewData();
@@ -224,7 +224,7 @@ class PlantView extends React.Component {
                 <div className="table-details-container card-tile">
 
                     {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                    <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>
+                    {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
                 </div>
             </div>
         );

@@ -10,8 +10,7 @@ class Chart extends Component {
     }
   }
 
-  render()
-   {
+  render() {
     console.log(this.state.chartData);
 
     return (
@@ -19,19 +18,17 @@ class Chart extends Component {
         <div className="hopper-rate-heading">{this.props.chartHeader}</div>
         <div className="line-charts">
           <Line
-            data={this.state.chartData}
-            
+            data={this.props.data}
             options={{
               legend: {
                 position: 'top',
+                
                 labels: {
                   boxWidth: 29,
                   fontColor: 'white',
-                  fontSize: 20,
-                  fill:true,
-                  backgroundColor : 'white'
+                  fontSize: 10,
+                  usePointStyle :true
                 },
-                fill : true
               },
               responsive: true,
               maintainAspectRatio: false,
@@ -39,40 +36,44 @@ class Chart extends Component {
                 yAxes: [{
                   scaleLabel: {
                     display: true,
-          labelString:"Current(amps)",
+                    labelString: "Current (amps)",
                     fontSize: 16,
                     fontColor: 'white',
                   },
                   ticks: {
                     beginAtZero: true,
                     min: 0,
-                    stepSize: 5,
+                    max: 1,
+                    stepSize: 0.2,
                     lineWidth: 1,
                     fontColor: 'white',
-                    fontSize: 16,
+                    fontSize: 12,
                   },
                   gridLines: {
-                    color: 'white',
-                    drawTicks: true,
+                    color: 'transparent',
+                    drawTicks: false,
                   }
                 }],
                 xAxes: [{
                   gridLines: {
                     borderDash: [6, 4],
                     zeroLineBorderDash: [6, 4],
-                    color: "white",
+                    color: "gray",
                     drawTicks: true,
                   },
-                  scaleLabel:{
+                  scaleLabel: {
                     display: true,
-          labelString:"Time(s)",
+                    labelString: "Time (s)",
                     fontSize: 16,
                     fontColor: 'white',
                   },
                   ticks: {
                     fontColor: 'white',
-                    fontSize: 16,
-                    padding: 10.5
+                    fontSize: 8,
+                    stepSize : 60,
+                    min : -60,
+                    max: 0
+
                   }
                 }
                 ]

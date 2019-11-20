@@ -174,6 +174,8 @@ class AlertView extends Component {
                         </div>
                         <div className="alog-reset">
                             <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.filterAlarms} />
+                            <Button type={'refresh-button ' + this.state.autoRefreshStatus} labelName={this.state.buttonLabel} triggerAction={this.setAutoRefresh} />
+                            
                         </div>
                     </div>
                     <div className="page-buttons">
@@ -182,7 +184,7 @@ class AlertView extends Component {
                     </div>
                     <div className="table-alert-details-container card-tile">
                         {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
-                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
+                        
                     </div>
                 </div>
             </div>

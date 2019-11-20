@@ -7,6 +7,16 @@
     height: 30px;
     border-radius:5px; 
 }
+.tkey-button{
+    &.refresh-button{
+        background-color: #1f8efa;
+        width: 100%;
+        color: white;
+        border: none;
+        height: 30px;
+        border-radius:5px; 
+    }
+}
 
 .tkey-button{
     background-color: white;

@@ -15,7 +15,7 @@ class FinishedGoodsView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', 'Paint Shop', 'Finished Goods View'],
+            pages: ['Plant View', 'Line 3', 'Finished Goods View'],
             dropdownSelectedValue: 'Finished Goods View',
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
@@ -63,21 +63,22 @@ class FinishedGoodsView extends Component {
     }
 
     finishedGoodsViewData = () => {
+
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN004&lengthOfHistory=5')
             .then((response) => response.json())
             .then((goodsData) => {
                 console.log(goodsData);
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
-                    MixRatio: { "TargetMix": (({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues), "HopperMix": (({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues), "FinishedGoodsMix": (({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues) }
+                    MixRatio: { "Target Mix": (({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues), "Hopper Mix": (({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues), "Finished Goods Mix": (({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues) }
                     ,
                     graphData: {
-                        labels: ['TotalCases', ' Defect Cases'],
+                        labels: ['Total Complete Cases', ' Defect Cases'],
                         datasets: [{
                             label: "",
                             backgroundColor: ['#1F8EFA', '#C31FFA'],
                             borderColor: 'rgb(255, 99, 132)',
-                            data: [goodsData.currentValues.TotalCases, goodsData.currentValues.DefectCases],
+                            data: [goodsData.currentValues.CasesComplete, goodsData.currentValues.DefectCases],
                         }]
                     }
                 })
@@ -130,6 +131,8 @@ class FinishedGoodsView extends Component {
         return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
     }
     triggerFinishedGoodsTableData = () => {
+        tableAlerts = 0;
+        tableWarnings = 0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN004')
             .then((response) => response.json())
             .then((data) => {
@@ -156,29 +159,29 @@ class FinishedGoodsView extends Component {
                 console.log(err, 'Something went wrong, finished goods table data')
             });
     }
-    setAutoRefresh = () => {
-        clearInterval(this.apiTimerReferenceonload);
-        this.setState((prevState) => {
-            const { autoRefreshState } = prevState;
-            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-            return {
-                autoRefreshState: !autoRefreshState,
-                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-            }
-        }, () => {
-            if (this.state.autoRefreshState) {
-                this.apiTimerReference = setInterval(() => {
-                    this.triggerFinishedGoodsTableData();
-                    this.finishedGoodsViewData();
-                }, 2000);
-            } else {
-                clearInterval(this.apiTimerReference);
-            }
-        });
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerFinishedGoodsTableData();
+    //                 this.finishedGoodsViewData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
 
-    }
+    // }
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -219,6 +222,7 @@ class FinishedGoodsView extends Component {
                 xAxes: [{
                     ticks: {
                         fontColor: "white",
+
                     },
                     barThickness: 150,
                     gridLines: {
@@ -231,6 +235,9 @@ class FinishedGoodsView extends Component {
                     ticks: {
                         beginAtZero: true,
                         fontColor: "white",
+                        min :0,
+                        max : 1000,
+                        stepSize : 100
                     },
 
                 }]
@@ -276,7 +283,7 @@ class FinishedGoodsView extends Component {
 
                     <div className="table-details-container card-tile">
                         <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
-                        <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button>
+                        {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
                     </div>
                 </div>
             </div>
