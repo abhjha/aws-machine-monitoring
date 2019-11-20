@@ -87,12 +87,13 @@ class HopperView extends Component {
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN001&lengthOfHistory=60')
       .then((response) => response.json())
       .then((data) => {
+        
         let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
         var differnceDate = new Date().getTime();
         let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
         timeStampData.push('60s');
-        let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
+        let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent).reverse();
+        let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent).reverse();
         var gaugeValue = 0;
         if (data.currentValues.HopperFillRate < 0) {
           gaugeValue = 0;
@@ -154,10 +155,10 @@ class HopperView extends Component {
         let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
         timeStampData.sort(function(a, b){return b-a});
         timeStampData.unshift("-60");
-        let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
+        let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent).reverse();
         currentData.sort(function(a, b){return b-a});
         currentData.unshift("");
-        let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
+        let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent).reverse();
         expectedData.sort(function(a, b){return b-a});
         expectedData.unshift("");
         var gaugeValue = 0;
@@ -476,6 +477,7 @@ class HopperView extends Component {
                     </AnnotationDirective>
                   </AnnotationsDirective>
                 </LinearGaugeComponent>
+                <div className="hopper-level-unit">Inches</div>
               </div>
               <div className="hopper-scale card-tile">
                 <div className="hopper-rate-heading">
@@ -504,6 +506,7 @@ class HopperView extends Component {
                     </AnnotationDirective>
                   </AnnotationsDirective>
                 </LinearGaugeComponent>
+                <div className="hopper-level-unit">Inches</div>
               </div>
             </div>
             <div className="mix-hopper card-tile">
