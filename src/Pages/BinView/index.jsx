@@ -112,7 +112,7 @@ class BinView extends Component {
           bgColor = '#EE423D';
         }
         this.setState({
-          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Dye Bin' }],
+          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'blue Bin' }],
           BlueBinGraphData: {
             datasets: [{
               label: "",
@@ -145,7 +145,7 @@ class BinView extends Component {
           bgColor = '#EE423D';
         }
         this.setState({
-          greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Sealant Bin' }],
+          greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'green Bin' }],
           GreenBinGraphData: {
             datasets: [{
               label: "Volume(litres)",
@@ -403,7 +403,7 @@ class BinView extends Component {
             </div>
             <div className="bin1-graph card-tile">
               <div className="graph-heading">
-                Sealant Bin Level
+                Green Bin Level
                 </div>
               <Bar data={this.state.GreenBinGraphData} options={graphOptions}
               />
@@ -413,7 +413,7 @@ class BinView extends Component {
             </div>
             <div className="bin2-graph card-tile">
               <div className="graph-heading">
-                Dye Bin Level
+                Blue Bin Level
                 </div>
               <Bar data={this.state.BlueBinGraphData} options={graphOptions}
               />

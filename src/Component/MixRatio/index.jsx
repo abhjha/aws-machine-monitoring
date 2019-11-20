@@ -5,7 +5,7 @@ class MixRatio extends Component {
         return (
                 <div className="mix-ratio-box">
                     <div className="mix-ratio-heading">Mix Ratio</div>
-                    <div className="comparison">Sealant : Dye</div>
+                    <div className="comparison">green : blue</div>
                     <div className="target-setpoint">
                         <div className="green-box">
                         <div className= "blue-box" style={{height:(100 - this.props.hopperMixBlueActual)+'%'}}></div>

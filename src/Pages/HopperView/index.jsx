@@ -92,9 +92,7 @@ class HopperView extends Component {
         let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
         timeStampData.push('60s');
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
-        currentData.sort(function(a, b){return b-a});
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
-        expectedData.sort(function(a, b){return b-a});
         var gaugeValue = 0;
         if (data.currentValues.HopperFillRate < 0) {
           gaugeValue = 0;
@@ -392,10 +390,10 @@ class HopperView extends Component {
             <div className="graph-container">
 
               <div className="hopper-step-graph card-tile">
-                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Sealant Hopper'} data={greenHopperGraphData} />}
+                {Object.keys(greenHopperGraphData).length > 0 && <Chart chartHeader={'Green Hopper'} data={greenHopperGraphData} />}
               </div>
               <div className="hopper-step-graph card-tile">
-                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Dye Hopper'} data={blueHopperGraphData} />}
+                {Object.keys(blueHopperGraphData).length > 0 && <Chart chartHeader={'Blue Hopper'} data={blueHopperGraphData} />}
               </div>
             </div>
 
@@ -403,7 +401,7 @@ class HopperView extends Component {
 
               <div className="hopper-gauge card-tile">
                 <div className="hopper-rate-heading">
-                  Sealant Fill Rate
+                  Green Fill Rate
                     </div>
                 <div className="hopper-rate-meter">
                   <div className="speedoMeter-blue-bin">
@@ -426,7 +424,7 @@ class HopperView extends Component {
               </div>
               <div className="hopper-gauge card-tile">
                 <div className="hopper-rate-heading">
-                  Dye Hopper Fill Rate
+                  Blue Hopper Fill Rate
                     </div>
                 <div className="hopper-rate-meter">
                   <div className="speedoMeter-blue-bin">
@@ -453,7 +451,7 @@ class HopperView extends Component {
 
               <div className="hopper-scale card-tile">
                 <div className="hopper-rate-heading">
-                  Sealant Hopper Level
+                  Green Hopper Level
                     </div>
                 <LinearGaugeComponent id='gauge2' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030 ' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
@@ -481,7 +479,7 @@ class HopperView extends Component {
               </div>
               <div className="hopper-scale card-tile">
                 <div className="hopper-rate-heading">
-                  Dye Hopper Level
+                  Blue Hopper Level
                     </div>
                 <LinearGaugeComponent id='gauge1' height='150px' container={{ height: 380, width: 40, type: 'Normal', backgroundColor: '#172030' }} orientation={"horizontal"} background={'transparent'} >
                   <Inject services={[Annotations]} />
