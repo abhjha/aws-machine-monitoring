@@ -90,14 +90,11 @@ class HopperView extends Component {
         let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
         var differnceDate = new Date().getTime();
         let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
-        timeStampData.sort(function(a, b){return b-a});
-        
+        timeStampData.push('60s');
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent);
         currentData.sort(function(a, b){return b-a});
-        currentData.unshift("");
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent);
         expectedData.sort(function(a, b){return b-a});
-        expectedData.unshift("");
         var gaugeValue = 0;
         if (data.currentValues.HopperFillRate < 0) {
           gaugeValue = 0;

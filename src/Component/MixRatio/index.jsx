@@ -9,7 +9,8 @@ class MixRatio extends Component {
                     <div className="target-setpoint">
                         <div className="green-box">
                         <div className= "blue-box" style={{height:(100 - this.props.hopperMixBlueActual)+'%'}}></div>
-                        <div className="target-setpoint-label">Target: {this.props.hopperMixBlue}:{100-this.props.hopperMixBlue} </div>
+                        <div className="target-setpoint-label" style={{"margin-top":(100 - this.props.hopperMixBlueActual)+'%'}}>Target: {this.props.hopperMixBlue}:{100-this.props.hopperMixBlue} </div>
+                        <div className="target-marker"></div>
                         </div>
                     </div>
                     <div className="actual-measurement">Actual: {this.props.hopperMixBlueActual }:{100 - this.props.hopperMixBlueActual} <br/> Setpoint: {this.props.hoppermixLabel +"%"} </div>

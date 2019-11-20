@@ -8,6 +8,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
+var tableAlertsDifference = 0;
+var tableWarningDifference = 0;
 
 class PlantView extends React.Component {
     constructor(props) {
@@ -55,16 +57,21 @@ class PlantView extends React.Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-    notify = () => {
-        toast.error("New alert !", {
-            position: toast.POSITION.TOP_RIGHT
-          });
+    // notify = (status) => {
+    //     if(status == "warning"){
+    //         toast.warn("New warning !", {
+    //             position: toast.POSITION.TOP_RIGHT
+    //           });
+    //     }else if(status == "alert"){
+    //         toast.error("New alert !", {
+    //             position: toast.POSITION.TOP_RIGHT
+    //           });
+    //     }
+        
      
-          toast.warn("New warning !", {
-            position: toast.POSITION.TOP_RIGHT
-          });
+          
    
-      };
+    //   };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -86,6 +93,8 @@ class PlantView extends React.Component {
         var year = new Date(dateVal).getFullYear();
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
+        mins = mins < 10 ? '0'+mins : mins;
+        hours = hours < 10 ? '0'+hours : hours;
         var seconds = new Date(dateVal).getSeconds();
 
         return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
@@ -95,6 +104,8 @@ class PlantView extends React.Component {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
             .then((data) => {
+                tableAlertsDifference = tableAlerts;
+                tableWarningDifference = tableWarnings;
                 tableAlerts = 0;
                 tableWarnings = 0;
                 var alarmsData = [];
@@ -116,11 +127,9 @@ class PlantView extends React.Component {
                         if (data.children[i].alarms[j].SEVERITY == "Alert") {
                             data.children[i].alarms[j]["statusBox"] = "";
                             tableAlerts++;
-                            this.notify();
                         } else {
                             data.children[i].alarms[j]["statusBox"] = "";
                             tableWarnings++;
-                            this.notify();
                         }
                         alarmsData.push(data.children[i].alarms[j]);
                     }
@@ -136,11 +145,9 @@ class PlantView extends React.Component {
                             if (data.children[i].children[k].alarms[z].SEVERITY == "Alert") {
                                 data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableAlerts++;
-                                this.notify();
                             } else {
                                 data.children[i].children[k].alarms[z]["statusBox"] = "";
                                 tableWarnings++;
-                                this.notify();
                             }
 
                             alarmsData.push(data.children[i].children[k].alarms[z]);
@@ -153,6 +160,13 @@ class PlantView extends React.Component {
                     }else if(tableAlerts ==0 && tableWarnings>0){
                         data.children[i]["backGroundColor"] = "orange";
                     }
+                    // if(tableWarnings>tableWarningDifference){
+                    //     this.notify("warning");
+                    // }
+                    // if(tableAlerts > tableAlertsDifference){
+                    //     this.notify("alert");
+                    // }
+
                 }
 
                 for (let i = 0; i < data.children.length; i++) {

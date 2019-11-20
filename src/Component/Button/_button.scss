@@ -19,8 +19,8 @@
 }
 
 .tkey-button{
-    background-color: white;
-    color: black;
+    background-color: rgb(64,78,105);
+    color: white;
     border: none;
     font-size: 20px;
     font-weight: bold;
@@ -29,6 +29,6 @@
     width: 100%;
 }
 .tkey-button.active{
-    background-color: black;
+    background-color: #172030;
     color: white;
 }
