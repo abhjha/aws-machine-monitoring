@@ -59,6 +59,8 @@ class HopperView extends Component {
       buttonLabel: 'START REFRESH',
       autoRefreshStatus: '',
       autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
+      blueHopperTableData : [],
+      greenHopperTableData : [],
     }
   }
 

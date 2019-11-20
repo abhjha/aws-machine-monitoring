@@ -75,29 +75,29 @@ class PlantView extends React.Component {
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
-        var month = [];
-        month[0] = "Jan";
-        month[1] = "Feb";
-        month[2] = "Mar";
-        month[3] = "Apr";
-        month[4] = "May";
-        month[5] = "Jun";
-        month[6] = "Jul";
-        month[7] = "Aug";
-        month[8] = "Sep";
-        month[9] = "Oct";
-        month[10] = "Nov";
-        month[11] = "Dec";
+        // var month = [];
+        // month[0] = "Jan";
+        // month[1] = "Feb";
+        // month[2] = "Mar";
+        // month[3] = "Apr";
+        // month[4] = "May";
+        // month[5] = "Jun";
+        // month[6] = "Jul";
+        // month[7] = "Aug";
+        // month[8] = "Sep";
+        // month[9] = "Oct";
+        // month[10] = "Nov";
+        // month[11] = "Dec";
         var date = new Date(dateVal).getDate();
-        var monthName = month[new Date(dateVal).getMonth()];
-        var year = new Date(dateVal).getFullYear();
+        var monthName = new Date(dateVal).getMonth();
+        // var year = new Date(dateVal).getFullYear();
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
         mins = mins < 10 ? '0'+mins : mins;
         hours = hours < 10 ? '0'+hours : hours;
-        var seconds = new Date(dateVal).getSeconds();
+        // var seconds = new Date(dateVal).getSeconds();
 
-        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+        return  monthName+ "/" + date + " " + hours + " hrs " + mins + " mins ";
     }
 
     triggerPlantAlertData = () => {

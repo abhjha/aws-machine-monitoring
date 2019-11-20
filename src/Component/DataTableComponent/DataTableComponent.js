@@ -8,7 +8,9 @@ export class DataTableComponent extends React.Component {
   constructor(props) {
     super(props);
     this.options = {
-      responsive: true
+      responsive: true,
+      defaultSortName: 'START_TIME',  // default sort column name
+      defaultSortOrder: 'desc'  // default sort order
     };
     this.state = {
       isSearchEnabled: true,
@@ -38,7 +40,9 @@ export class DataTableComponent extends React.Component {
     }
     return `<i class='fas fa-circle statusMarker ${styleClassName}'></i> ${cell}`;
   }
-
+  convertLowerCase(cell, row){
+    return cell.toLowerCase();
+  }
   render() {
     const { isSearchEnabled } = this.state;
     return (
@@ -61,13 +65,11 @@ export class DataTableComponent extends React.Component {
             ref='alertsTable' containerClass="alertsTable" data={this.state.filteredData} striped hover bordered={false} search={isSearchEnabled} multiColumnSearch options={this.options}>
             <TableHeaderColumn width='30' dataField='statusBox' dataFormat={this.setStatusStyle} border='0'></TableHeaderColumn>
             <TableHeaderColumn width='90' headerAlign='center' dataAlign ='center'  isKey dataField='Line' >LINE</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataSort dataField='ASSET' >Asset</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='ASSET_TYPE' >Asset Type</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='ASSET' >Asset</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='DESCRIPTION'>Description</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='STATUS'>Status</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='START_TIME'>Start Time</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='Duration'>Duration</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='SEVERITY'>Severity</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='START_TIME' dataFormat={this.convertLowerCase} dataSort>Start Time</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='Duration' dataFormat={this.convertLowerCase}>Duration</TableHeaderColumn>
           </BootstrapTable>}
         </div>
       </div>
