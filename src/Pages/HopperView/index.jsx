@@ -16,7 +16,7 @@ class HopperView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pages: ['Plant View', 'Line 3', this.props.location.state.lineHeader],
+      pages: ['Plant View', this.props.location.state.lineHeader, "Hopper"],
       dropdownSelectedValue: 'Hopper',
       dropdownOptions: ['Bin', 'Hopper', 'Blender'],
       MixRatioValue: '50:50',

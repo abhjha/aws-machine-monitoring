@@ -16,7 +16,7 @@ class BlenderView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', 'Line 3', 'Blender'],
+            pages: ['Plant View', this.props.location.state.lineHeader, 'Blender'],
             dropdownSelectedValue: 'Blender',
             selectedLine: 'Line_3',
             tableData: [],

@@ -15,7 +15,7 @@ class FinishedGoodsView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', 'Line 3', 'Finished Goods View'],
+            pages: ['Plant View', this.props.location.state.lineHeader, 'Finished Goods View'],
             dropdownSelectedValue: 'Finished Goods View',
             selectedLine: 'Line_3',
             dropdownOptions: ['Bin', 'Hopper', 'Blender', 'Finished Goods View'],
