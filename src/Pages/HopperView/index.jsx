@@ -52,8 +52,9 @@ class HopperView extends Component {
       greenHopperFillTarget: 0,
       blueHopperGaugeRate: 0,
       greenHopperGaugeRate: 0,
-      hopperMixBlue: 0,
-      hoppermixLabel: 0,
+      hopperActual : 0,
+      hopperSetpoint :0,
+      hopperMix : 0,
       gaugeMin: 0,
       gaugeMax: 0,
       buttonLabel: 'START REFRESH',
@@ -208,6 +209,20 @@ class HopperView extends Component {
         console.log(err, 'Something went wrong, blue hopper fill rate data')
       });
   }
+  triggerFinishedGoods = () => {
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=SN004')
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({
+          hopperActual : data.currentValues.ActualMix,
+      hopperSetpoint :data.currentValues.Setpoint,
+      hopperMix : data.currentValues.TargetMix,
+        })
+      })
+      .catch(function (err) {
+        console.log(err, 'Something went wrong, blue hopper fill rate data')
+      });
+  }
   millisToMinutesAndSeconds = (millis) => {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -334,12 +349,14 @@ epochToDate = (dateVal) => {
     this.triggerGreenHopperViewData();
     this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
+    this.triggerFinishedGoods();
     if (sessionStorage.autoRefreshState === "true") {
       this.apiTimerReferenceonload = setInterval(() => {
         this.triggerBlueHopperViewData();
         this.triggerGreenHopperViewData();
         this.triggerBlueHopperViewTableData();
         this.triggerGreenHopperViewTableData();
+        this.triggerFinishedGoods();
       }, 2000);
       this.setState(() => {
         return {
@@ -369,10 +386,10 @@ epochToDate = (dateVal) => {
       greenHopperFillTarget,
       blueHopperGaugeRate,
       greenHopperGaugeRate,
-      hopperMixBlue,
-      hoppermixLabel,
-      autoRefreshStatus,
-      buttonLabel
+      hopperActual,
+      hopperMix,
+      hopperSetpoint,
+      
 
     } = this.state;
     var annotationContentGreen = `<div style="text-align:left;width:70px;color:white">Target : ${greenHopperFillTarget}</div>`;
@@ -516,7 +533,7 @@ epochToDate = (dateVal) => {
               </div>
             </div>
             <div className="mix-hopper card-tile">
-              <MixRatio hopperMixBlue={hoppermixLabel} hopperMixBlueActual={hopperMixBlue} hoppermixLabel={hoppermixLabel} />
+              <MixRatio hopperActual={hopperActual} hopperSetpoint ={hopperSetpoint} hopperMix = {hopperMix} />
             </div>
           </div>
           <div className="table-details-container card-tile">
