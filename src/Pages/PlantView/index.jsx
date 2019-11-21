@@ -44,10 +44,11 @@ class PlantView extends React.Component {
 
     navigateAsset = (e) => {
         const lineID = e.currentTarget.getAttribute('data-id');
+        const lineNameProps = e.currentTarget.childNodes[0].innerText;
         this.props.history.push({
             pathname: '/lineView',
             Component: { LineView },
-            state: { lineID, lineDropDown: this.state.lineDropDown }
+            state: { lineID, lineNameProps,lineDropDown: this.state.lineDropDown }
         });
     }
 
@@ -75,6 +76,7 @@ class PlantView extends React.Component {
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
+        var zone = "am";
         // var month = [];
         // month[0] = "Jan";
         // month[1] = "Feb";
@@ -89,15 +91,19 @@ class PlantView extends React.Component {
         // month[10] = "Nov";
         // month[11] = "Dec";
         var date = new Date(dateVal).getDate();
-        var monthName = new Date(dateVal).getMonth();
+        var monthName = new Date(dateVal).getMonth() + 1;
         // var year = new Date(dateVal).getFullYear();
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
+        if(hours>12){
+            hours = hours-12;
+            zone = "pm";
+        }
         mins = mins < 10 ? '0'+mins : mins;
         hours = hours < 10 ? '0'+hours : hours;
         // var seconds = new Date(dateVal).getSeconds();
 
-        return  monthName+ "/" + date + " " + hours + " hrs " + mins + " mins ";
+        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
     }
 
     triggerPlantAlertData = () => {
@@ -111,7 +117,7 @@ class PlantView extends React.Component {
                 var alarmsData = [];
                 var lineDropdownValue = [];
                 for (let i = 0; i < data.alarms.length; i++) {
-                    data.alarms[i].Line = "";
+                    data.alarms[i].Line = "Plant Level";
                     alarmsData.push(data.alarms[i]);
                     if(data.alarms[i].SEVERITY.toLowerCase() == "alert"){
                         tableAlerts++;
@@ -135,10 +141,8 @@ class PlantView extends React.Component {
                     }
                     for (let k = 0; data.children[i].children != undefined && k < data.children[i].children.length; k++) {
                         for (let z = 0; z < data.children[i].children[k].alarms.length; z++) {
-                            if (data.children[i].alarms.length > 0) {
+                            if (data.children[i].children[k].alarms.length > 0) {
                                 data.children[i].children[k].alarms[z].Line = data.children[i].ASSET_NAME;
-                            } else {
-                                data.children[i].children[k].alarms[z].Line = "";
                             }
                             data.children[i].children[k].alarms[z].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].children[k].alarms[z].START_TIME));
                             data.children[i].children[k].alarms[z].START_TIME = this.epochToDate(data.children[i].children[k].alarms[z].START_TIME);
@@ -160,12 +164,12 @@ class PlantView extends React.Component {
                     }else if(tableAlerts ==0 && tableWarnings>0){
                         data.children[i]["backGroundColor"] = "orange";
                     }
-                    // if(tableWarnings>tableWarningDifference){
-                    //     this.notify("warning");
-                    // }
-                    // if(tableAlerts > tableAlertsDifference){
-                    //     this.notify("alert");
-                    // }
+                    if(tableWarnings>tableWarningDifference){
+                        this.notify("warning");
+                    }
+                    if(tableAlerts > tableAlertsDifference){
+                        this.notify("alert");
+                    }
 
                 }
 
@@ -207,6 +211,18 @@ class PlantView extends React.Component {
     //     });
 
     // }
+    notify = (status) => {
+        if(status == "warning"){
+            toast.warn("New warning !", {
+                position: toast.POSITION.TOP_RIGHT
+              });
+        }else if(status == "alert"){
+            toast.error("New alert !", {
+                position: toast.POSITION.TOP_RIGHT
+              });
+        }
+      
+      };
 
     componentDidMount() {
         this.triggerPlantViewData();
@@ -235,7 +251,7 @@ class PlantView extends React.Component {
     }
 
     render() {
-        const { autoRefreshState, buttonLabel, plantData, plantAssetData, tableData, autoRefreshStatus } = this.state;
+        const { autoRefreshState, plantData, plantAssetData, tableData } = this.state;
         return (
             <div className={"data-container plant-view  " + autoRefreshState}>
                 <div className="plant-header-label">

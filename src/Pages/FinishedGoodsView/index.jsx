@@ -70,7 +70,7 @@ class FinishedGoodsView extends Component {
                 console.log(goodsData);
                 this.setState({
                     DefectAnalysis: (({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }) => ({ DamagedUnitCount, DamagedCasesCount, OverheatedCount, MixRatioOutOfSpecCount, ImpurityCount }))(goodsData.currentValues),
-                    MixRatio: { "Target Mix": (({ TargetMixRatioBlue, TargetMixRatioGreen }) => ({ TargetMixRatioBlue, TargetMixRatioGreen }))(goodsData.currentValues), "Hopper Mix": (({ HopperMixRatioBlue, HopperMixRatioGreen }) => ({ HopperMixRatioBlue, HopperMixRatioGreen }))(goodsData.currentValues), "Finished Goods Mix": (({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }) => ({ FinishedGoodsMixRatioBlue, FinishedGoodsMixRatioGreen }))(goodsData.currentValues) }
+                    MixRatio: { "Target Mix": goodsData.currentValues.TargetMix, "Hopper Mix": goodsData.currentValues.Setpoint, "Finished Goods Mix": goodsData.currentValues.ActualMix }
                     ,
                     graphData: {
                         labels: ['Total Complete Cases', ' Defect Cases'],
@@ -104,32 +104,28 @@ class FinishedGoodsView extends Component {
     millisToMinutesAndSeconds = (millis) => {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
-        return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
+        return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
+
+   
+
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
-        var month = [];
-        month[0] = "Jan";
-        month[1] = "Feb";
-        month[2] = "Mar";
-        month[3] = "Apr";
-        month[4] = "May";
-        month[5] = "Jun";
-        month[6] = "Jul";
-        month[7] = "Aug";
-        month[8] = "Sep";
-        month[9] = "Oct";
-        month[10] = "Nov";
-        month[11] = "Dec";
+        var zone = "am";
         var date = new Date(dateVal).getDate();
-        var monthName = month[new Date(dateVal).getMonth()];
-        var year = new Date(dateVal).getFullYear();
+        var monthName = new Date(dateVal).getMonth() + 1;
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
-        var seconds = new Date(dateVal).getSeconds();
+        if(hours>12){
+            hours = hours-12;
+            zone = "pm";
+        }
+        mins = mins < 10 ? '0'+mins : mins;
+        hours = hours < 10 ? '0'+hours : hours;
 
-        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
     }
+
     triggerFinishedGoodsTableData = () => {
         tableAlerts = 0;
         tableWarnings = 0;

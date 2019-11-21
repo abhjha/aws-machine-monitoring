@@ -2,17 +2,17 @@ import React from 'react';
 
 function ScheduleAdherence(props) {
     var sacolor ="";
-    if(props.data.ScheduleAdherence < 60){
+    if(props.data.ScheduleAdherence < 50){
         sacolor="red";
-    }else if (props.data.ScheduleAdherence >=60 && props.data.ScheduleAdherence  <80){
+    }else if (props.data.ScheduleAdherence >=50 && props.data.ScheduleAdherence  <90){
         sacolor ="orange";
-    }else if (props.data.ScheduleAdherence >=80){
+    }else if (props.data.ScheduleAdherence >=90){
         sacolor ="green";
     }
     return (
         <div className="adherence-container card-tile">
             <div className="adherence-heading">
-                <div className="adherence-label-main"><h3>Schedule Adherence</h3></div> <div className={"adherence-value-main " + sacolor}><h3 >{Math.round(props.data.ScheduleAdherence) + "%"}</h3></div>
+                <div className="adherence-label-main">Schedule Adherence</div> <div className={"adherence-value-main " + sacolor}><h3 >{Math.round(props.data.ScheduleAdherence) + "%"}</h3></div>
             </div>
             <div className="current-adherence">
                 <div className="current-heading">Current</div>

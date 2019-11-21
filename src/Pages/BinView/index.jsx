@@ -17,7 +17,7 @@ class BinView extends Component {
     super(props);
     console.log(props, "props");
     this.state = {
-      pages: ['Plant View', 'Line 3', 'Bin'],
+      pages: ['Plant View', this.props.location.state.lineHeader,'Bin'],
       dropdownSelectedValue: 'Bin',
       blueLeftData: [{}],
       greenLeftData: [{}],
@@ -52,32 +52,42 @@ class BinView extends Component {
   millisToMinutesAndSeconds = (millis) => {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
-    return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
-  }
-  epochToDate = (dateVal) => {
+    return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
+}
+
+// notify = (status) => {
+//     if(status == "warning"){
+//         toast.warn("New warning !", {
+//             position: toast.POSITION.TOP_RIGHT
+//           });
+//     }else if(status == "alert"){
+//         toast.error("New alert !", {
+//             position: toast.POSITION.TOP_RIGHT
+//           });
+//     }
+    
+ 
+      
+
+//   };
+
+epochToDate = (dateVal) => {
     dateVal = parseInt(dateVal);
-    var month = [];
-    month[0] = "Jan";
-    month[1] = "Feb";
-    month[2] = "Mar";
-    month[3] = "Apr";
-    month[4] = "May";
-    month[5] = "Jun";
-    month[6] = "Jul";
-    month[7] = "Aug";
-    month[8] = "Sep";
-    month[9] = "Oct";
-    month[10] = "Nov";
-    month[11] = "Dec";
+    var zone = "am";
     var date = new Date(dateVal).getDate();
-    var monthName = month[new Date(dateVal).getMonth()];
-    var year = new Date(dateVal).getFullYear();
+    var monthName = new Date(dateVal).getMonth() + 1;
     var hours = new Date(dateVal).getHours();
     var mins = new Date(dateVal).getMinutes();
-    var seconds = new Date(dateVal).getSeconds();
+    if(hours>12){
+        hours = hours-12;
+        zone = "pm";
+    }
+    mins = mins < 10 ? '0'+mins : mins;
+    hours = hours < 10 ? '0'+hours : hours;
 
-    return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+    return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
 }
+
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
     //this.setState({ dropdownSelectedValue });
@@ -112,7 +122,7 @@ class BinView extends Component {
           bgColor = '#EE423D';
         }
         this.setState({
-          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'blue Bin' }],
+          blueLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Blue Bin' }],
           BlueBinGraphData: {
             datasets: [{
               label: "",
@@ -145,7 +155,7 @@ class BinView extends Component {
           bgColor = '#EE423D';
         }
         this.setState({
-          greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'green Bin' }],
+          greenLeftData: [{ value: binData.currentValues.timeToRefill, binName: 'Green Bin' }],
           GreenBinGraphData: {
             datasets: [{
               label: "Volume(litres)",
@@ -173,7 +183,7 @@ class BinView extends Component {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = data.alarms[i].ASSET;
+          data.alarms[i].Line = this.props.location.state.lineHeader;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
@@ -199,7 +209,7 @@ class BinView extends Component {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = data.alarms[i].ASSET;
+          data.alarms[i].Line = this.props.location.state.lineHeader;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
@@ -397,7 +407,7 @@ class BinView extends Component {
           <div className="bin-graph-container">
             <div className="refill-container card-tile">
               <div className="bin-view">
-                <p className="bin-view-heading"><h4>Time Left to Refill</h4></p>
+                <p className="bin-view-heading">Time Left to Refill</p>
                 {greenValues} {values}
               </div>
             </div>

@@ -40,9 +40,9 @@ export class DataTableComponent extends React.Component {
     }
     return `<i class='fas fa-circle statusMarker ${styleClassName}'></i> ${cell}`;
   }
-  convertLowerCase(cell, row){
-    return cell.toLowerCase();
-  }
+  // convertLowerCase(cell, row){
+  //   return "het check test case capital letters";
+  // }
   render() {
     const { isSearchEnabled } = this.state;
     return (
@@ -66,10 +66,10 @@ export class DataTableComponent extends React.Component {
             <TableHeaderColumn width='30' dataField='statusBox' dataFormat={this.setStatusStyle} border='0'></TableHeaderColumn>
             <TableHeaderColumn width='90' headerAlign='center' dataAlign ='center'  isKey dataField='Line' >LINE</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='ASSET' >Asset</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='DESCRIPTION'>Description</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center' dataAlign ='center' width='450' dataField='DESCRIPTION'>Description</TableHeaderColumn>
             <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='STATUS'>Status</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='START_TIME' dataFormat={this.convertLowerCase} dataSort>Start Time</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='Duration' dataFormat={this.convertLowerCase}>Duration</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='START_TIME'  >Start Time</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='Duration' >Duration</TableHeaderColumn>
           </BootstrapTable>}
         </div>
       </div>

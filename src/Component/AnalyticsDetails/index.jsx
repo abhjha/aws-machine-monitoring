@@ -7,22 +7,22 @@ var tabledata = [{
 },
 {
     Analysis : "Setpoint Optimization",
-    Insights : "When crew A is locked in, setpoints are adjusted more frequently and there is a 28% higher probability of scrap being generated",
+    Insights : "When ambient conditions exceed analytics-defined thresholds, setpoints should be adjusted to optimize the process and reduce scrap based on machine learning models ",
     APQ : "AQ" 
 },
 {
     Analysis : "Predictive Maintenance",
-    Insights : "When crew A is locked in, setpoints are adjusted more frequently and there is a 28% higher probability of scrap being generated",
-    APQ : "AQ" 
+    Insights : "When blender vibration on Line 3 hits the critical threshold it is estimated to have 500 hours remaining and an overhaul should be performed at next SKU changeover to avoid unexpected downtime ",
+    APQ : "A" 
 },
 {
     Analysis : "Rate Optimization",
-    Insights : "When crew A is locked in, setpoints are adjusted more frequently and there is a 28% higher probability of scrap being generated",
-    APQ : "AQ" 
+    Insights : "Setting blender speed between 30-38RPMs improves overall throughput and OEE by 7% ",
+    APQ : "PQ" 
 },
 {
     Analysis : "Raw Material Insights",
-    Insights : "When crew A is locked in, setpoints are adjusted more frequently and there is a 28% higher probability of scrap being generated",
+    Insights : "Utilizing Brand X as the primary source of materials can increase profit by $91 K on Line 4 monthly ",
     APQ : "AQ" 
 }]
 

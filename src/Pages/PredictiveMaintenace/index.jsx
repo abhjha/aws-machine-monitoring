@@ -34,7 +34,7 @@ class PredictiveMaintenace extends Component {
                     Predictive Maintenace
                   </div>
                     <div className="pred-main-details">
-                        Insight: When Blender Vibration on Line 3 hits the critical threshold it is estimated to have 500 hours remainingand an overhaul should be performed at next SKU changeover to avoid unexpected downtime
+                        Insight: When Blender Vibration on Line 3 hits the critical threshold it is estimated to have 500 hours remaining and an overhaul should be performed at next SKU changeover to avoid unexpected downtime
                   </div>
                 </div>
                 <div className="pred-main-graph">

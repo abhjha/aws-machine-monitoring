@@ -24,7 +24,7 @@ class LineView extends Component {
         super(props);
         //sessionStorage.autoRefreshState = "false";
         this.state = {
-            pages: ['Plant View', "Line 3"],
+            pages: ['Plant View', this.props.location.state.lineNameProps],
             dropdownSelectedValue: 'Line 3',
             selectedLine: 'Line_3',
             dropdownOptions: [],
@@ -34,6 +34,7 @@ class LineView extends Component {
             lineData: {},
             lineAssetData: {},
             buttonLabel: 'START REFRESH',
+            lineHeader : this.props.location.state.lineNameProps,
             autoRefreshStatus : '',
             autoRefreshState : sessionStorage.autoRefreshState === "false" ? false : true,
         }
@@ -56,25 +57,25 @@ class LineView extends Component {
             this.props.history.push({
                 pathname: '/binView',
                 Component: { BinView },
-                state: { assetID, lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader : this.props.location.state.lineNameProps,lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Hopper") {
             this.props.history.push({
                 pathname: '/hopperView',
                 Component: { HopperView },
-                state: { assetID, lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader : this.props.location.state.lineNameProps,lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Blender") {
             this.props.history.push({
                 pathname: '/blenderView',
                 Component: { BlenderView },
-                state: { assetID, lineValue: this.props.location.state.lineID }
+                state: { assetID,lineHeader : this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Finished Goods") {
             this.props.history.push({
                 pathname: '/finishedGoodsView',
                 Component: { FinishedGoodsView },
-                state: { assetID, lineValue: this.props.location.state.lineID }
+                state: { assetID,lineHeader : this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
         } 
     }
@@ -100,32 +101,42 @@ class LineView extends Component {
     millisToMinutesAndSeconds = (millis) => {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
-        return minutes + " m " + (seconds < 10 ? '0' : '') + seconds + "s";
+        return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
+
+    // notify = (status) => {
+    //     if(status == "warning"){
+    //         toast.warn("New warning !", {
+    //             position: toast.POSITION.TOP_RIGHT
+    //           });
+    //     }else if(status == "alert"){
+    //         toast.error("New alert !", {
+    //             position: toast.POSITION.TOP_RIGHT
+    //           });
+    //     }
+        
+     
+          
+   
+    //   };
+
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
-        var month = [];
-        month[0] = "Jan";
-        month[1] = "Feb";
-        month[2] = "Mar";
-        month[3] = "Apr";
-        month[4] = "May";
-        month[5] = "Jun";
-        month[6] = "Jul";
-        month[7] = "Aug";
-        month[8] = "Sep";
-        month[9] = "Oct";
-        month[10] = "Nov";
-        month[11] = "Dec";
+        var zone = "am";
         var date = new Date(dateVal).getDate();
-        var monthName = month[new Date(dateVal).getMonth()];
-        var year = new Date(dateVal).getFullYear();
+        var monthName = new Date(dateVal).getMonth() + 1;
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
-        var seconds = new Date(dateVal).getSeconds();
+        if(hours>12){
+            hours = hours-12;
+            zone = "pm";
+        }
+        mins = mins < 10 ? '0'+mins : mins;
+        hours = hours < 10 ? '0'+hours : hours;
 
-        return date + " " + monthName + " " + year + " : " + hours + ":" + mins + ":" + seconds;
+        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
     }
+
 
     //Alert Table Data
     triggerAlertTableData = () => {
@@ -139,7 +150,7 @@ class LineView extends Component {
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-                    data.alarms[i].Line = data.alarms[i].ASSET_NAME;
+                    data.alarms[i].Line = data.ASSET_NAME;
                     data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
                     if (data.alarms[i].SEVERITY == "Alert") {
                         data.alarms[i]["statusBox"] = <img src={alert} />;
@@ -152,10 +163,8 @@ class LineView extends Component {
                 }
                 for (let i = 0; i < data.children.length; i++) {
                     for (let j = 0; j < data.children[i].alarms.length; j++) {
-                        if (data.alarms.length > 0) {
-                            data.children[i].alarms[j].Line = data.alarms[0].ASSET_NAME;
-                        } else {
-                            data.children[i].alarms[j].Line = "";
+                        if (data.children[i].alarms.length > 0) {
+                            data.children[i].alarms[j].Line = data.ASSET_NAME;
                         }
                         data.children[i].alarms[j].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].alarms[j].START_TIME));
                         data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
