@@ -64,12 +64,12 @@ export class DataTableComponent extends React.Component {
           {<BootstrapTable
             ref='alertsTable' containerClass="alertsTable" data={this.state.filteredData} striped hover bordered={false} search={isSearchEnabled} multiColumnSearch options={this.options}>
             <TableHeaderColumn width='30' dataField='statusBox' dataFormat={this.setStatusStyle} border='0'></TableHeaderColumn>
-            <TableHeaderColumn width='90' headerAlign='center' dataAlign ='center'  isKey dataField='Line' >LINE</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='ASSET' >Asset</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center' dataAlign ='center' width='450' dataField='DESCRIPTION'>Description</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center' dataAlign ='center'  dataField='STATUS'>Status</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='START_TIME'  >Start Time</TableHeaderColumn>
-            <TableHeaderColumn headerAlign='center'  dataAlign ='center' dataField='Duration' >Duration</TableHeaderColumn>
+            <TableHeaderColumn width='90' headerAlign='left' dataAlign ='left'  isKey dataField='Line' >LINE</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='left'  dataAlign ='left' dataField='ASSET' >Asset</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='left' dataAlign ='left' width='450' dataField='DESCRIPTION'>Description</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='left' dataAlign ='left'  dataField='STATUS'>Status</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='left'  dataAlign ='left' dataField='START_TIME'  >Start Time</TableHeaderColumn>
+            <TableHeaderColumn headerAlign='left'  dataAlign ='left' dataField='Duration' >Duration</TableHeaderColumn>
           </BootstrapTable>}
         </div>
       </div>
