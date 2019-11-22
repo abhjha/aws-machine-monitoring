@@ -72,16 +72,21 @@
 }
 .pred-summary-details {
     display: flex;
+    
 }
 .pred-summary-details .sp-table-container{
     color: black;
     width: 50%;
     margin: 0;
 }
+.pred-summary-details .sp-table-container:first-child{
+    
+    text-align: left;
+}
 .sp-table-value.summary-title{
     color: white;
     text-align: center;
-    font-size: 36px;
+    font-size: 22px;
 }
 .pred-main-downtime{
     border-radius: 10px;
