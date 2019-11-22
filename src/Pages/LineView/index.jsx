@@ -24,7 +24,7 @@ class LineView extends Component {
         super(props);
         //sessionStorage.autoRefreshState = "false";
         this.state = {
-            pages: ['Plant View', this.props.location.state.lineNameProps],
+            pages: ['Plant View', sessionStorage.lineName],
             dropdownSelectedValue: 'Line 3',
             selectedLine: 'Line_3',
             dropdownOptions: [],
@@ -80,7 +80,7 @@ class LineView extends Component {
         } 
     }
     lineViewData = () => {
-        const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=${this.props.location.state.lineID}`;
+        const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=${sessionStorage.lineID}`;
         fetch(url)
             .then((response) => response.json())
             .then((goodsData) => {
@@ -140,7 +140,7 @@ class LineView extends Component {
 
     //Alert Table Data
     triggerAlertTableData = () => {
-        const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=${this.props.location.state.lineID}`;
+        const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=${sessionStorage.lineID}`;
         fetch(url)
             .then((response) => response.json())
             .then((data) => {

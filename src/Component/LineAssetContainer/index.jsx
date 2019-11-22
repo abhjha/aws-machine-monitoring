@@ -60,6 +60,7 @@ class LineAssetData extends Component {
         this.sortLineData(this.props.data);
     }
     render() {
+        console.log(this.state.lineData , "children data 2");
         return (
                 
                 <div className="asset-container">

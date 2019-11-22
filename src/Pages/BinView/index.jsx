@@ -17,7 +17,7 @@ class BinView extends Component {
     super(props);
     console.log(props, "props");
     this.state = {
-      pages: ['Plant View', this.props.location.state.lineHeader,'Bin'],
+      pages: ['Plant View', sessionStorage.lineName,'Bin'],
       dropdownSelectedValue: 'Bin',
       blueLeftData: [{}],
       greenLeftData: [{}],
@@ -183,7 +183,7 @@ epochToDate = (dateVal) => {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = this.props.location.state.lineHeader;
+          data.alarms[i].Line = sessionStorage.lineName;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
@@ -209,7 +209,7 @@ epochToDate = (dateVal) => {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = this.props.location.state.lineHeader;
+          data.alarms[i].Line = sessionStorage.lineName;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;

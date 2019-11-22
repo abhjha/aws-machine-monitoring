@@ -1,6 +1,18 @@
 .menu-container{
     background-color: $base-color;
     width: $menu-bar-width;
+    .persona-details {
+        color: white;
+        padding: 10px 0 0 22px;
+        font-size: 18px;
+    }
+    .menu-option-items{
+        height: 70%;
+    }
+    .tkey-button{
+        margin-left: 22px;
+        background-color: #172030;
+    }
 }
 
 .menu-heading {
@@ -9,6 +21,9 @@
     font-weight: 400;
     font-size: 20px;
     text-align: center;
+    .green{
+        color: greenyellow;
+    }
 
 }       
 

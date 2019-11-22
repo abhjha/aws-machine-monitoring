@@ -16,7 +16,7 @@ class HopperView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pages: ['Plant View', this.props.location.state.lineHeader, "Hopper"],
+      pages: ['Plant View', sessionStorage.lineName, "Hopper"],
       dropdownSelectedValue: 'Hopper',
       dropdownOptions: ['Bin', 'Hopper', 'Blender'],
       MixRatioValue: '50:50',
@@ -270,7 +270,7 @@ epochToDate = (dateVal) => {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = this.props.location.state.lineHeader;
+          data.alarms[i].Line = sessionStorage.lineName;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
@@ -295,7 +295,7 @@ epochToDate = (dateVal) => {
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = this.props.location.state.lineHeader;
+          data.alarms[i].Line = sessionStorage.lineName;
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
@@ -425,7 +425,7 @@ epochToDate = (dateVal) => {
 
               <div className="hopper-gauge card-tile">
                 <div className="hopper-rate-heading">
-                  Green Fill Rate
+                  Green Hopper Fill Rate
                     </div>
                 <div className="hopper-rate-meter">
                   <div className="speedoMeter-blue-bin">

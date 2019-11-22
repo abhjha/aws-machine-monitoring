@@ -45,6 +45,8 @@ class PlantView extends React.Component {
     navigateAsset = (e) => {
         const lineID = e.currentTarget.getAttribute('data-id');
         const lineNameProps = e.currentTarget.childNodes[0].innerText;
+        sessionStorage.lineID = lineID;
+        sessionStorage.lineName = lineNameProps;
         this.props.history.push({
             pathname: '/lineView',
             Component: { LineView },

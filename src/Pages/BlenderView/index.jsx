@@ -16,7 +16,7 @@ class BlenderView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ['Plant View', this.props.location.state.lineHeader, 'Blender'],
+            pages: ['Plant View', sessionStorage.lineName, 'Blender'],
             dropdownSelectedValue: 'Blender',
             selectedLine: 'Line_3',
             tableData: [],
@@ -181,7 +181,7 @@ class BlenderView extends Component {
                 var alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-                    data.alarms[i].Line = data.alarms[i].ASSET;
+                    data.alarms[i].Line = sessionStorage.lineName;
                     data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
                     if (data.alarms[i].SEVERITY == "Alert") {
                         data.alarms[i][""] = <img src={alert} />;
@@ -349,7 +349,7 @@ class BlenderView extends Component {
                             <AmbientReadings temp={this.state.ambientTemperature} humidity={this.state.ambientHumidity} pressure={this.state.ambientPressure} />
                         </div>
                         <div className="blender-temp card-tile">
-                            <div className="hopper-rate-heading">
+                            <div className="hopper-rate-heading blend-temp">
                                Temperature
                             </div>
                             {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
@@ -363,9 +363,9 @@ class BlenderView extends Component {
                                     </AxisDirective>
                                 </AxesDirective>
                                 <AnnotationsDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempLowerBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempLowerBound}>
                                     </AnnotationDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} x={45} zIndex={1} y={-155.5 + (500 - this.state.tempUpperBound) * 0.6}>
+                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempUpperBound}>
                                     </AnnotationDirective>
                                 </AnnotationsDirective>
                             </LinearGaugeComponent>}

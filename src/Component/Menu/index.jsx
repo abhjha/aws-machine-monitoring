@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
-
+import Button from '../Button';
 
 
 
@@ -48,7 +48,7 @@ class Menu extends React.Component {
         return (
             <div onClick={this.setActiveState} className="menu-container">
                 <div className="menu-heading">
-                    SMART FACTORY FABRIC
+                    Smart Factory <span class="green"> Fabric</span>
                 </div>
                 <div onClick={this.setActiveState} className="menu-option-items">
                     {this.state.menuItems.map((item, index) => {
@@ -65,6 +65,11 @@ class Menu extends React.Component {
                         <button className="logout-button">LOGOUT</button>
                     </div> */}
                 </div>
+                <div className="persona-details">
+                    <p>John Smith</p>
+                    <p>Plant Manager</p>
+                </div>
+                <Button labelName = {"LOGOUT"} type={'logout'} />
             </div>
 
 
