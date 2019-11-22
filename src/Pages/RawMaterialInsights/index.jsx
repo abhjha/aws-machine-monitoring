@@ -36,7 +36,7 @@ class RawMaterialInsights extends Component {
                         Raw Material Insights
                   </div>
                     <div className="pred-main-details">
-                        Insight: Utilizing Brand X as the primary source of materials can increase profit by $91K on Line 4 monthly
+                        Insight: Utilizing Brand X as the primary source of materials can increase profit by $91 K on Line 4 monthly
                   </div>
                 </div>
                 <div className="pred-main-graph">

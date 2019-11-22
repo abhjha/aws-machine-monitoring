@@ -10,7 +10,7 @@ class PredictiveMaintenace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pages: ["Ananlytics", "Predictive Maintenace"],
+            pages: ["Ananlytics", "Predictive Maintenance"],
             predLine: ["Line", "3"],
             predAsset: ["Asset", "Blender"],
             predSummary: [],
@@ -31,10 +31,10 @@ class PredictiveMaintenace extends Component {
                 </div>
                 <div className="pred-main-heading card-tile">
                     <div className="pred-main-title">
-                    Predictive Maintenace
+                    Predictive Maintenance
                   </div>
                     <div className="pred-main-details">
-                        Insight: When Blender Vibration on Line 3 hits the critical threshold it is estimated to have 500 hours remaining and an overhaul should be performed at next SKU changeover to avoid unexpected downtime
+                        Insight: When blender vibration on Line 3 hits the critical threshold it is estimated to have 500 hours remaining and an overhaul should be performed at next SKU changeover to avoid unexpected downtime
                   </div>
                 </div>
                 <div className="pred-main-graph">

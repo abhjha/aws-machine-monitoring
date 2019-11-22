@@ -352,20 +352,20 @@ class BlenderView extends Component {
                             <div className="hopper-rate-heading blend-temp">
                                Temperature
                             </div>
-                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 20 }} background={'transparent'} margin={{ top: 0 }}>
+                            {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 30 }} background={'transparent'} margin={{ top: 0 }}>
                                 <Inject services={[Annotations]} />
                                 <AxesDirective>
                                     <AxisDirective minimum={0} maximum={500} majorTicks={{ interval: 50, color: 'white' }} minorTicks={{ interval: 10, color: 'white' }} labelStyle={{ font: { color: 'white' } }} >
                                         <PointersDirective>
-                                            <PointerDirective value={this.state.blenderTemperature} height={40} type='Bar' color={this.state.temperatureBackground}>
+                                            <PointerDirective value={this.state.blenderTemperature} height={40} width={25} type='Bar' color={this.state.temperatureBackground}>
                                             </PointerDirective>
                                         </PointersDirective>
                                     </AxisDirective>
                                 </AxesDirective>
                                 <AnnotationsDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempLowerBound}>
+                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempLowerBound}>
                                     </AnnotationDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:25px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempUpperBound}>
+                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempUpperBound}>
                                     </AnnotationDirective>
                                 </AnnotationsDirective>
                             </LinearGaugeComponent>}

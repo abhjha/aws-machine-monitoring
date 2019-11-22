@@ -36,7 +36,7 @@ class RateOptimization extends Component {
                         Rate Optimization
                   </div>
                     <div className="pred-main-details">
-                        Insight: Setting Blender Speed between 30-38RPMs imoroves overall input and OEE by 7%
+                        Insight: Setting blender speed between 30-38RPMs improves overall throughput and OEE by 7%
                   </div>
                 </div>
                 <div className="pred-main-graph">

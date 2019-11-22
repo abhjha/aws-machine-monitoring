@@ -2,9 +2,9 @@ import React from 'react';
 
 function ScheduleAdherence(props) {
     var sacolor ="";
-    if(props.data.ScheduleAdherence < 50){
+    if(props.data.ScheduleAdherence < 60){
         sacolor="red";
-    }else if (props.data.ScheduleAdherence >=50 && props.data.ScheduleAdherence  <90){
+    }else if (props.data.ScheduleAdherence >=60 && props.data.ScheduleAdherence  <90){
         sacolor ="orange";
     }else if (props.data.ScheduleAdherence >=90){
         sacolor ="green";
