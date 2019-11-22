@@ -81,6 +81,7 @@
 .sp-table-value.summary-title{
     color: white;
     text-align: center;
+    font-size: 36px;
 }
 .pred-main-downtime{
     border-radius: 10px;
