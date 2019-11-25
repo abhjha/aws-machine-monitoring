@@ -16,18 +16,18 @@ class SetPointOptimzation extends Component {
             setpointAmbTemp: ["Ambient Temperature"],
             setpointHum: ["Ambient Humidity"],
             spHopper: {
-                "Mix Ratio Setpoint": "-3%",
-                "Blue Hopper Setpoint": "-4%",
-                "Green Hopper Setpoint": "-6%",
-                "Blue Fill Rate": "4%",
-                "Green Fill Rate": "4%",
+                "Mix Ratio Setpoint": "-3",
+                "Blue Hopper Setpoint": "-4",
+                "Green Hopper Setpoint": "-6",
+                "Blue Fill Rate": "4",
+                "Green Fill Rate": "4",
             },
             spBlender: {
-                "Blender Speed": "4%",
-                "Blender Zone 1 Temp": "-5%",
-                "Blender Zone 2 Temp": "-8%",
-                "Blender Zone 3 Temp": "-9%",
-                "Blender Zone 4 Temp": "-6%",
+                "Blender Speed": "4",
+                "Blender Zone 1 Temp": "-5",
+                "Blender Zone 2 Temp": "-9",
+                "Blender Zone 3 Temp": "-8",
+                "Blender Zone 4 Temp": "-6",
             }
         }
     }
@@ -75,7 +75,7 @@ class SetPointOptimzation extends Component {
                                         +6%
                                 </div>
                                     <div className="setpoint-adjustements-heading">
-                                        Cummulative OEE Impact
+                                        Cumulative OEE Impact
                                 </div>
 
                                 </div>

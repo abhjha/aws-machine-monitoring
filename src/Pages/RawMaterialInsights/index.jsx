@@ -46,7 +46,7 @@ class RawMaterialInsights extends Component {
                     <div className="pred-graph-img">
 
                         <div className="setpoint-adjustements-heading">
-                            Line 3 Blender Motor Health
+                            Raw Material Analysis
                         </div>
                         <div className="pred-main-graph-image">
                             <img src={graphImage} />
@@ -66,7 +66,7 @@ class RawMaterialInsights extends Component {
                     </div>
                     <div className="pred-main-downtime">
                     <div className="setpoint-adjustements-heading">
-                            Projected Monthly Profit per Blend
+                    Projected Monthly Profit Per Blend
                         </div>
                         <div className="raw-mat-bar"><img src={barImage}/></div>
                     </div>

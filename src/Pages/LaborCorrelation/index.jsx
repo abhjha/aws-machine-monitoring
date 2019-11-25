@@ -28,7 +28,7 @@ class LaborCorrelation extends Component {
                         Labor Correlation
                   </div>
                     <div className="labor-correlation-details">
-                        Insight: When a Crew A is clocked in, setpoints are adjusted more frequently and there is a 64% higher probability od scrap being generated
+                        Insight: When Crew A is clocked in, setpoints are adjusted more frequently and there is a 64% higher probability of scrap being generated
                   </div>
                 </div>
                 <div className="labor-correlation-table">

@@ -1,9 +1,10 @@
 .data-container.setpoint-view{
     display: grid;
-    grid-template-rows: 180px 1fr;
+    grid-template-rows: auto 1fr;
     grid-gap : 2%;
     padding: 20px;
     height: calc(100vh - 75px);
+    font-weight: bold;
 }
 .setpoint-heading,.setpoint-temp,.setpoint-adjustments{
     background-color: #2F3B52;
@@ -12,9 +13,10 @@
     font-size: 22px;
     color: white;
     padding: 10px;
+    font-weight: bold;
 }
 .setpoint-title,.sp-oee,.sp-heatmap{
-    background-color:#2F3B52;
+    background-color:#242e42;
     padding: 10px;
 }
 .setpoint-details{
@@ -58,6 +60,7 @@
     margin: auto;
     border: 1px solid;
     padding: 2%;
+    font-weight: bold;
 }
 .sp-asset-details-container {
     display: flex;
@@ -68,13 +71,7 @@
     width: 70%;
 }
 
-.sp-asset-value {
-    width: 20%;
-    text-align: center;
-    background-color: #05C985;
-    height: 54px;
-    color: black;
-}
+
 .setpoint-adjustments {
     padding: 15px 25px;
     display: grid;

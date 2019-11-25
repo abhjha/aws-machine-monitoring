@@ -13,7 +13,7 @@ class RateOptimization extends Component {
             predLine: ["Line", "3"],
             predAsset: ["Asset", "Blender"],
             predSummary: [],
-            predDowntime: ["Primary Downtime Drivers", "Blender failure", "Line Clog", "Outfeed Blockage"],
+            predDowntime: ["Primary Downtime Drivers", "Blender Failure", "Line Clog", "Outfeed Blockage"],
             rateOptiT1: ["55 RPM", "45 RPM", "35 RPM", "25 RPM"],
             rateOptiT2: ["25%", "11%", "4%", "7%"],
             rateOptiT3: ["$656K", "$367K", "$105K", "$236K"],
@@ -46,7 +46,7 @@ class RateOptimization extends Component {
                         <div className="pred-graph-img">
 
                             <div className="setpoint-adjustements-heading">
-                                Line 3 Blender Motor Health
+                            Blender Rate vs OEE Cluster Analysis
                         </div>
                             <div className="pred-main-graph-image">
                                 <img src={graphImage} />
@@ -59,12 +59,12 @@ class RateOptimization extends Component {
                             <div className="pred-summary-container">
                                 <div className="sp-table-value summary-title">
                                     <div className="rate-opti-title">Blender <br /> Speed</div>
-                                    <div className="rate-opti-title">OEE Loss % <br /> Target : 84%</div>
-                                    <div className="rate-opti-title">Loss During Period <br /> %</div>
-                                    <div className="rate-opti-title">Estimated Annual <br /> Loss $</div>
+                                    <div className="rate-opti-title not-bold">OEE Loss (%) <br/> Target: 84%</div>
+                                    <div className="rate-opti-title">Loss During Period <br />($)</div>
+                                    <div className="rate-opti-title">Estimated Annual <br /> Loss ($)</div>
                                 </div>
-                                <div className="pred-summary-details">
-                                    <SetpointTable data={this.state.rateOptiT1} /><SetpointTable data={this.state.rateOptiT2} /><SetpointTable data={this.state.rateOptiT1} /><SetpointTable data={this.state.rateOptiT2} />
+                                <div className="rate-opti-details">
+                                    <SetpointTable data={this.state.rateOptiT1} /><SetpointTable data={this.state.rateOptiT2} /><SetpointTable data={this.state.rateOptiT3} /><SetpointTable data={this.state.rateOptiT4} />
                                 </div>
                             </div>
 

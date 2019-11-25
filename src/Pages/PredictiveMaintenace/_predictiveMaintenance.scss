@@ -1,6 +1,6 @@
 .data-container.pred-main {
     display: grid;
-    grid-template-rows: 180px 41% 1fr;
+    grid-template-rows: auto 41% 1fr;
     grid-gap: 2%;
     padding: 20px;
     height: calc(100vh - 75px);
@@ -14,6 +14,7 @@
     font-size: 22px;
     color: white;
     padding: 10px;
+    font-weight: bold;
 }
 
 .pred-main-title {
@@ -46,18 +47,28 @@
 .pred-graph-details .sp-table-container,.pred-main-downtime .sp-table-container{
     color: black;
     width: 80%;
-    margin: 10%auto;
+    margin: 5% auto;
 }
 .pred-graph-details{
     border-radius: 10px;
 }
 
-.pred-main .sp-table-container:first-child {
+.pred-graph-details .sp-table-container .sp-table-value:first-child , 
+.summary-title,
+.pred-summary-details .sp-table-container:first-child,
+.pred-main-downtime .sp-table-value:first-child{
     font-weight: bold;
+    text-align: center;
 }
+.pred-summary-details .sp-table-value:last-child,
+.pred-main-downtime .sp-table-value{
+    text-align: left;
+}
+
 .pred-graph-img img{
-    width: 100%;
-    height: 60%;
+    width: 80%;
+    margin: 0 auto;
+    display: block;
 }
 .pred-graph-img{
     border-radius: 10px;

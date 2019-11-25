@@ -1,0 +1,24 @@
+.sp-asset-heading{
+    display: flex;
+    .sp-setpoint{
+        text-align: center;
+        width: 70%;
+    }
+    .sp-adjustment{
+        width: 30%;
+        text-align: left;
+    }
+}
+.sp-asset-value {
+    width: 20%;
+    text-align: center;
+    height: 54px;
+    color: black;
+    background-color:  #05C985;
+    &.orange{
+        background-color: orange;
+    }
+    &.red{
+        background-color: #EE423D;
+    }
+}
