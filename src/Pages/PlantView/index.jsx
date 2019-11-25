@@ -8,9 +8,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var tableAlertsDifference = 0;
-var tableWarningDifference = 0;
-
+var initialTableData = [];
+var alarmsData = [];
 class PlantView extends React.Component {
     constructor(props) {
         //sessionStorage.autoRefreshState = "false";
@@ -60,21 +59,6 @@ class PlantView extends React.Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-    // notify = (status) => {
-    //     if(status == "warning"){
-    //         toast.warn("New warning !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }else if(status == "alert"){
-    //         toast.error("New alert !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }
-        
-     
-          
-   
-    //   };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -112,11 +96,10 @@ class PlantView extends React.Component {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
             .then((data) => {
-                tableAlertsDifference = tableAlerts;
-                tableWarningDifference = tableWarnings;
                 tableAlerts = 0;
                 tableWarnings = 0;
-                var alarmsData = [];
+                initialTableData = alarmsData;
+                alarmsData = [];
                 var lineDropdownValue = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Line = "Plant Level";
@@ -166,13 +149,13 @@ class PlantView extends React.Component {
                     }else if(tableAlerts ==0 && tableWarnings>0){
                         data.children[i]["backGroundColor"] = "orange";
                     }
-                    if(tableWarnings>tableWarningDifference){
-                        this.notify("warning");
+                    if(initialTableData.length < alarmsData.length){
+                        var diffenceCount = alarmsData.length - initialTableData.length;
+                        var initialLength = alarmsData.length;
+                        for(let z=0;z< diffenceCount;z++){
+                            this.notify(alarmsData[initialLength - z-1].SEVERITY , alarmsData[initialLength - z-1].Line, alarmsData[initialLength - z-1].ASSET)
+                        }
                     }
-                    if(tableAlerts > tableAlertsDifference){
-                        this.notify("alert");
-                    }
-
                 }
 
                 for (let i = 0; i < data.children.length; i++) {
@@ -213,14 +196,18 @@ class PlantView extends React.Component {
     //     });
 
     // }
-    notify = (status) => {
-        if(status == "warning"){
-            toast.warn("New warning !", {
-                position: toast.POSITION.TOP_RIGHT
+    notify = (status , line , asset) => {
+        var alertMessage = `${asset} Alert on ${line}`;
+        var warningMessage = `${asset} Warning on ${line}`;
+        if(status.toLowerCase() == "warning"){
+            toast.warn(warningMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+autoClose : false
               });
-        }else if(status == "alert"){
-            toast.error("New alert !", {
-                position: toast.POSITION.TOP_RIGHT
+        }else if(status.toLowerCase() == "alert"){
+            toast.error(alertMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+autoClose : false
               });
         }
       
@@ -229,19 +216,19 @@ class PlantView extends React.Component {
     componentDidMount() {
         this.triggerPlantViewData();
         this.triggerPlantAlertData();
-        if (sessionStorage.autoRefreshState === "true") {
+       
             this.apiTimerReferenceonload = setInterval(() => {
                 this.triggerPlantViewData();
                 this.triggerPlantAlertData();
             }, 2000);
-            this.setState(() => {
-                return {
-                    autoRefreshState: true,
-                    buttonLabel: 'STOP REFRESH',
-                    autoRefreshStatus: 'auto-refresh',
-                }
-            });
-        }
+            // this.setState(() => {
+            //     return {
+            //         autoRefreshState: true,
+            //         buttonLabel: 'STOP REFRESH',
+            //         autoRefreshStatus: 'auto-refresh',
+            //     }
+            // });
+        
     }
 
     componentWillUnmount() {

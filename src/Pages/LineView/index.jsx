@@ -15,8 +15,12 @@ import BlenderView from '../../Pages/BlenderView/index';
 import FinishedGoodsView from '../../Pages/FinishedGoodsView/index';
 import BinView from '../../Pages/BinView/index';
 import HopperView from '../../Pages/HopperView/index';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
+var initialTableData = [];
+var alarmsData = [];
 //var lineAssetData = {};
 
 class LineView extends Component {
@@ -34,9 +38,9 @@ class LineView extends Component {
             lineData: {},
             lineAssetData: {},
             buttonLabel: 'START REFRESH',
-            lineHeader : this.props.location.state.lineNameProps,
-            autoRefreshStatus : '',
-            autoRefreshState : sessionStorage.autoRefreshState === "false" ? false : true,
+            lineHeader: this.props.location.state.lineNameProps,
+            autoRefreshStatus: '',
+            autoRefreshState: sessionStorage.autoRefreshState === "false" ? false : true,
         }
     }
 
@@ -57,27 +61,27 @@ class LineView extends Component {
             this.props.history.push({
                 pathname: '/binView',
                 Component: { BinView },
-                state: { assetID, lineHeader : this.props.location.state.lineNameProps,lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader: this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Hopper") {
             this.props.history.push({
                 pathname: '/hopperView',
                 Component: { HopperView },
-                state: { assetID, lineHeader : this.props.location.state.lineNameProps,lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader: this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Blender") {
             this.props.history.push({
                 pathname: '/blenderView',
                 Component: { BlenderView },
-                state: { assetID,lineHeader : this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader: this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
         } else if (assetID == "Finished Goods") {
             this.props.history.push({
                 pathname: '/finishedGoodsView',
                 Component: { FinishedGoodsView },
-                state: { assetID,lineHeader : this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
+                state: { assetID, lineHeader: this.props.location.state.lineNameProps, lineValue: this.props.location.state.lineID }
             });
-        } 
+        }
     }
     lineViewData = () => {
         const url = `https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/properties?GUID=${sessionStorage.lineID}`;
@@ -104,21 +108,6 @@ class LineView extends Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-    // notify = (status) => {
-    //     if(status == "warning"){
-    //         toast.warn("New warning !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }else if(status == "alert"){
-    //         toast.error("New alert !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }
-        
-     
-          
-   
-    //   };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -127,14 +116,14 @@ class LineView extends Component {
         var monthName = new Date(dateVal).getMonth() + 1;
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
-        if(hours>12){
-            hours = hours-12;
+        if (hours > 12) {
+            hours = hours - 12;
             zone = "pm";
         }
-        mins = mins < 10 ? '0'+mins : mins;
-        hours = hours < 10 ? '0'+hours : hours;
+        mins = mins < 10 ? '0' + mins : mins;
+        hours = hours < 10 ? '0' + hours : hours;
 
-        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
+        return monthName + "/" + date + " " + hours + ":" + mins + zone;
     }
 
 
@@ -147,7 +136,8 @@ class LineView extends Component {
                 tableAlerts = 0;
                 tableWarnings = 0;
                 //lineAssetData = data;
-                var alarmsData = [];
+                initialTableData = alarmsData;
+                alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
                     data.alarms[i].Line = data.ASSET_NAME;
@@ -175,11 +165,19 @@ class LineView extends Component {
                             data.children[i].alarms[j]["statusBox"] = <img src={warning} />;
                             tableWarnings++;
                         }
+
                         alarmsData.push(data.children[i].alarms[j]);
                     }
                 }
+                if (initialTableData.length < alarmsData.length) {
+                    var diffenceCount = alarmsData.length - initialTableData.length;
+                    var initialLength = alarmsData.length;
+                    for (let z = 0; z < diffenceCount; z++) {
+                        this.notify(alarmsData[initialLength - z - 1].SEVERITY, alarmsData[initialLength - z - 1].Line, alarmsData[initialLength - z - 1].ASSET)
+                    }
+                }
                 this.setState({
-                    lineAssetData : data,
+                    lineAssetData: data,
                     tableData: alarmsData,
                 });
                 // this.state.tableData = alarmsData;
@@ -210,8 +208,25 @@ class LineView extends Component {
     //             clearInterval(this.apiTimerReference);
     //         }
     //     });
-        
+
     // }
+    notify = (status, line, asset) => {
+        var alertMessage = `${asset} Alert on ${line}`;
+        var warningMessage = `${asset} Warning on ${line}`;
+        if (status.toLowerCase() == "warning") {
+            toast.warn(warningMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: false,
+
+            });
+        } else if (status.toLowerCase() == "alert") {
+            toast.error(alertMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: false
+            });
+        }
+
+    };
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -220,30 +235,30 @@ class LineView extends Component {
         // };
         this.triggerAlertTableData();
         this.lineViewData();
-        if( sessionStorage.autoRefreshState === "true"){
+        // if (sessionStorage.autoRefreshState === "true") {
             this.apiTimerReferenceonload = setInterval(() => {
                 this.triggerAlertTableData();
-                this.lineViewData(); 
+                this.lineViewData();
             }, 2000);
-            this.setState(()=> {
-                return {
-                    autoRefreshState: true,
-                    buttonLabel : 'STOP REFRESH',
-                    autoRefreshStatus : 'auto-refresh' ,
-                }
-            });
-        }
+            // this.setState(() => {
+            //     return {
+            //         autoRefreshState: true,
+            //         buttonLabel: 'STOP REFRESH',
+            //         autoRefreshStatus: 'auto-refresh',
+            //     }
+            // });
+        
 
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.apiTimerReference);
         clearInterval(this.apiTimerReferenceonload);
-        tableAlerts=0;
-        tableWarnings =0;
+        tableAlerts = 0;
+        tableWarnings = 0;
         //sessionStorage.autoRefreshState= false;
     }
     render() {
-        const {lineAssetData,dropdownOptions,pages,dropdownSelectedValue,lineData,autoRefreshStatus,buttonLabel,tableData} = this.state;
+        const { lineAssetData, dropdownOptions, pages, dropdownSelectedValue, lineData, autoRefreshStatus, buttonLabel, tableData } = this.state;
         return (
             <div>
                 <div className="tkey-header">
@@ -270,7 +285,7 @@ class LineView extends Component {
                         <div className="line-assets card-tile">
                             <div className="line-view-heading">
                                 <h3>Assets</h3>
-                        </div>
+                            </div>
                             {Object.keys(lineAssetData).length > 0 && <LineAsset data={lineAssetData} navigateAsset={this.navigateAsset} />}
                         </div>
                         <div className="line-view-adherence" data-id="finished-goods">
@@ -279,7 +294,7 @@ class LineView extends Component {
                         <div className="downtime-details card-tile">
                             <div className="line-view-heading">
                                 <h3>Downtime Details</h3>
-                        </div>
+                            </div>
                             <DowntimeDetails data={this.state.DowntimeDetails} />
                         </div>
                         <div className="goods-data-container card-tile">
@@ -291,10 +306,11 @@ class LineView extends Component {
                     </div>
                     <div className="table-details-container card-tile">
 
-                        { <DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+                        {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                         {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>  */}
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         );
     }

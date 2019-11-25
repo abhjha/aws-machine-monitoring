@@ -9,15 +9,18 @@ import { DataTableComponent } from '../../Component/DataTableComponent/DataTable
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import 'chartjs-plugin-annotation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableWarnings = 0;
 var tableAlerts = 0;
 var tableData = [];
+var initialTableData = [];
 class BinView extends Component {
   constructor(props) {
     super(props);
     console.log(props, "props");
     this.state = {
-      pages: ['Plant View', sessionStorage.lineName,'Bin'],
+      pages: ['Plant View', sessionStorage.lineName, 'Bin'],
       dropdownSelectedValue: 'Bin',
       blueLeftData: [{}],
       greenLeftData: [{}],
@@ -53,40 +56,25 @@ class BinView extends Component {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
-}
+  }
 
-// notify = (status) => {
-//     if(status == "warning"){
-//         toast.warn("New warning !", {
-//             position: toast.POSITION.TOP_RIGHT
-//           });
-//     }else if(status == "alert"){
-//         toast.error("New alert !", {
-//             position: toast.POSITION.TOP_RIGHT
-//           });
-//     }
-    
- 
-      
 
-//   };
-
-epochToDate = (dateVal) => {
+  epochToDate = (dateVal) => {
     dateVal = parseInt(dateVal);
     var zone = "am";
     var date = new Date(dateVal).getDate();
     var monthName = new Date(dateVal).getMonth() + 1;
     var hours = new Date(dateVal).getHours();
     var mins = new Date(dateVal).getMinutes();
-    if(hours>12){
-        hours = hours-12;
-        zone = "pm";
+    if (hours > 12) {
+      hours = hours - 12;
+      zone = "pm";
     }
-    mins = mins < 10 ? '0'+mins : mins;
-    hours = hours < 10 ? '0'+hours : hours;
+    mins = mins < 10 ? '0' + mins : mins;
+    hours = hours < 10 ? '0' + hours : hours;
 
-    return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
-}
+    return monthName + "/" + date + " " + hours + ":" + mins + zone;
+  }
 
   setDropdownSelectedValue = (e) => {
     const dropdownSelectedValue = e.currentTarget.getAttribute('data-value');
@@ -175,8 +163,9 @@ epochToDate = (dateVal) => {
   }
   //Alert table data
   triggerGreenBinTableData = () => {
+    initialTableData = tableData;
     tableData = [];
-    tableAlerts =0;
+    tableAlerts = 0;
     tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN006')
       .then((response) => response.json())
@@ -195,6 +184,13 @@ epochToDate = (dateVal) => {
 
           tableData.push(data.alarms[i]);
         }
+        if (initialTableData.length < tableData.length) {
+          var diffenceCount = tableData.length - initialTableData.length;
+          var initialLength = tableData.length;
+          for (let z = 0; z < diffenceCount; z++) {
+            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
+          }
+        }
 
       })
       .catch(function (err) {
@@ -203,6 +199,7 @@ epochToDate = (dateVal) => {
     console.log(tableData, "bin table data");
   }
   triggerBlueBinTableData = () => {
+    initialTableData = tableData;
     tableData = [];
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
       .then((response) => response.json())
@@ -219,6 +216,13 @@ epochToDate = (dateVal) => {
             tableWarnings++;
           }
           tableData.push(data.alarms[i]);
+        }
+        if (initialTableData.length < tableData.length) {
+          var diffenceCount = tableData.length - initialTableData.length;
+          var initialLength = tableData.length;
+          for (let z = 0; z < diffenceCount; z++) {
+            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
+          }
         }
         console.log(tableData, "asdfdsjfhgduifhkjsdlkasjdla");
       })
@@ -252,6 +256,22 @@ epochToDate = (dateVal) => {
   //   });
 
   // }
+  notify = (status, line, asset) => {
+    var alertMessage = `${asset} Alert on ${line}`;
+    var warningMessage = `${asset} Warning on ${line}`;
+    if (status.toLowerCase() == "warning") {
+      toast.warn(warningMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+      });
+    } else if (status.toLowerCase() == "alert") {
+      toast.error(alertMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+      });
+    }
+
+  };
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -263,21 +283,21 @@ epochToDate = (dateVal) => {
     this.triggerGreenBinTableData();
     this.triggerBlueBinViewData();
     this.triggerGreenBinViewData();
-    if (sessionStorage.autoRefreshState === "true") {
+    // if (sessionStorage.autoRefreshState === "true") {
       this.apiTimerReferenceonload = setInterval(() => {
         this.triggerBlueBinTableData();
         this.triggerGreenBinTableData();
         this.triggerBlueBinViewData();
         this.triggerGreenBinViewData();
       }, 2000);
-      this.setState(() => {
-        return {
-          autoRefreshState: true,
-          buttonLabel: 'STOP REFRESH',
-          autoRefreshStatus: 'auto-refresh',
-        }
-      });
-    }
+    //   this.setState(() => {
+    //     return {
+    //       autoRefreshState: true,
+    //       buttonLabel: 'STOP REFRESH',
+    //       autoRefreshStatus: 'auto-refresh',
+    //     }
+    //   });
+    // }
 
   }
   componentWillUnmount() {
@@ -304,8 +324,8 @@ epochToDate = (dateVal) => {
           borderColor: 'white',
           borderWidth: 2,
           borderDash: [3, 3],
-          
-          
+
+
           label: {
             content: "Minimum Target",
             enabled: true,
@@ -346,9 +366,9 @@ epochToDate = (dateVal) => {
           ticks: {
             beginAtZero: true,
           },
-          scaleLabel:{
+          scaleLabel: {
             display: true,
-  labelString:"Weight (kg)",
+            labelString: "Weight (kg)",
             fontSize: 16,
             fontColor: 'white',
           },
@@ -436,6 +456,7 @@ epochToDate = (dateVal) => {
             {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
             {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
           </div>
+          <ToastContainer />
         </div>
       </div>
     );

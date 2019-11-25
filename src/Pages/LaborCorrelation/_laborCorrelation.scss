@@ -1,7 +1,10 @@
 .data-container.labor-analytics-view{
 display: grid;
-grid-template-rows: 75px 15% 35% 35%;
+grid-template-rows: 180px 1fr 1fr;
 grid-gap: 2%;
+padding: 20px;
+height: calc( 100vh - 75px);
+
 }
 .labor-correlation-heading,
 .labor-correlation-scrap,
@@ -9,11 +12,13 @@ grid-gap: 2%;
 .labor-correlation-oee,
 .labor-correlation-assessment{
     background-color: #2F3B52;
+    border-radius: 10px;
 }
 .labor-correlation-heading{
     font-size: 22px;
     color: white;
     padding: 10px;
+    border-radius: 10px;
 }
 .labor-correlation-title{
     background-color: #172030;
@@ -33,6 +38,7 @@ grid-gap: 2%;
     display: grid;
     grid-template-columns: 49% 49%;
     grid-gap: 2%;
+    
 }
 .labor-graph-image img{
     width: 100%;

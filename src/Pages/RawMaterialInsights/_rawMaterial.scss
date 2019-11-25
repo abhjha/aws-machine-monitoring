@@ -1,6 +1,9 @@
 .data-container.raw-mat {
-    grid-template-rows: 75px 16% 39% 30%;
+    display: grid;
+    grid-template-rows: 180px 1fr 1fr;
     grid-gap: 2%;
+    height: calc( 100vh - 75px);
+    padding: 20px;
 }
 
 

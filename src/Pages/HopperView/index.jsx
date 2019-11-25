@@ -9,7 +9,10 @@ import warning from '../../Images/warning.png';
 import Chart from '../../Component/Chart';
 import MixRatio from '../../Component/MixRatio';
 import { LinearGaugeComponent, AxesDirective, AxisDirective, PointersDirective, PointerDirective, AnnotationsDirective, AnnotationDirective, Annotations, Inject } from '@syncfusion/ej2-react-lineargauge';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableData = [];
+var initialTableData = [];
 var tableAlerts = 0;
 var tableWarnings = 0;
 class HopperView extends Component {
@@ -229,21 +232,6 @@ class HopperView extends Component {
     return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
 }
 
-// notify = (status) => {
-//     if(status == "warning"){
-//         toast.warn("New warning !", {
-//             position: toast.POSITION.TOP_RIGHT
-//           });
-//     }else if(status == "alert"){
-//         toast.error("New alert !", {
-//             position: toast.POSITION.TOP_RIGHT
-//           });
-//     }
-    
- 
-      
-
-//   };
 
 epochToDate = (dateVal) => {
     dateVal = parseInt(dateVal);
@@ -263,6 +251,8 @@ epochToDate = (dateVal) => {
 }
 
   triggerGreenHopperViewTableData = () => {
+    initialTableData = tableData;
+    tableData =[];
     tableAlerts = 0;
     tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
@@ -282,6 +272,13 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
+        if (initialTableData.length < tableData.length) {
+          var diffenceCount = tableData.length - initialTableData.length;
+          var initialLength = tableData.length;
+          for (let z = 0; z < diffenceCount; z++) {
+            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
+          }
+        }
 
       })
       .catch(function (err) {
@@ -289,7 +286,10 @@ epochToDate = (dateVal) => {
       });
   }
   triggerBlueHopperViewTableData = () => {
+    initialTableData = tableData;
     tableData = [];
+    tableAlerts = 0;
+    tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
       .then((response) => response.json())
       .then((data) => {
@@ -306,6 +306,13 @@ epochToDate = (dateVal) => {
             console.log(tableWarnings, "blue hopper");
           }
           tableData.push(data.alarms[i]);
+        }
+        if (initialTableData.length < tableData.length) {
+          var diffenceCount = tableData.length - initialTableData.length;
+          var initialLength = tableData.length;
+          for (let z = 0; z < diffenceCount; z++) {
+            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
+          }
         }
 
       })
@@ -339,6 +346,22 @@ epochToDate = (dateVal) => {
   //   });
 
   // }
+  notify = (status, line, asset) => {
+    var alertMessage = `${asset} Alert on ${line}`;
+    var warningMessage = `${asset} Warning on ${line}`;
+    if (status.toLowerCase() == "warning") {
+      toast.warn(warningMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+      });
+    } else if (status.toLowerCase() == "alert") {
+      toast.error(alertMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+      });
+    }
+
+  };
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -350,7 +373,7 @@ epochToDate = (dateVal) => {
     this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
     this.triggerFinishedGoods();
-    if (sessionStorage.autoRefreshState === "true") {
+    // if (sessionStorage.autoRefreshState === "true") {
       this.apiTimerReferenceonload = setInterval(() => {
         this.triggerBlueHopperViewData();
         this.triggerGreenHopperViewData();
@@ -358,14 +381,14 @@ epochToDate = (dateVal) => {
         this.triggerGreenHopperViewTableData();
         this.triggerFinishedGoods();
       }, 2000);
-      this.setState(() => {
-        return {
-          autoRefreshState: true,
-          buttonLabel: 'STOP REFRESH',
-          autoRefreshStatus: 'auto-refresh',
-        }
-      });
-    }
+    //   this.setState(() => {
+    //     return {
+    //       autoRefreshState: true,
+    //       buttonLabel: 'STOP REFRESH',
+    //       autoRefreshStatus: 'auto-refresh',
+    //     }
+    //   });
+    // }
   }
   componentWillUnmount() {
     tableAlerts = 0;
@@ -540,7 +563,9 @@ epochToDate = (dateVal) => {
             {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
             {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
           </div>
+          <ToastContainer />
         </div>
+
       </div>
     );
   }

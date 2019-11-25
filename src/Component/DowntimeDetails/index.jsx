@@ -12,7 +12,7 @@ function DowntimeDetails(props) {
       minutes = (minutes < 10) ? "0" + minutes : minutes;
       
     
-      return hours  + " h : " + minutes + " m" ;
+      return hours  + "h : " + minutes + "m" ;
     }
     function getTextValue(data) {
         var displayHeading = "";

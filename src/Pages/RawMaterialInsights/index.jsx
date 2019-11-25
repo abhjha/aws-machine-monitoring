@@ -6,7 +6,6 @@ import SetpointTable from '../../Component/SetpointTable';
 import graphImage from '../../Pages/RawMaterialInsights/graph.png';
 import barImage from '../../Pages/RawMaterialInsights/bar.png';
 
-import './index.css';
 class RawMaterialInsights extends Component {
     constructor(props) {
         super(props);
@@ -25,12 +24,13 @@ class RawMaterialInsights extends Component {
     render() {
 
         return (
-            <div className="data-container raw-mat">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
+                <div className="data-container raw-mat">
                 <div className="pred-main-heading">
                     <div className="pred-main-title">
                         Raw Material Insights
@@ -70,6 +70,7 @@ class RawMaterialInsights extends Component {
                         </div>
                         <div className="raw-mat-bar"><img src={barImage}/></div>
                     </div>
+                </div>
                 </div>
             </div>
         );

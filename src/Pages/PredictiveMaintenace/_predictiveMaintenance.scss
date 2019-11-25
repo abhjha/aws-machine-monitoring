@@ -1,9 +1,9 @@
 .data-container.pred-main {
-    grid-template-rows: 75px 16% 41% 1fr;
     display: grid;
+    grid-template-rows: 180px 41% 1fr;
     grid-gap: 2%;
     padding: 20px;
-    height: 100vh;
+    height: calc(100vh - 75px);
 }
 
 .pred-main-heading, .pred-graph-details, .pred-graph-img, .pred-main-summary, .pred-main-downtime {

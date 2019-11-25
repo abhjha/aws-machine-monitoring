@@ -38,21 +38,6 @@ class AlertView extends Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-    // notify = (status) => {
-    //     if(status == "warning"){
-    //         toast.warn("New warning !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }else if(status == "alert"){
-    //         toast.error("New alert !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }
-        
-     
-          
-   
-    //   };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -148,42 +133,42 @@ class AlertView extends Component {
                 console.log(err, 'Something went wrong, Alert table data')
             });
     }
-    setAutoRefresh = () => {
-        clearInterval(this.apiTimerReferenceonload);
-        this.setState((prevState) => {
-            const { autoRefreshState } = prevState;
-            sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
+    // setAutoRefresh = () => {
+    //     clearInterval(this.apiTimerReferenceonload);
+    //     this.setState((prevState) => {
+    //         const { autoRefreshState } = prevState;
+    //         sessionStorage.autoRefreshState = autoRefreshState ? "false" : "true";
 
-            return {
-                autoRefreshState: !autoRefreshState,
-                buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
-                autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
-            }
-        }, () => {
-            if (this.state.autoRefreshState) {
-                this.apiTimerReference = setInterval(() => {
-                    this.triggerPlantAlertData();
-                }, 2000);
-            } else {
-                clearInterval(this.apiTimerReference);
-            }
-        });
+    //         return {
+    //             autoRefreshState: !autoRefreshState,
+    //             buttonLabel: !autoRefreshState ? 'STOP REFRESH' : "START REFRESH",
+    //             autoRefreshStatus: !autoRefreshState ? 'auto-refresh' : "",
+    //         }
+    //     }, () => {
+    //         if (this.state.autoRefreshState) {
+    //             this.apiTimerReference = setInterval(() => {
+    //                 this.triggerPlantAlertData();
+    //             }, 2000);
+    //         } else {
+    //             clearInterval(this.apiTimerReference);
+    //         }
+    //     });
 
-    }
+    // }
     componentDidMount() {
         this.triggerPlantAlertData();
-        if (sessionStorage.autoRefreshState === "true") {
+        // if (sessionStorage.autoRefreshState === "true") {
             this.apiTimerReferenceonload = setInterval(() => {
                 this.triggerPlantAlertData();
             }, 2000);
-            this.setState(() => {
-                return {
-                    autoRefreshState: true,
-                    buttonLabel: 'STOP REFRESH',
-                    autoRefreshStatus: 'auto-refresh',
-                }
-            });
-        }
+        //     this.setState(() => {
+        //         return {
+        //             autoRefreshState: true,
+        //             buttonLabel: 'STOP REFRESH',
+        //             autoRefreshStatus: 'auto-refresh',
+        //         }
+        //     });
+        // }
     }
     componentWillUnmount() {
         clearInterval(this.apiTimerReference);
@@ -204,7 +189,7 @@ class AlertView extends Component {
                         </div>
                         <div className="alog-reset">
                             <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.filterAlarms} />
-                            <Button type={'refresh-button ' + this.state.autoRefreshStatus} labelName={this.state.buttonLabel} triggerAction={this.setAutoRefresh} />
+                            {/* <Button type={'refresh-button ' + this.state.autoRefreshStatus} labelName={this.state.buttonLabel} triggerAction={this.setAutoRefresh} /> */}
                             
                         </div>
                     </div>

@@ -30,7 +30,7 @@ class AnalyticsView extends React.Component {
             this.props.history.push({
                 pathname: '/predictiveMaintenace'
             });
-        }else if (selectedDiv === 'Rate Optimization') {
+        } else if (selectedDiv === 'Rate Optimization') {
             this.props.history.push({
                 pathname: '/rateOptimization'
             });
@@ -43,18 +43,22 @@ class AnalyticsView extends React.Component {
     }
     render() {
         return (
-            <div className="data-container analytics-view">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="analytics-container card-tile">
-                    <div className="analytics-heading">
-                        Operational Insights
+                <div className="data-container analytics-view">
+
+
+                    <div className="analytics-container card-tile">
+                        <div className="analytics-heading">
+                            Operational Insights
                 </div>
-                    <AnalyticsDetails
-                        navigateAnalysis={this.navigateAnalysis} />
+                        <AnalyticsDetails
+                            navigateAnalysis={this.navigateAnalysis} />
+                    </div>
                 </div>
             </div>
         );

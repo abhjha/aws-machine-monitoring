@@ -9,8 +9,12 @@ import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import FinishedMixRatio from '../../Component/FinishedMixRatio';
 import DefectAnalysis from '../../Component/DefectAnalysis';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
+var initialTableData = [];
+var alarmsData = [];
 class FinishedGoodsView extends Component {
     constructor(props) {
         super(props);
@@ -107,7 +111,7 @@ class FinishedGoodsView extends Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-   
+
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -116,18 +120,22 @@ class FinishedGoodsView extends Component {
         var monthName = new Date(dateVal).getMonth() + 1;
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
-        if(hours>12){
-            hours = hours-12;
+        if (hours > 12) {
+            hours = hours - 12;
             zone = "pm";
         }
-        mins = mins < 10 ? '0'+mins : mins;
-        hours = hours < 10 ? '0'+hours : hours;
+        mins = mins < 10 ? '0' + mins : mins;
+        hours = hours < 10 ? '0' + hours : hours;
 
-        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
+        return monthName + "/" + date + " " + hours + ":" + mins + zone;
     }
 
     triggerFinishedGoodsTableData = () => {
         tableAlerts = 0;
+        tableWarnings = 0;
+        //lineAssetData = data;
+        initialTableData = alarmsData;
+        alarmsData = [];
         tableWarnings = 0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN004')
             .then((response) => response.json())
@@ -145,6 +153,13 @@ class FinishedGoodsView extends Component {
                         tableWarnings++;
                     }
                     alarmsData.push(data.alarms[i]);
+                }
+                if (initialTableData.length < alarmsData.length) {
+                    var diffenceCount = alarmsData.length - initialTableData.length;
+                    var initialLength = alarmsData.length;
+                    for (let z = 0; z < diffenceCount; z++) {
+                        this.notify(alarmsData[initialLength - z - 1].SEVERITY, alarmsData[initialLength - z - 1].Line, alarmsData[initialLength - z - 1].ASSET)
+                    }
                 }
                 this.setState({
                     tableData: alarmsData,
@@ -178,6 +193,22 @@ class FinishedGoodsView extends Component {
     //     });
 
     // }
+    notify = (status, line, asset) => {
+        var alertMessage = `${asset} Alert on ${line}`;
+        var warningMessage = `${asset} Warning on ${line}`;
+        if (status.toLowerCase() == "warning") {
+            toast.warn(warningMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+            });
+        } else if (status.toLowerCase() == "alert") {
+            toast.error(alertMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+autoClose : false
+            });
+        }
+
+    };
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -187,19 +218,19 @@ class FinishedGoodsView extends Component {
         this.triggerFinishedGoodsTableData();
         // this.tableSummaryData();
         this.finishedGoodsViewData();
-        if( sessionStorage.autoRefreshState === "true"){
+        // if (sessionStorage.autoRefreshState === "true") {
             this.apiTimerReferenceonload = setInterval(() => {
-            this.triggerFinishedGoodsTableData();
-            this.finishedGoodsViewData(); 
-        }, 2000);
-        this.setState(()=> {
-            return {
-                autoRefreshState: true,
-                buttonLabel : 'STOP REFRESH',
-                autoRefreshStatus : 'auto-refresh' ,
-            }
-        });
-    }
+                this.triggerFinishedGoodsTableData();
+                this.finishedGoodsViewData();
+            }, 2000);
+        //     this.setState(() => {
+        //         return {
+        //             autoRefreshState: true,
+        //             buttonLabel: 'STOP REFRESH',
+        //             autoRefreshStatus: 'auto-refresh',
+        //         }
+        //     });
+        // }
     }
     componentWillUnmount() {
         tableAlerts = 0;
@@ -231,9 +262,9 @@ class FinishedGoodsView extends Component {
                     ticks: {
                         beginAtZero: true,
                         fontColor: "white",
-                        min :0,
-                        max : 1000,
-                        stepSize : 100
+                        min: 0,
+                        max: 1000,
+                        stepSize: 100
                     },
 
                 }]
@@ -281,6 +312,7 @@ class FinishedGoodsView extends Component {
                         <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                         {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
                     </div>
+                    <ToastContainer />
                 </div>
             </div>
         );

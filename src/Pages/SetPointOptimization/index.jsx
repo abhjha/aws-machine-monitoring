@@ -7,7 +7,6 @@ import ambTemp from '../../Pages/SetPointOptimization/ambTemp.png';
 import ambHum from '../../Pages/SetPointOptimization/ambHum.png';
 import SpAsset from '../../Component/SpAsset';
 import heatmap from '../../Pages/SetPointOptimization/heatmap.png';
-import './index.css';
 class SetPointOptimzation extends Component {
     constructor(props) {
         super(props);
@@ -34,57 +33,59 @@ class SetPointOptimzation extends Component {
     }
 
     render() {
-        
+
         return (
-            <div className="data-container setpoint-view">
+            <div>
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
-                <div className="setpoint-heading card-tile">
-                    <div className="setpoint-title">
-                        Setpoint Optimization
-                  </div>
-                    <div className="setpoint-details">
-                    Insight : When ambient conditions exceed analytics-defined thresholds, setpoints should be adjusted to optimize the process and reduce scrap based on machine learning models
-                  </div>
-                </div>
-                <div className="setpoint-data">
-                    <div className="setpoint-temp card-tile">
-                        <div className="setpoint-sku">
-                            <SetpointTable data={this.state.setpointSKU} />
+                <div className="data-container setpoint-view">
+                    <div className="setpoint-heading card-tile">
+                        <div className="setpoint-title">
+                            Setpoint Optimization
                         </div>
-                        <div className="setpoint-amb-temp">
-                            <SetpointTable data={this.state.setpointAmbTemp} /> <div className="sp-table-value sp-image"><img src={ambTemp} /></div>
-                        </div>
-                        <div className="setpoint-amb-hum">
-                            <SetpointTable data={this.state.setpointAmbTemp} /><div className="sp-table-value sp-image"><img src={ambHum} /></div>
+                        <div className="setpoint-details">
+                            Insight : When ambient conditions exceed analytics-defined thresholds, setpoints should be adjusted to optimize the process and reduce scrap based on machine learning models
                         </div>
                     </div>
-                    <div className="setpoint-adjustments card-tile">
-                        <div className="setpoint-adjustements-heading">
-                            Recommended Setpoint Adjustments
+                    <div className="setpoint-data">
+                        <div className="setpoint-temp card-tile">
+                            <div className="setpoint-sku">
+                                <SetpointTable data={this.state.setpointSKU} />
+                            </div>
+                            <div className="setpoint-amb-temp">
+                                <SetpointTable data={this.state.setpointAmbTemp} /> <div className="sp-table-value sp-image"><img src={ambTemp} /></div>
+                            </div>
+                            <div className="setpoint-amb-hum">
+                                <SetpointTable data={this.state.setpointAmbTemp} /><div className="sp-table-value sp-image"><img src={ambHum} /></div>
+                            </div>
                         </div>
-                        <div className="setpoint-asset-data">
-                            <SpAsset data={Object.entries(this.state.spHopper)} heading={"Hopper"} /><SpAsset data={Object.entries(this.state.spBlender)} heading={"Blender"} />
+                        <div className="setpoint-adjustments card-tile">
+                            <div className="setpoint-adjustements-heading">
+                                Recommended Setpoint Adjustments
                         </div>
-                        <div className="setpoint-graph">
-                            <div className="sp-oee">
-                                <div className="setpoint-adjustements-heading">
-                                    +6%
+                            <div className="setpoint-asset-data">
+                                <SpAsset data={Object.entries(this.state.spHopper)} heading={"Hopper"} /><SpAsset data={Object.entries(this.state.spBlender)} heading={"Blender"} />
+                            </div>
+                            <div className="setpoint-graph">
+                                <div className="sp-oee">
+                                    <div className="setpoint-adjustements-heading">
+                                        +6%
                                 </div>
-                                <div className="setpoint-adjustements-heading">
-                                    Cummulative OEE Impact
+                                    <div className="setpoint-adjustements-heading">
+                                        Cummulative OEE Impact
                                 </div>
 
-                            </div>
-                            <div className="sp-heatmap">
-                                <div className="setpoint-adjustements-heading">
-                                    Heat Map Key
                                 </div>
-                                <div className="sp-heatmap-image">
-                                    <img src={heatmap} />
+                                <div className="sp-heatmap">
+                                    <div className="setpoint-adjustements-heading">
+                                        Heat Map Key
+                                    </div>
+                                    <div className="sp-heatmap-image">
+                                        <img src={heatmap} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

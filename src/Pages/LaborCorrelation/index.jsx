@@ -6,7 +6,6 @@ import scrap from '../../Pages/LaborCorrelation/scrap.png';
 import setpoint from '../../Pages/LaborCorrelation/setpoint.png';
 import assessment from '../../Pages/LaborCorrelation/assessment.png';
 import tableGraph from '../../Pages/LaborCorrelation/table.png';
-import './index.css';
 class LaborCorrelation extends Component {
     constructor(props) {
         super(props);
@@ -17,12 +16,13 @@ class LaborCorrelation extends Component {
 
     render() {
         return (
-            <div className="data-container labor-analytics-view">
+            <div >
                 <div className="tkey-header">
                     <BackButton />
                     <Breadcrumb pages={this.state.pages} />
 
                 </div>
+                <div className="data-container labor-analytics-view">
                 <div className="labor-correlation-heading">
                     <div className="labor-correlation-title">
                         Labor Correlation
@@ -66,6 +66,7 @@ class LaborCorrelation extends Component {
                             <img src={assessment} />
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         );

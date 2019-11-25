@@ -10,8 +10,12 @@ import warning from '../../Images/warning.png';
 import AmbientReadings from '../../Component/AmbientReading';
 import ReactSpeedometer from "react-d3-speedometer";
 import { LinearGaugeComponent, AxesDirective, AxisDirective, PointersDirective, PointerDirective, AnnotationsDirective, AnnotationDirective, Annotations, Inject } from '@syncfusion/ej2-react-lineargauge';
-var tableWarnings = 0;
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
+var tableWarnings = 0;
+var initialTableData = [];
+var alarmsData = [];
 class BlenderView extends Component {
     constructor(props) {
         super(props);
@@ -73,21 +77,6 @@ class BlenderView extends Component {
         return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
     }
 
-    // notify = (status) => {
-    //     if(status == "warning"){
-    //         toast.warn("New warning !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }else if(status == "alert"){
-    //         toast.error("New alert !", {
-    //             position: toast.POSITION.TOP_RIGHT
-    //           });
-    //     }
-        
-     
-          
-   
-    //   };
 
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
@@ -96,22 +85,22 @@ class BlenderView extends Component {
         var monthName = new Date(dateVal).getMonth() + 1;
         var hours = new Date(dateVal).getHours();
         var mins = new Date(dateVal).getMinutes();
-        if(hours>12){
-            hours = hours-12;
+        if (hours > 12) {
+            hours = hours - 12;
             zone = "pm";
         }
-        mins = mins < 10 ? '0'+mins : mins;
-        hours = hours < 10 ? '0'+hours : hours;
+        mins = mins < 10 ? '0' + mins : mins;
+        hours = hours < 10 ? '0' + hours : hours;
 
-        return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
+        return monthName + "/" + date + " " + hours + ":" + mins + zone;
     }
 
-    getBarColor = (data , warning , alert) =>{
-        if(data<=warning){
+    getBarColor = (data, warning, alert) => {
+        if (data <= warning) {
             return "#05C985";
-        } else if(data>warning && data<=alert){
+        } else if (data > warning && data <= alert) {
             return "orange";
-        } else if(data > alert){
+        } else if (data > alert) {
             return "#EE423D";
         }
     }
@@ -125,7 +114,7 @@ class BlenderView extends Component {
                     blnderTempBG = "#EE423D";
                 } else {
                     blnderTempBG = "#05c985";
-                } 
+                }
                 this.setState({
                     ambientPressure: blenderData.currentValues.AmbientPressure,
                     ambientTemperature: blenderData.currentValues.AmbientTemperature,
@@ -135,14 +124,14 @@ class BlenderView extends Component {
                     tempUpperBound: blenderData.currentValues.TemperatureUpperLimit,
                     temperatureBackground: blnderTempBG,
                     blenderGraphData: {
-                        labels: ["Motor", "Bearing 1", "Bearing 2"],
+                        labels: ["", "Motor", "Bearing 1", "Bearing 2", ""],
                         datasets: [{
                             label: "",
-                            backgroundColor: [this.getBarColor(blenderData.currentValues.Motor,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
-                                this.getBarColor(blenderData.currentValues.Bearing1,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel), 
-                                this.getBarColor(blenderData.currentValues.Bearing2,blenderData.currentValues.VibrationWarningLevel,blenderData.currentValues.VibrationAlertLevel)],
+                            backgroundColor: [this.getBarColor(blenderData.currentValues.Motor, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                            this.getBarColor(blenderData.currentValues.Bearing1, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                            this.getBarColor(blenderData.currentValues.Bearing2, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel)],
                             borderColor: 'rgb(255, 99, 132)',
-                            data: [blenderData.currentValues.Motor, blenderData.currentValues.Bearing1, blenderData.currentValues.Bearing2],
+                            data: ["", blenderData.currentValues.Motor, blenderData.currentValues.Bearing1, blenderData.currentValues.Bearing2, ""],
 
                         }]
                     },
@@ -173,8 +162,11 @@ class BlenderView extends Component {
     }
     //Alert Table Data
     triggerBlenderTableData = () => {
-        tableAlerts =0;
-        tableWarnings =0;
+        tableAlerts = 0;
+        tableWarnings = 0;
+        //lineAssetData = data;
+        initialTableData = alarmsData;
+        alarmsData = [];
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN003')
             .then((response) => response.json())
             .then((data) => {
@@ -191,6 +183,13 @@ class BlenderView extends Component {
                         tableWarnings++;
                     }
                     alarmsData.push(data.alarms[i]);
+                }
+                if (initialTableData.length < alarmsData.length) {
+                    var diffenceCount = alarmsData.length - initialTableData.length;
+                    var initialLength = alarmsData.length;
+                    for (let z = 0; z < diffenceCount; z++) {
+                        this.notify(alarmsData[initialLength - z - 1].SEVERITY, alarmsData[initialLength - z - 1].Line, alarmsData[initialLength - z - 1].ASSET)
+                    }
                 }
                 this.setState({
                     tableData: alarmsData,
@@ -224,6 +223,22 @@ class BlenderView extends Component {
     //     });
 
     // }
+    notify = (status, line, asset) => {
+        var alertMessage = `${asset} Alert on ${line}`;
+        var warningMessage = `${asset} Warning on ${line}`;
+        if (status.toLowerCase() == "warning") {
+            toast.warn(warningMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: false
+            });
+        } else if (status.toLowerCase() == "alert") {
+            toast.error(alertMessage, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: false
+            });
+        }
+
+    };
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -232,25 +247,25 @@ class BlenderView extends Component {
         // };
         this.triggerBlenderTableData();
         this.blednerViewData();
-        if( sessionStorage.autoRefreshState === "true"){
-            this.apiTimerReferenceonload = setInterval(() => {
+        // if (sessionStorage.autoRefreshState === "true") {
+        this.apiTimerReferenceonload = setInterval(() => {
             this.triggerBlenderTableData();
-            this.blednerViewData(); 
+            this.blednerViewData();
         }, 2000);
-        this.setState(()=> {
-            return {
-                autoRefreshState: true,
-                buttonLabel : 'STOP REFRESH',
-                autoRefreshStatus : 'auto-refresh' ,
-            }
-        });
-    }
+        //     this.setState(() => {
+        //         return {
+        //             autoRefreshState: true,
+        //             buttonLabel: 'STOP REFRESH',
+        //             autoRefreshStatus: 'auto-refresh',
+        //         }
+        //     });
+        // }
     }
     componentWillUnmount() {
         clearInterval(this.apiTimerReference);
         clearInterval(this.apiTimerReferenceonload);
-        tableAlerts=0;
-        tableWarnings =0;
+        tableAlerts = 0;
+        tableWarnings = 0;
     }
     render() {
         const graphOptions = {
@@ -301,7 +316,7 @@ class BlenderView extends Component {
                     ticks: {
                         fontColor: "white",
                     },
-                    barThickness: 150,
+                    barThickness: 100,
                     gridLines: {
                         offsetGridLines: true
                     }
@@ -350,7 +365,7 @@ class BlenderView extends Component {
                         </div>
                         <div className="blender-temp card-tile">
                             <div className="hopper-rate-heading blend-temp">
-                               Temperature
+                                Temperature
                             </div>
                             {this.state.tempLowerBound > 0 && <LinearGaugeComponent id='gauge1' height='320px' container={{ type: 'Normal', backgroundColor: '#172030', height: 300, width: 30 }} background={'transparent'} margin={{ top: 0 }}>
                                 <Inject services={[Annotations]} />
@@ -363,9 +378,9 @@ class BlenderView extends Component {
                                     </AxisDirective>
                                 </AxesDirective>
                                 <AnnotationsDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempLowerBound}>
+                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x={10} zIndex={1} axisValue={this.state.tempLowerBound}>
                                     </AnnotationDirective>
-                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x = {10} zIndex={1} axisValue={this.state.tempUpperBound}>
+                                    <AnnotationDirective content='<div id="title" style="width:55px;height:2px;background-color:white"> </div>' verticalAlignment={"Center"} axisIndex={0} x={10} zIndex={1} axisValue={this.state.tempUpperBound}>
                                     </AnnotationDirective>
                                 </AnnotationsDirective>
                             </LinearGaugeComponent>}
@@ -399,6 +414,7 @@ class BlenderView extends Component {
                         {<DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                         {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
                     </div>
+                    <ToastContainer />
                 </div>
             </div>
         );

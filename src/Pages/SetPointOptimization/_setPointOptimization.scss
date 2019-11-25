@@ -1,9 +1,9 @@
 .data-container.setpoint-view{
     display: grid;
-    grid-template-rows: 75px 17% 1fr;
+    grid-template-rows: 180px 1fr;
     grid-gap : 2%;
     padding: 20px;
-    height: 100vh;
+    height: calc(100vh - 75px);
 }
 .setpoint-heading,.setpoint-temp,.setpoint-adjustments{
     background-color: #2F3B52;

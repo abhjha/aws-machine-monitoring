@@ -1,8 +1,8 @@
 .data-container.rate-opti {
-    grid-template-rows: 75px 14% 45% 1fr;
+    grid-template-rows: 180px 1fr 1fr;
     grid-gap: 2%;
     display: grid;
-    height: 100vh;
+    height: calc( 100vh - 75px);
     padding: 20px;
 }
 
