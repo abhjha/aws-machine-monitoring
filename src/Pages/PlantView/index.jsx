@@ -153,7 +153,7 @@ class PlantView extends React.Component {
                         var diffenceCount = alarmsData.length - initialTableData.length;
                         var initialLength = alarmsData.length;
                         for(let z=0;z< diffenceCount;z++){
-                            this.notify(alarmsData[initialLength - z-1].SEVERITY , alarmsData[initialLength - z-1].Line, alarmsData[initialLength - z-1].ASSET)
+                            this.notify(alarmsData[z].SEVERITY , alarmsData[z].Line, alarmsData[z].ASSET)
                         }
                     }
                 }
