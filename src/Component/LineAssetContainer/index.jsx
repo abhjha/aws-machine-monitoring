@@ -13,20 +13,27 @@ class LineAssetData extends Component {
         }
     }
     sortLineData = (data) => {
-        
+        let binData=[];
+        let paintMachineData =[];
+        let mixingUnitData =[];
+        let finishedGoods =[];
         for (let i = 0; data.children != undefined && i < data.children.length; i++) {
             if (data.children[i].ASSET_TYPE == "Bin") {
-                this.state.binData.push(data.children[i]);
+                binData.push(data.children[i]);
             } else if (data.children[i].ASSET_TYPE == "Blender") {
-                this.state.paintMachineData.push(data.children[i]);
+                paintMachineData.push(data.children[i]);
             } else if (data.children[i].ASSET_TYPE == "Hopper") {
-                this.state.mixingUnitData.push(data.children[i]);
+                mixingUnitData.push(data.children[i]);
             } else if (data.children[i].ASSET_TYPE == "Finished Goods") {
-                this.state.finishedGoods.push(data.children[i]);
+                finishedGoods.push(data.children[i]);
             }
         }
         this.setState({
-            lineData: [this.state.binData, this.state.mixingUnitData, this.state.paintMachineData , this.state.finishedGoods],
+            binData,
+            paintMachineData,
+            mixingUnitData,
+            finishedGoods,
+            lineData: [binData, mixingUnitData, paintMachineData , finishedGoods],
         })
 
 
@@ -48,6 +55,8 @@ class LineAssetData extends Component {
                 return "#EE423D";
             } else if (warningCount > 0) {
                 return "orange";
+            }else if(alertCount ==0 && warningCount == 0){
+                return "#05C985";
             }
         } else {
             return "gray";
@@ -61,6 +70,7 @@ class LineAssetData extends Component {
     componentWillReceiveProps(){
         this.sortLineData(this.props.data);
     }
+
     render() {
         return (
                 

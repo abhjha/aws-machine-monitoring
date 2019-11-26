@@ -9,6 +9,9 @@ class LineAsset extends Component {
 
         }
     }
+    componentWillReceiveProps(){
+        this.render(this.props);
+    }
     
     render() {
         return (
