@@ -66,7 +66,7 @@ class RawMaterialInsights extends Component {
                     </div>
                     <div className="pred-main-downtime">
                     <div className="setpoint-adjustements-heading">
-                    Projected Monthly Profit Per Blend
+                    Projected Monthly Profit Per Brand
                         </div>
                         <div className="raw-mat-bar"><img src={barImage}/></div>
                     </div>

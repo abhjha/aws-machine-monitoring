@@ -9,12 +9,9 @@ import { DataTableComponent } from '../../Component/DataTableComponent/DataTable
 import alert from '../../Images/alert.png';
 import warning from '../../Images/warning.png';
 import 'chartjs-plugin-annotation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 var tableWarnings = 0;
 var tableAlerts = 0;
 var tableData = [];
-var initialTableData = [];
 class BinView extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +26,7 @@ class BinView extends Component {
       selectedLine: 'Line_3',
       minimumTarget: 0,
       refillPoint: 0,
-
+      alarmsData : [],
       BlueBinGraphData: {
         datasets: [{
           label: "",
@@ -163,7 +160,6 @@ class BinView extends Component {
   }
   //Alert table data
   triggerGreenBinTableData = () => {
-    initialTableData = tableData;
     tableData = [];
     tableAlerts = 0;
     tableWarnings = 0;
@@ -184,26 +180,16 @@ class BinView extends Component {
 
           tableData.push(data.alarms[i]);
         }
-        if (initialTableData.length < tableData.length) {
-          var diffenceCount = tableData.length - initialTableData.length;
-          var initialLength = tableData.length;
-          for (let z = 0; z < diffenceCount; z++) {
-            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
-          }
-        }
+        
 
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
       });
-    console.log(tableData, "bin table data");
-  }
-  triggerBlueBinTableData = () => {
-    initialTableData = tableData;
-    tableData = [];
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
+      fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
       .then((response) => response.json())
       .then((data) => {
+        console.log(data , "blue table checing data");
         for (let i = 0; i < data.alarms.length; i++) {
           data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
           data.alarms[i].Line = sessionStorage.lineName;
@@ -217,20 +203,21 @@ class BinView extends Component {
           }
           tableData.push(data.alarms[i]);
         }
-        if (initialTableData.length < tableData.length) {
-          var diffenceCount = tableData.length - initialTableData.length;
-          var initialLength = tableData.length;
-          for (let z = 0; z < diffenceCount; z++) {
-            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
-          }
-        }
         console.log(tableData, "asdfdsjfhgduifhkjsdlkasjdla");
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue bin table data')
       });
     console.log(tableData, "bin table data");
+      this.setState({
+        alarmsData : tableData
+      })
   }
+  // triggerBlueBinTableData = () => {
+  //   tableData = [];
+    
+  //   console.log(tableData, "bin table data");
+  // }
   // setAutoRefresh = () => {
   //   clearInterval(this.apiTimerReferenceonload);
   //   this.setState((prevState) => {
@@ -256,22 +243,6 @@ class BinView extends Component {
   //   });
 
   // }
-  notify = (status, line, asset) => {
-    var alertMessage = `${asset} Alert on ${line}`;
-    var warningMessage = `${asset} Warning on ${line}`;
-    if (status.toLowerCase() == "warning") {
-      toast.warn(warningMessage, {
-        position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-      });
-    } else if (status.toLowerCase() == "alert") {
-      toast.error(alertMessage, {
-        position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-      });
-    }
-
-  };
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -279,13 +250,13 @@ autoClose : false
     //   }
     // };
 
-    this.triggerBlueBinTableData();
+    // this.triggerBlueBinTableData();
     this.triggerGreenBinTableData();
     this.triggerBlueBinViewData();
     this.triggerGreenBinViewData();
     // if (sessionStorage.autoRefreshState === "true") {
       this.apiTimerReferenceonload = setInterval(() => {
-        this.triggerBlueBinTableData();
+        // this.triggerBlueBinTableData();
         this.triggerGreenBinTableData();
         this.triggerBlueBinViewData();
         this.triggerGreenBinViewData();
@@ -453,10 +424,9 @@ autoClose : false
             </div>
           </div>
           <div className="table-details-container card-tile">
-            {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {<DataTableComponent filteredData={this.state.alarmsData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
             {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
           </div>
-          <ToastContainer />
         </div>
       </div>
     );

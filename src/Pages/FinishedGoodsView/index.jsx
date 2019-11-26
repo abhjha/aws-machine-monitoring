@@ -9,11 +9,8 @@ import { Bar } from 'react-chartjs-2';
 import warning from '../../Images/warning.png';
 import FinishedMixRatio from '../../Component/FinishedMixRatio';
 import DefectAnalysis from '../../Component/DefectAnalysis';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var initialTableData = [];
 var alarmsData = [];
 class FinishedGoodsView extends Component {
     constructor(props) {
@@ -134,7 +131,6 @@ class FinishedGoodsView extends Component {
         tableAlerts = 0;
         tableWarnings = 0;
         //lineAssetData = data;
-        initialTableData = alarmsData;
         alarmsData = [];
         tableWarnings = 0;
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN004')
@@ -153,13 +149,6 @@ class FinishedGoodsView extends Component {
                         tableWarnings++;
                     }
                     alarmsData.push(data.alarms[i]);
-                }
-                if (initialTableData.length < alarmsData.length) {
-                    var diffenceCount = alarmsData.length - initialTableData.length;
-                    var initialLength = alarmsData.length;
-                    for (let z = 0; z < diffenceCount; z++) {
-                        this.notify(alarmsData[initialLength - z - 1].SEVERITY, alarmsData[initialLength - z - 1].Line, alarmsData[initialLength - z - 1].ASSET)
-                    }
                 }
                 this.setState({
                     tableData: alarmsData,
@@ -193,22 +182,6 @@ class FinishedGoodsView extends Component {
     //     });
 
     // }
-    notify = (status, line, asset) => {
-        var alertMessage = `${asset} Alert on ${line}`;
-        var warningMessage = `${asset} Warning on ${line}`;
-        if (status.toLowerCase() == "warning") {
-            toast.warn(warningMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-            });
-        } else if (status.toLowerCase() == "alert") {
-            toast.error(alertMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-            });
-        }
-
-    };
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -312,7 +285,6 @@ autoClose : false
                         <DataTableComponent filteredData={this.state.tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />
                         {/* <button className={"refresh-button " + this.state.autoRefreshStatus} onClick={this.setAutoRefresh}>{this.state.buttonLabel}</button> */}
                     </div>
-                    <ToastContainer />
                 </div>
             </div>
         );

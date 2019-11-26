@@ -4,11 +4,8 @@ import ScheduleAdherence from '../../Component/ScheduleAdherence';
 import { DataTableComponent } from '../../Component/DataTableComponent/DataTableComponent';
 import LineView from '../../Pages/LineView';
 import PlantAsset from '../../Component/PlantViewContainer';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var initialTableData = [];
 var alarmsData = [];
 class PlantView extends React.Component {
     constructor(props) {
@@ -63,19 +60,6 @@ class PlantView extends React.Component {
     epochToDate = (dateVal) => {
         dateVal = parseInt(dateVal);
         var zone = "am";
-        // var month = [];
-        // month[0] = "Jan";
-        // month[1] = "Feb";
-        // month[2] = "Mar";
-        // month[3] = "Apr";
-        // month[4] = "May";
-        // month[5] = "Jun";
-        // month[6] = "Jul";
-        // month[7] = "Aug";
-        // month[8] = "Sep";
-        // month[9] = "Oct";
-        // month[10] = "Nov";
-        // month[11] = "Dec";
         var date = new Date(dateVal).getDate();
         var monthName = new Date(dateVal).getMonth() + 1;
         // var year = new Date(dateVal).getFullYear();
@@ -98,7 +82,6 @@ class PlantView extends React.Component {
             .then((data) => {
                 tableAlerts = 0;
                 tableWarnings = 0;
-                initialTableData = alarmsData;
                 alarmsData = [];
                 var lineDropdownValue = [];
                 for (let i = 0; i < data.alarms.length; i++) {
@@ -149,13 +132,6 @@ class PlantView extends React.Component {
                     }else if(tableAlerts ==0 && tableWarnings>0){
                         data.children[i]["backGroundColor"] = "orange";
                     }
-                    if(initialTableData.length < alarmsData.length){
-                        var diffenceCount = alarmsData.length - initialTableData.length;
-                        var initialLength = alarmsData.length;
-                        for(let z=0;z< diffenceCount;z++){
-                            this.notify(alarmsData[z].SEVERITY , alarmsData[z].Line, alarmsData[z].ASSET)
-                        }
-                    }
                 }
 
                 for (let i = 0; i < data.children.length; i++) {
@@ -196,22 +172,6 @@ class PlantView extends React.Component {
     //     });
 
     // }
-    notify = (status , line , asset) => {
-        var alertMessage = `${asset} Alert on ${line}`;
-        var warningMessage = `${asset} Warning on ${line}`;
-        if(status.toLowerCase() == "warning"){
-            toast.warn(warningMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-              });
-        }else if(status.toLowerCase() == "alert"){
-            toast.error(alertMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-              });
-        }
-      
-      };
 
     componentDidMount() {
         this.triggerPlantViewData();
@@ -262,8 +222,6 @@ autoClose : false
                     {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
                     {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
                 </div>
-
-                <ToastContainer />
             </div>
         );
     }

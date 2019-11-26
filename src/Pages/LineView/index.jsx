@@ -15,11 +15,8 @@ import BlenderView from '../../Pages/BlenderView/index';
 import FinishedGoodsView from '../../Pages/FinishedGoodsView/index';
 import BinView from '../../Pages/BinView/index';
 import HopperView from '../../Pages/HopperView/index';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 var tableAlerts = 0;
 var tableWarnings = 0;
-var initialTableData = [];
 var alarmsData = [];
 //var lineAssetData = {};
 
@@ -136,7 +133,6 @@ class LineView extends Component {
                 tableAlerts = 0;
                 tableWarnings = 0;
                 //lineAssetData = data;
-                initialTableData = alarmsData;
                 alarmsData = [];
                 for (let i = 0; i < data.alarms.length; i++) {
                     data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
@@ -167,13 +163,6 @@ class LineView extends Component {
                         }
 
                         alarmsData.push(data.children[i].alarms[j]);
-                    }
-                }
-                if (initialTableData.length < alarmsData.length) {
-                    var diffenceCount = alarmsData.length - initialTableData.length;
-                    var initialLength = alarmsData.length;
-                    for (let z = 0; z < diffenceCount; z++) {
-                        this.notify(alarmsData[initialLength - z - 1].SEVERITY, alarmsData[initialLength - z - 1].Line, alarmsData[initialLength - z - 1].ASSET)
                     }
                 }
                 this.setState({
@@ -210,23 +199,6 @@ class LineView extends Component {
     //     });
 
     // }
-    notify = (status, line, asset) => {
-        var alertMessage = `${asset} Alert on ${line}`;
-        var warningMessage = `${asset} Warning on ${line}`;
-        if (status.toLowerCase() == "warning") {
-            toast.warn(warningMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-                autoClose: false,
-
-            });
-        } else if (status.toLowerCase() == "alert") {
-            toast.error(alertMessage, {
-                position: toast.POSITION.TOP_RIGHT,
-                autoClose: false
-            });
-        }
-
-    };
     componentDidMount() {
         // const responseHeader = {
         //   headers: {
@@ -310,7 +282,6 @@ class LineView extends Component {
                         {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button>  */}
                     </div>
                 </div>
-                <ToastContainer />
             </div>
         );
     }

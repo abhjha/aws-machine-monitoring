@@ -32,7 +32,6 @@ class LineAssetData extends Component {
 
     }
     getBackgroundColor = (data) => {
-        console.log(data, "background-color");
         var alertCount = 0;
         var warningCount = 0;
         if (data.length > 0) {
@@ -59,8 +58,10 @@ class LineAssetData extends Component {
     componentDidMount() {
         this.sortLineData(this.props.data);
     }
+    componentWillReceiveProps(){
+        this.sortLineData(this.props.data);
+    }
     render() {
-        console.log(this.state.lineData , "children data 2");
         return (
                 
                 <div className="asset-container">

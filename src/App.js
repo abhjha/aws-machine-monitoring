@@ -17,16 +17,157 @@ import RateOptimization from './Pages/RateOptimization';
 import RawMaterialInsights from './Pages/RawMaterialInsights';
 import './index.css';
 import './SCSS/main.scss';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Button from './Component/Button';
+var tableAlerts = 0;
+var tableWarnings = 0;
+var initialTableData = [];
+var alarmsData = [];
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        counter : 0
+    }
+}
+  millisToMinutesAndSeconds = (millis) => {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
+  }
 
 
-  render (){
+  epochToDate = (dateVal) => {
+    dateVal = parseInt(dateVal);
+    var zone = "am";
+    var date = new Date(dateVal).getDate();
+    var monthName = new Date(dateVal).getMonth() + 1;
+    var hours = new Date(dateVal).getHours();
+    var mins = new Date(dateVal).getMinutes();
+    if (hours > 12) {
+      hours = hours - 12;
+      zone = "pm";
+    }
+    mins = mins < 10 ? '0' + mins : mins;
+    hours = hours < 10 ? '0' + hours : hours;
+
+    return monthName + "/" + date + " " + hours + ":" + mins + zone;
+  }
+  triggerPlantAlertData = () => {
+    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
+      .then((response) => response.json())
+      .then((data) => {
+        tableAlerts = 0;
+        tableWarnings = 0;
+        initialTableData = alarmsData;
+        alarmsData = [];
+        var lineDropdownValue = [];
+        for (let i = 0; i < data.alarms.length; i++) {
+          data.alarms[i].Line = "Plant Level";
+          alarmsData.push(data.alarms[i]);
+          if (data.alarms[i].SEVERITY.toLowerCase() == "alert") {
+            tableAlerts++;
+          } else if (data.alarms[i].SEVERITY.toLowerCase() == "warning") {
+            tableWarnings++;
+          }
+        }
+        for (let i = 0; i < data.children.length; i++) {
+          for (let j = 0; j < data.children[i].alarms.length; j++) {
+            data.children[i].alarms[j].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].alarms[j].START_TIME));
+            data.children[i].alarms[j].Line = data.children[i].ASSET_NAME;
+            data.children[i].alarms[j].START_TIME = this.epochToDate(data.children[i].alarms[j].START_TIME);
+            if (data.children[i].alarms[j].SEVERITY == "Alert") {
+              data.children[i].alarms[j]["statusBox"] = "";
+              tableAlerts++;
+            } else {
+              data.children[i].alarms[j]["statusBox"] = "";
+              tableWarnings++;
+            }
+            alarmsData.push(data.children[i].alarms[j]);
+          }
+          for (let k = 0; data.children[i].children != undefined && k < data.children[i].children.length; k++) {
+            for (let z = 0; z < data.children[i].children[k].alarms.length; z++) {
+              if (data.children[i].children[k].alarms.length > 0) {
+                data.children[i].children[k].alarms[z].Line = data.children[i].ASSET_NAME;
+              }
+              data.children[i].children[k].alarms[z].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.children[i].children[k].alarms[z].START_TIME));
+              data.children[i].children[k].alarms[z].START_TIME = this.epochToDate(data.children[i].children[k].alarms[z].START_TIME);
+              if (data.children[i].children[k].alarms[z].SEVERITY == "Alert") {
+                data.children[i].children[k].alarms[z]["statusBox"] = "";
+                tableAlerts++;
+              } else {
+                data.children[i].children[k].alarms[z]["statusBox"] = "";
+                tableWarnings++;
+              }
+
+              alarmsData.push(data.children[i].children[k].alarms[z]);
+            }
+          }
+          if (tableAlerts == 0 && tableWarnings == 0) {
+            data.children[i]["backGroundColor"] = "green";
+          } else if (tableAlerts > 0) {
+            data.children[i]["backGroundColor"] = "red";
+          } else if (tableAlerts == 0 && tableWarnings > 0) {
+            data.children[i]["backGroundColor"] = "orange";
+          }
+          if (initialTableData.length < alarmsData.length && this.state.counter > 0) {
+            var diffenceCount = alarmsData.length - initialTableData.length;
+            for (let z = 0; z < diffenceCount; z++) {
+              this.notify(alarmsData[z].SEVERITY, alarmsData[z].Line, alarmsData[z].ASSET , alarmsData[z].DESCRIPTION)
+            }
+          }
+        }
+
+        for (let i = 0; i < data.children.length; i++) {
+          lineDropdownValue.push(data.children[i].GUID);
+        }
+        this.setState({
+          counter : 1
+
+        });
+      })
+      .catch(function (err) {
+        console.log(err, 'Something went wrong, Alert table data')
+      });
+      
+  }
+  notify = (status, line, asset , description) => {
+    var alertMessage = `${asset} \nAlert on \n${line}              Descriptiopn : ${description}`;
+    var warningMessage = `${asset} \n\n\n\n\Warning on ${line}     Descriptiopn : ${description}`;
+    if (status.toLowerCase() == "warning") {
+      toast.warn(warningMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: false,
+      });
+    } else if (status.toLowerCase() == "alert") {
+      toast.error(alertMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: false
+      });
+    }
+
+  };
+  componentDidMount() {
+    this.triggerPlantAlertData();
+    this.apiTimerReferenceonload = setInterval(() => {
+      this.triggerPlantAlertData();
+    }, 2000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.apiTimerReference);
+    clearInterval(this.apiTimerReferenceonload);
+    tableAlerts = 0;
+    tableWarnings = 0;
+  }
+
+
+  render() {
     return (
       <Router>
-          <Menu />
-          
+        <Menu />
+
         <div>
           <Route path="/binView" exact component={BinView} />
           <Route path="/hopperView" exact component={HopperView} />
@@ -42,6 +183,7 @@ class App extends React.Component {
           <Route path="/predictiveMaintenace" exact component={PredictiveMaintenace} />
           <Route path="/rateOptimization" exact component={RateOptimization} />
           <Route path="/rawMaterial" exact component={RawMaterialInsights} />
+          <ToastContainer closeButton={<Button />}/>
         </div>
       </Router>
     )

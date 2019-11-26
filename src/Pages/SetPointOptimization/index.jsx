@@ -47,7 +47,7 @@ class SetPointOptimzation extends Component {
                             Setpoint Optimization
                         </div>
                         <div className="setpoint-details">
-                            Insight : When ambient conditions exceed analytics-defined thresholds, setpoints should be adjusted to optimize the process and reduce scrap based on machine learning models
+                            Insight: When ambient conditions exceed analytics-defined thresholds, setpoints should be adjusted to optimize the process and reduce scrap based on machine learning models
                         </div>
                     </div>
                     <div className="setpoint-data">

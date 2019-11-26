@@ -9,10 +9,7 @@ import warning from '../../Images/warning.png';
 import Chart from '../../Component/Chart';
 import MixRatio from '../../Component/MixRatio';
 import { LinearGaugeComponent, AxesDirective, AxisDirective, PointersDirective, PointerDirective, AnnotationsDirective, AnnotationDirective, Annotations, Inject } from '@syncfusion/ej2-react-lineargauge';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 var tableData = [];
-var initialTableData = [];
 var tableAlerts = 0;
 var tableWarnings = 0;
 class HopperView extends Component {
@@ -251,7 +248,6 @@ epochToDate = (dateVal) => {
 }
 
   triggerGreenHopperViewTableData = () => {
-    initialTableData = tableData;
     tableData =[];
     tableAlerts = 0;
     tableWarnings = 0;
@@ -272,21 +268,12 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
-        if (initialTableData.length < tableData.length) {
-          var diffenceCount = tableData.length - initialTableData.length;
-          var initialLength = tableData.length;
-          for (let z = 0; z < diffenceCount; z++) {
-            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
-          }
-        }
-
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green hopper table data')
       });
   }
   triggerBlueHopperViewTableData = () => {
-    initialTableData = tableData;
     tableData = [];
     tableAlerts = 0;
     tableWarnings = 0;
@@ -307,14 +294,6 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
-        if (initialTableData.length < tableData.length) {
-          var diffenceCount = tableData.length - initialTableData.length;
-          var initialLength = tableData.length;
-          for (let z = 0; z < diffenceCount; z++) {
-            this.notify(tableData[initialLength - z - 1].SEVERITY, tableData[initialLength - z - 1].Line, tableData[initialLength - z - 1].ASSET)
-          }
-        }
-
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue hopper table data')
@@ -346,22 +325,6 @@ epochToDate = (dateVal) => {
   //   });
 
   // }
-  notify = (status, line, asset) => {
-    var alertMessage = `${asset} Alert on ${line}`;
-    var warningMessage = `${asset} Warning on ${line}`;
-    if (status.toLowerCase() == "warning") {
-      toast.warn(warningMessage, {
-        position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-      });
-    } else if (status.toLowerCase() == "alert") {
-      toast.error(alertMessage, {
-        position: toast.POSITION.TOP_RIGHT,
-autoClose : false
-      });
-    }
-
-  };
   componentDidMount() {
     // const responseHeader = {
     //   headers: {
@@ -563,7 +526,6 @@ autoClose : false
             {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
             {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
           </div>
-          <ToastContainer />
         </div>
 
       </div>
