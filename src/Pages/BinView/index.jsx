@@ -181,7 +181,9 @@ class BinView extends Component {
           tableData.push(data.alarms[i]);
         }
         
-
+        this.setState({
+          alarmsData : tableData
+        })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
@@ -204,14 +206,15 @@ class BinView extends Component {
           tableData.push(data.alarms[i]);
         }
         console.log(tableData, "asdfdsjfhgduifhkjsdlkasjdla");
+        this.setState({
+          alarmsData : tableData
+        })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue bin table data')
       });
     console.log(tableData, "bin table data");
-      this.setState({
-        alarmsData : tableData
-      })
+      
   }
   // triggerBlueBinTableData = () => {
   //   tableData = [];

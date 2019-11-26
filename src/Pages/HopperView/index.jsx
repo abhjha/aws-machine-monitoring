@@ -46,6 +46,7 @@ class HopperView extends Component {
           }
         ]
       },
+      alarmsData :[],
       blueHopperFillValue: 0,
       blueHopperFillTarget: 0,
       greenHopperFillValue: 0,
@@ -268,16 +269,14 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
+        this.setState({
+          alarmsData : tableData
+        })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green hopper table data')
       });
-  }
-  triggerBlueHopperViewTableData = () => {
-    tableData = [];
-    tableAlerts = 0;
-    tableWarnings = 0;
-    fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
+      fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
       .then((response) => response.json())
       .then((data) => {
         for (let i = 0; i < data.alarms.length; i++) {
@@ -294,11 +293,40 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
+        this.setState({
+          alarmsData : tableData
+        })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, blue hopper table data')
       });
   }
+  // triggerBlueHopperViewTableData = () => {
+  //   tableData = [];
+  //   tableAlerts = 0;
+  //   tableWarnings = 0;
+  //   fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       for (let i = 0; i < data.alarms.length; i++) {
+  //         data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+  //         data.alarms[i].Line = sessionStorage.lineName;
+  //         data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+  //         if (data.alarms[i].SEVERITY == "Alert") {
+  //           data.alarms[i][""] = <img src={alert} />;
+  //           tableAlerts++;
+  //         } else {
+  //           data.alarms[i][""] = <img src={warning} />;
+  //           tableWarnings++;
+  //           console.log(tableWarnings, "blue hopper");
+  //         }
+  //         tableData.push(data.alarms[i]);
+  //       }
+  //     })
+  //     .catch(function (err) {
+  //       console.log(err, 'Something went wrong, blue hopper table data')
+  //     });
+  // }
   // setAutoRefresh = () => {
   //   clearInterval(this.apiTimerReferenceonload);
   //   this.setState((prevState) => {
@@ -523,7 +551,7 @@ epochToDate = (dateVal) => {
             </div>
           </div>
           <div className="table-details-container card-tile">
-            {<DataTableComponent filteredData={tableData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
+            {<DataTableComponent filteredData={this.state.alarmsData} tableAlerts={tableAlerts} tableWarnings={tableWarnings} />}
             {/* <button className={"refresh-button " + autoRefreshStatus} onClick={this.setAutoRefresh}>{buttonLabel}</button> */}
           </div>
         </div>
