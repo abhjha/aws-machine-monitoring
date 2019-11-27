@@ -29,9 +29,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        counter : 0
+      counter: 0
     }
-}
+  }
   millisToMinutesAndSeconds = (millis) => {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -115,7 +115,7 @@ class App extends React.Component {
           if (initialTableData.length < alarmsData.length && this.state.counter > 0) {
             var diffenceCount = alarmsData.length - initialTableData.length;
             for (let z = 0; z < diffenceCount; z++) {
-              this.notify(alarmsData[z].SEVERITY, alarmsData[z].Line, alarmsData[z].ASSET , alarmsData[z].DESCRIPTION)
+              this.notify(alarmsData[z].SEVERITY, alarmsData[z].Line, alarmsData[z].ASSET, alarmsData[z].DESCRIPTION)
             }
           }
         }
@@ -124,22 +124,25 @@ class App extends React.Component {
           lineDropdownValue.push(data.children[i].GUID);
         }
         this.setState({
-          counter : 1
+          counter: 1
 
         });
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, Alert table data')
       });
-      
+
   }
-  notify = (status, line, asset , description) => {
+  notify = (status, line, asset, description) => {
     var alertMessage = `${asset} \nAlert on \n${line}              Descriptiopn : ${description}`;
     var warningMessage = `${asset} \n\n\n\n\Warning on ${line}     Descriptiopn : ${description}`;
     if (status.toLowerCase() == "warning") {
       toast.warn(warningMessage, {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: false,
+        className: 'black-background',
+        bodyClassName: "grow-font-size",
+        progressClassName: 'fancy-progress-bar'
       });
     } else if (status.toLowerCase() == "alert") {
       toast.error(alertMessage, {
@@ -183,7 +186,7 @@ class App extends React.Component {
           <Route path="/predictiveMaintenace" exact component={PredictiveMaintenace} />
           <Route path="/rateOptimization" exact component={RateOptimization} />
           <Route path="/rawMaterial" exact component={RawMaterialInsights} />
-          <ToastContainer closeButton={<Button />}/>
+          <ToastContainer closeButton={<Button labelName={"OK"} />} />
         </div>
       </Router>
     )
