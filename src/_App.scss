@@ -1,0 +1,20 @@
+.Toastify{
+    
+    .Toastify__toast-container{
+        height: 180px;
+        font-size: 16px;
+        .Toastify__toast{
+        display: block;
+        }
+    }    
+    .warning-background{
+        background-color: orange;
+        .toast-notification-container{
+            .toast-status{
+                background-color: #865F24;
+            }
+            
+        }
+    }
+    
+}

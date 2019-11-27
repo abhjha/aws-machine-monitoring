@@ -361,14 +361,12 @@ epochToDate = (dateVal) => {
     // };
     this.triggerBlueHopperViewData();
     this.triggerGreenHopperViewData();
-    this.triggerBlueHopperViewTableData();
     this.triggerGreenHopperViewTableData();
     this.triggerFinishedGoods();
     // if (sessionStorage.autoRefreshState === "true") {
       this.apiTimerReferenceonload = setInterval(() => {
         this.triggerBlueHopperViewData();
         this.triggerGreenHopperViewData();
-        this.triggerBlueHopperViewTableData();
         this.triggerGreenHopperViewTableData();
         this.triggerFinishedGoods();
       }, 2000);

@@ -2,6 +2,7 @@
 @import 'config','structure';
 
 /* module css*/
+@import '../App';
 @import '../Component/AmbientReading/ambientReading';
 @import '../Component/AnalyticsDetails/analyticsDetails';
 @import '../Component/Back/back';

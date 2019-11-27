@@ -56,7 +56,17 @@ class AlertView extends Component {
         return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
     }
 
+    resetAlarms = () =>{
+        fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/reset',{method: 'PUT',})
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch(function (err) {
+                console.log(err, 'Something went wrong, Alert table data')
+            });
 
+    }
     triggerPlantAlertData = () => {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN099')
             .then((response) => response.json())
@@ -188,7 +198,7 @@ class AlertView extends Component {
                             Activity Log
                         </div>
                         <div className="alog-reset">
-                            <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.filterAlarms} />
+                            <Button type={'reset'} labelName={this.state.resetButton} triggerAction={this.resetAlarms} />
                             {/* <Button type={'refresh-button ' + this.state.autoRefreshStatus} labelName={this.state.buttonLabel} triggerAction={this.setAutoRefresh} /> */}
                             
                         </div>

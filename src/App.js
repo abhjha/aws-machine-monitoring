@@ -20,6 +20,7 @@ import './SCSS/main.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from './Component/Button';
+import ToastNotification from './Component/ToastNotification';
 var tableAlerts = 0;
 var tableWarnings = 0;
 var initialTableData = [];
@@ -113,9 +114,20 @@ class App extends React.Component {
             data.children[i]["backGroundColor"] = "orange";
           }
           if (initialTableData.length < alarmsData.length && this.state.counter > 0) {
-            var diffenceCount = alarmsData.length - initialTableData.length;
-            for (let z = 0; z < diffenceCount; z++) {
-              this.notify(alarmsData[z].SEVERITY, alarmsData[z].Line, alarmsData[z].ASSET, alarmsData[z].DESCRIPTION)
+            // var diffenceCount = alarmsData.length - initialTableData.length;
+            // for (let z = 0; z < diffenceCount; z++) {
+            //   this.notify(alarmsData[z].SEVERITY, alarmsData[z].Line, alarmsData[z].ASSET, alarmsData[z].DESCRIPTION,alarmsData[z].STATUS,alarmsData[z].Duration)
+            // }
+            for (let j = 0; j < alarmsData.length; j++) {
+              var alarmsCount = 0;
+              for (let k = 0; k < initialTableData.length; k++) {
+                if (alarmsData[j].ASSET == initialTableData[k].ASSET && alarmsData[j].ASSET_TYPE == initialTableData[k].ASSET_TYPE && alarmsData[j].DESCRIPTION == initialTableData[k].DESCRIPTION && alarmsData[j].START_TIME == initialTableData[k].START_TIME) {
+                  alarmsCount++;
+                }
+              }
+              if (alarmsCount == 0) {
+                this.notify(alarmsData[j].SEVERITY, alarmsData[j].Line, alarmsData[j].ASSET, alarmsData[j].DESCRIPTION, alarmsData[j].STATUS, alarmsData[j].Duration);
+              }
             }
           }
         }
@@ -133,19 +145,17 @@ class App extends React.Component {
       });
 
   }
-  notify = (status, line, asset, description) => {
-    var alertMessage = `${asset} \nAlert on \n${line}              Descriptiopn : ${description}`;
-    var warningMessage = `${asset} \n\n\n\n\Warning on ${line}     Descriptiopn : ${description}`;
+  notify = (status, line, asset, description, alarmStatus, duration) => {
     if (status.toLowerCase() == "warning") {
-      toast.warn(warningMessage, {
+      toast.warn(<ToastNotification status={status} line={line} description={description} alarmStatus={alarmStatus} duration={duration} />, {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: false,
-        className: 'black-background',
+        className: 'warning-background',
         bodyClassName: "grow-font-size",
         progressClassName: 'fancy-progress-bar'
       });
     } else if (status.toLowerCase() == "alert") {
-      toast.error(alertMessage, {
+      toast.error(<ToastNotification status={status} line={line} description={description} alarmStatus={alarmStatus} duration={duration} />, {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: false
       });
