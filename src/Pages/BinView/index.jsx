@@ -341,7 +341,7 @@ class BinView extends Component {
           },
           scaleLabel: {
             display: true,
-            labelString: "Weight (gms)",
+            labelString: "Weight (g)",
             fontSize: 16,
             fontColor: 'white',
           },
