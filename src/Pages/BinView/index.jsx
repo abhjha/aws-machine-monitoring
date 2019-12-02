@@ -299,12 +299,11 @@ class BinView extends Component {
           borderWidth: 2,
           borderDash: [3, 3],
 
-
           label: {
             content: "Minimum Target",
             enabled: true,
             position: "top",
-            xAdjust: 290,
+            xAdjust: 217,
             yAdjust: 20,
             backgroundColor: 'transparent',
             endValue: 60,
@@ -321,7 +320,7 @@ class BinView extends Component {
           label: {
             content: "Refill Point",
             enabled: true,
-            position: "bottom",
+            position: "top",
             xAdjust: 217,
             yAdjust: 20,
             backgroundColor: 'transparent',
@@ -342,7 +341,7 @@ class BinView extends Component {
           },
           scaleLabel: {
             display: true,
-            labelString: "Weight (kg)",
+            labelString: "Weight (gms)",
             fontSize: 16,
             fontColor: 'white',
           },
@@ -412,7 +411,7 @@ class BinView extends Component {
               <Bar data={this.state.GreenBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " units per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.GBConsumptioRate.toFixed(2) + " Balls per Minute"}</span>
               </div>
             </div>
             <div className="bin2-graph card-tile">
@@ -422,7 +421,7 @@ class BinView extends Component {
               <Bar data={this.state.BlueBinGraphData} options={graphOptions}
               />
               <div className="consumption-rate">
-                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2) + " units per minute"}</span>
+                <span className="consumption-rate-heading"> Consumption Rate</span><span className="consumption-rate-value"> {this.state.BBConsumptioRate.toFixed(2) + " Balls per Minute"}</span>
               </div>
             </div>
           </div>

@@ -13,9 +13,9 @@ class PredictiveMaintenace extends Component {
             predLine: ["Line", "3"],
             predAsset: ["Asset", "Blender"],
             predSummary: [],
-            predDowntime: ["Primary Downtime Drivers", "Blender Motor failure", "Blender Bearing Failure", "Blender Jam"],
-            predSummaryHead: ["R,2", "Adjusted R,2", "Observations", "Indicator Variables"],
-            predSummaryDetails: ["79.7%", "81.6%", "1200", "Vibration Intensity"]
+            predDowntime: ["Primary Downtime Drivers", "Blender Motor Failure", "Blender Bearing Failure", "Blender Jam"],
+            predSummaryHead: ["R,2", "Adjusted R,2", "Observations", " , Indicator Variables , ,  "],
+            predSummaryDetails: ["79.7%", "81.6%", "1200", "Vibration Intensity , Vibration Frequency , Blender Speed"]
         }
     }
 

@@ -12,11 +12,11 @@ class MixRatio extends Component {
                         <div className="target-marker" style={{"top":(100 - this.props.hopperMix)+'%'}}></div>
                         <div className= "blue-box" style={{height:(100 - this.props.hopperActual)+'%'}}></div>
                        
-                        <div className="target-setpoint-label" style={{"top":marginValue}}>Target: {100-this.props.hopperMix}:{this.props.hopperMix} </div>
+                        <div className="target-setpoint-label" style={{"top":marginValue}}>Target: {this.props.hopperMix}:{100-this.props.hopperMix}</div>
                         
                         </div>
                     </div>
-                    <div className="actual-measurement">Actual: {100-this.props.hopperActual }:{this.props.hopperActual} <br/> Setpoint: {this.props.hopperSetpoint +"%"} </div>
+                    <div className="actual-measurement">Actual: {this.props.hopperActual}:{100-this.props.hopperActual } <br/> Setpoint: {this.props.hopperSetpoint +"%"} </div>
                 </div>
         )
     }

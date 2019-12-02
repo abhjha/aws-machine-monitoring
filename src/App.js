@@ -126,7 +126,7 @@ class App extends React.Component {
                 }
               }
               if (alarmsCount == 0) {
-                this.notify(alarmsData[j].SEVERITY, alarmsData[j].Line, alarmsData[j].ASSET, alarmsData[j].DESCRIPTION, alarmsData[j].STATUS, alarmsData[j].Duration);
+                this.notify(alarmsData[j].SEVERITY, alarmsData[j].Line, alarmsData[j].ASSET, alarmsData[j].DESCRIPTION, alarmsData[j].STATUS, alarmsData[j].START_TIME);
               }
             }
           }
