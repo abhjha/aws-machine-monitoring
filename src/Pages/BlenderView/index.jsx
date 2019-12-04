@@ -112,6 +112,15 @@ class BlenderView extends Component {
                 } else {
                     blnderTempBG = "#05c985";
                 }
+                var gaugeValue = 0;
+                if (blenderData.currentValues.BlenderSpeed < 0) {
+                    gaugeValue = 0;
+                  } else if (blenderData.currentValues.BlenderSpeed > 50) {
+                    gaugeValue = 50;
+                  } else {
+                    gaugeValue = blenderData.currentValues.BlenderSpeed;
+                  }
+                
                 this.setState({
                     ambientPressure: blenderData.currentValues.AmbientPressure,
                     ambientTemperature: blenderData.currentValues.AmbientTemperature,
@@ -136,7 +145,7 @@ class BlenderView extends Component {
                     blenderVibrtionWarning: blenderData.currentValues.VibrationWarningLevel,
                     minBlenderSpeed: blenderData.currentValues.SpeedLowerLimit,
                     maxBlenderSpeed: blenderData.currentValues.SpeedUpperLimit,
-                    blenderSpeed: blenderData.currentValues.BlenderSpeed,
+                    blenderSpeed: gaugeValue
                 })
             })
             .catch(function (err) {

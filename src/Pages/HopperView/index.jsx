@@ -269,9 +269,9 @@ epochToDate = (dateVal) => {
           }
           tableData.push(data.alarms[i]);
         }
-        this.setState({
-          alarmsData : tableData
-        })
+        // this.setState({
+        //   alarmsData : tableData
+        // })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green hopper table data')

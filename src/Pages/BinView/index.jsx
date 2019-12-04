@@ -101,7 +101,7 @@ class BinView extends Component {
         var bgColor = "";
         if (binData.currentValues.binLevel > binData.currentValues.refillPoint) {
           bgColor = "#05C985";
-        } else if (binData.currentValues.binLevel < binData.currentValues.refillPoint && binData.currentValues.binLevel > binData.currentValues.minimumTarget) {
+        } else if (binData.currentValues.binLevel <= binData.currentValues.refillPoint && binData.currentValues.binLevel >= binData.currentValues.minimumTarget) {
           bgColor = 'orange';
         } else {
           bgColor = '#EE423D';
@@ -181,9 +181,6 @@ class BinView extends Component {
           tableData.push(data.alarms[i]);
         }
         
-        this.setState({
-          alarmsData : tableData
-        })
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
