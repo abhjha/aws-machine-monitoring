@@ -160,9 +160,12 @@ class BinView extends Component {
   }
   //Alert table data
   triggerGreenBinTableData = () => {
-    tableData = [];
-    tableAlerts = 0;
-    tableWarnings = 0;
+    //tableData = [];
+    let interimTableData = [];
+    let interimTableAlerts = 0;
+    let interimTableWarning = 0;
+    //tableAlerts = 0;
+    //tableWarnings = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN006')
       .then((response) => response.json())
       .then((data) => {
@@ -172,44 +175,50 @@ class BinView extends Component {
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
-            tableAlerts++;
+            interimTableAlerts++;
           } else {
             data.alarms[i][""] = <img src={warning} />;
-            tableWarnings++;
+            interimTableWarning++;
           }
-
-          tableData.push(data.alarms[i]);
+          interimTableData.push(data.alarms[i]);
         }
+        fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data , "blue table checing data");
+            tableData = [];
+            tableData = [...interimTableData];
+            interimTableData= [];
+            tableAlerts = interimTableAlerts;
+            tableWarnings = interimTableWarning;
+            for (let i = 0; i < data.alarms.length; i++) {
+              data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+              data.alarms[i].Line = sessionStorage.lineName;
+              data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+              if (data.alarms[i].SEVERITY == "Alert") {
+                data.alarms[i][""] = <img src={alert} />;
+                tableAlerts++;
+              } else {
+                data.alarms[i][""] = <img src={warning} />;
+                tableWarnings++;
+              }
+             
+              tableData.push(data.alarms[i]);
+              console.log(tableData, 'tabledata again')
+            }
+            this.setState({
+              alarmsData : tableData
+            })
+          })
+          .catch(function (err) {
+            console.log(err, 'Something went wrong, blue bin table data')
+          });
         
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green bin table data')
       });
-      fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data , "blue table checing data");
-        for (let i = 0; i < data.alarms.length; i++) {
-          data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = sessionStorage.lineName;
-          data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
-          if (data.alarms[i].SEVERITY == "Alert") {
-            data.alarms[i][""] = <img src={alert} />;
-            tableAlerts++;
-          } else {
-            data.alarms[i][""] = <img src={warning} />;
-            tableWarnings++;
-          }
-          tableData.push(data.alarms[i]);
-        }
-        console.log(tableData, "asdfdsjfhgduifhkjsdlkasjdla");
-        this.setState({
-          alarmsData : tableData
-        })
-      })
-      .catch(function (err) {
-        console.log(err, 'Something went wrong, blue bin table data')
-      });
+      
     console.log(tableData, "bin table data");
       
   }
