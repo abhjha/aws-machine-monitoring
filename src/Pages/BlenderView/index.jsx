@@ -133,9 +133,13 @@ class BlenderView extends Component {
                         labels: ["", "Motor", "Bearing 1", "Bearing 2", ""],
                         datasets: [{
                             label: "",
-                            backgroundColor: [this.getBarColor(blenderData.currentValues.Motor, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
-                            this.getBarColor(blenderData.currentValues.Bearing1, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
-                            this.getBarColor(blenderData.currentValues.Bearing2, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel)],
+                            backgroundColor: [
+                                this.getBarColor(blenderData.currentValues.Motor, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                                this.getBarColor(blenderData.currentValues.Motor, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                                this.getBarColor(blenderData.currentValues.Bearing1, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                                this.getBarColor(blenderData.currentValues.Bearing2, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                                this.getBarColor(blenderData.currentValues.Motor, blenderData.currentValues.VibrationWarningLevel, blenderData.currentValues.VibrationAlertLevel),
+                            ],
                             borderColor: 'rgb(255, 99, 132)',
                             data: ["", blenderData.currentValues.Motor, blenderData.currentValues.Bearing1, blenderData.currentValues.Bearing2, ""],
 
