@@ -185,7 +185,6 @@ class BinView extends Component {
         fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN005')
           .then((response) => response.json())
           .then((data) => {
-            console.log(data , "blue table checing data");
             tableData = [];
             tableData = [...interimTableData];
             interimTableData= [];
@@ -219,7 +218,6 @@ class BinView extends Component {
         console.log(err, 'Something went wrong, green bin table data')
       });
       
-    console.log(tableData, "bin table data");
       
   }
   // triggerBlueBinTableData = () => {

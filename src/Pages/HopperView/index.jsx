@@ -32,7 +32,7 @@ class HopperView extends Component {
             backgroundColor: '#1F8EFA',
             borderColor: '#1F8EFA',
             borderWidth: 2,
-            pointRadius : 1,
+            pointRadius: 1,
           },
           {
             steppedLine: true,
@@ -42,27 +42,27 @@ class HopperView extends Component {
             backgroundColor: '#bb5be3',
             data: [],
             borderWidth: 1,
-            pointRadius : 1,
+            pointRadius: 1,
           }
         ]
       },
-      alarmsData :[],
+      alarmsData: [],
       blueHopperFillValue: 0,
       blueHopperFillTarget: 0,
       greenHopperFillValue: 0,
       greenHopperFillTarget: 0,
       blueHopperGaugeRate: 0,
       greenHopperGaugeRate: 0,
-      hopperActual : 0,
-      hopperSetpoint :0,
-      hopperMix : 0,
+      hopperActual: 0,
+      hopperSetpoint: 0,
+      hopperMix: 0,
       gaugeMin: 0,
       gaugeMax: 0,
       buttonLabel: 'START REFRESH',
       autoRefreshStatus: '',
       autoRefreshState: sessionStorage.autoRefreshState === "true" ? true : false,
-      blueHopperTableData : [],
-      greenHopperTableData : [],
+      blueHopperTableData: [],
+      greenHopperTableData: [],
     }
   }
 
@@ -93,7 +93,7 @@ class HopperView extends Component {
       .then((data) => {
         let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
         var differnceDate = new Date().getTime();
-        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item) / 1000).toFixed(0));
         timeStampData.push('60s');
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent).reverse();
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent).reverse();
@@ -125,7 +125,7 @@ class HopperView extends Component {
                 backgroundColor: '#1F8EFA',
                 borderColor: '#1F8EFA',
                 borderWidth: 2,
-                pointRadius : 1,
+                pointRadius: 1,
               },
               {
                 steppedLine: true,
@@ -135,7 +135,7 @@ class HopperView extends Component {
                 backgroundColor: '#bb5be3',
                 data: expectedData,
                 borderWidth: 1,
-                pointRadius : 1,
+                pointRadius: 1,
               }
             ]
           }
@@ -155,7 +155,7 @@ class HopperView extends Component {
       .then((data) => {
         let timeStampDataObject = data.historicalValues.ActualCurrent == undefined ? [] : Object.keys(data.historicalValues.ActualCurrent);
         var differnceDate = new Date().getTime();
-        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item)/1000).toFixed(0));
+        let timeStampData = timeStampDataObject.map(item => ((differnceDate - item) / 1000).toFixed(0));
         timeStampData.push('60s');
         let currentData = data.historicalValues.ActualCurrent == undefined ? [] : Object.values(data.historicalValues.ActualCurrent).reverse();
         let expectedData = data.historicalValues.ExpectedCurrent == undefined ? [] : Object.values(data.historicalValues.ExpectedCurrent).reverse();
@@ -184,21 +184,21 @@ class HopperView extends Component {
                 data: currentData,
                 borderWidth: 1,
                 steppedLine: true,
-                fill : false,
+                fill: false,
                 pointRadius: 1,
                 // borderColor: '#1F8EFA',
                 // backgroundColor: '#1F8EFA',
 
               },
               {
-                
+
                 label: "Expected",
                 borderColor: '#bb5be3',
                 backgroundColor: '#bb5be3',
                 data: expectedData,
                 borderWidth: 1,
                 steppedLine: true,
-                fill : false,
+                fill: false,
                 pointRadius: 1,
               }
             ]
@@ -215,9 +215,9 @@ class HopperView extends Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState({
-          hopperActual : data.currentValues.ActualMix,
-      hopperSetpoint :data.currentValues.Setpoint,
-      hopperMix : data.currentValues.TargetMix,
+          hopperActual: data.currentValues.ActualMix,
+          hopperSetpoint: data.currentValues.Setpoint,
+          hopperMix: data.currentValues.TargetMix,
         })
       })
       .catch(function (err) {
@@ -228,30 +228,30 @@ class HopperView extends Component {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + "m : " + (seconds < 10 ? '0' : '') + seconds + "s";
-}
+  }
 
 
-epochToDate = (dateVal) => {
+  epochToDate = (dateVal) => {
     dateVal = parseInt(dateVal);
     var zone = "am";
     var date = new Date(dateVal).getDate();
     var monthName = new Date(dateVal).getMonth() + 1;
     var hours = new Date(dateVal).getHours();
     var mins = new Date(dateVal).getMinutes();
-    if(hours>12){
-        hours = hours-12;
-        zone = "pm";
+    if (hours > 12) {
+      hours = hours - 12;
+      zone = "pm";
     }
-    mins = mins < 10 ? '0'+mins : mins;
-    hours = hours < 10 ? '0'+hours : hours;
+    mins = mins < 10 ? '0' + mins : mins;
+    hours = hours < 10 ? '0' + hours : hours;
 
-    return  monthName+ "/" + date + " " + hours + ":"+ mins + zone;
-}
+    return monthName + "/" + date + " " + hours + ":" + mins + zone;
+  }
 
   triggerGreenHopperViewTableData = () => {
-    tableData =[];
-    tableAlerts = 0;
-    tableWarnings = 0;
+    let interimTableData = [];
+    let interimTableAlerts = 0;
+    let interimTableWarning = 0;
     fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN002')
       .then((response) => response.json())
       .then((data) => {
@@ -261,45 +261,49 @@ epochToDate = (dateVal) => {
           data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
           if (data.alarms[i].SEVERITY == "Alert") {
             data.alarms[i][""] = <img src={alert} />;
-            tableAlerts++;
+            interimTableAlerts++;
           } else {
             data.alarms[i][""] = <img src={warning} />;
-            tableWarnings++;
+            interimTableWarning++;
             console.log(tableWarnings, "green hopper");
           }
-          tableData.push(data.alarms[i]);
+          interimTableData.push(data.alarms[i]);
         }
-        // this.setState({
-        //   alarmsData : tableData
-        // })
+        fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
+          .then((response) => response.json())
+          .then((data) => {
+            tableData = [];
+            tableData = [...interimTableData];
+            interimTableData= [];
+            tableAlerts = interimTableAlerts;
+            tableWarnings = interimTableWarning;
+            for (let i = 0; i < data.alarms.length; i++) {
+              data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
+              data.alarms[i].Line = sessionStorage.lineName;
+              data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
+              if (data.alarms[i].SEVERITY == "Alert") {
+                data.alarms[i][""] = <img src={alert} />;
+                tableAlerts++;
+              } else {
+                data.alarms[i][""] = <img src={warning} />;
+                tableWarnings++;
+                console.log(tableWarnings, "blue hopper");
+              }
+              tableData.push(data.alarms[i]);
+            }
+            this.setState({
+              alarmsData: tableData
+            })
+          })
+          .catch(function (err) {
+            console.log(err, 'Something went wrong, blue hopper table data')
+          });
+
       })
       .catch(function (err) {
         console.log(err, 'Something went wrong, green hopper table data')
       });
-      fetch('https://5hcex231q7.execute-api.us-east-1.amazonaws.com/prod/alarms?GUID=SN001')
-      .then((response) => response.json())
-      .then((data) => {
-        for (let i = 0; i < data.alarms.length; i++) {
-          data.alarms[i].Duration = this.millisToMinutesAndSeconds((new Date().getTime() - data.alarms[i].START_TIME));
-          data.alarms[i].Line = sessionStorage.lineName;
-          data.alarms[i].START_TIME = this.epochToDate(data.alarms[i].START_TIME);
-          if (data.alarms[i].SEVERITY == "Alert") {
-            data.alarms[i][""] = <img src={alert} />;
-            tableAlerts++;
-          } else {
-            data.alarms[i][""] = <img src={warning} />;
-            tableWarnings++;
-            console.log(tableWarnings, "blue hopper");
-          }
-          tableData.push(data.alarms[i]);
-        }
-        this.setState({
-          alarmsData : tableData
-        })
-      })
-      .catch(function (err) {
-        console.log(err, 'Something went wrong, blue hopper table data')
-      });
+
   }
   // triggerBlueHopperViewTableData = () => {
   //   tableData = [];
@@ -364,12 +368,12 @@ epochToDate = (dateVal) => {
     this.triggerGreenHopperViewTableData();
     this.triggerFinishedGoods();
     // if (sessionStorage.autoRefreshState === "true") {
-      this.apiTimerReferenceonload = setInterval(() => {
-        this.triggerBlueHopperViewData();
-        this.triggerGreenHopperViewData();
-        this.triggerGreenHopperViewTableData();
-        this.triggerFinishedGoods();
-      }, 2000);
+    this.apiTimerReferenceonload = setInterval(() => {
+      this.triggerBlueHopperViewData();
+      this.triggerGreenHopperViewData();
+      this.triggerGreenHopperViewTableData();
+      this.triggerFinishedGoods();
+    }, 2000);
     //   this.setState(() => {
     //     return {
     //       autoRefreshState: true,
@@ -401,7 +405,7 @@ epochToDate = (dateVal) => {
       hopperActual,
       hopperMix,
       hopperSetpoint,
-      
+
 
     } = this.state;
     var annotationContentGreen = `<div style="text-align:left;width:70px;color:white">Target : ${greenHopperFillTarget}</div>`;
@@ -545,7 +549,7 @@ epochToDate = (dateVal) => {
               </div>
             </div>
             <div className="mix-hopper card-tile">
-              <MixRatio hopperActual={hopperActual} hopperSetpoint ={hopperSetpoint} hopperMix = {hopperMix} />
+              <MixRatio hopperActual={hopperActual} hopperSetpoint={hopperSetpoint} hopperMix={hopperMix} />
             </div>
           </div>
           <div className="table-details-container card-tile">
